@@ -1,0 +1,1450 @@
+\SweaveOpts{engine=R}
+\SweaveOpts{prefix.string=charts/lossDev}
+% \VignetteIndexEntry{Using lossDev}
+% \VignetteDepends{rjags}
+% \VignetteKeywords{lossDev}
+% \VignettePackage{lossDev}
+
+% The following commands were taken from the vignette for quantreg
+\newcommand{\Robject}[1]{{\texttt{#1}}}
+\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+\newcommand{\Rpackage}[1]{{\texttt{#1}}}
+\newcommand{\Rclass}[1]{{\textit{#1}}}
+\newcommand{\Rmethod}[1]{{\textit{#1}}}
+\newcommand{\Rfunarg}[1]{{\textit{#1}}}
+\newcommand{\R}{{\normalfont\textsf{R}}{}}
+\renewcommand{\S}{{\normalfont\textsf{S}}{}}
+% end commands taken from quantreg
+
+\documentclass[a4paper]{article}
+\usepackage{a4wide}
+\usepackage{graphicx}
+\setlength{\parskip}{0.7ex plus0.1ex minus0.1ex}
+\setlength{\parindent}{0em}
+
+
+\newcommand{\lossDevVersion}{0.9.0}
+\newcommand{\lossDev}{\Rpackage{lossDev}}
+\newcommand{\JAGS}{JAGS}
+
+
+\usepackage{subfigure}
+\usepackage{float}
+\usepackage{hyperref}
+
+\restylefloat{figure}
+
+\title{Robust Loss Development Using MCMC: A Vignette}
+\author{Christopher W. Laws \and Frank A. Schmid}
+
+\begin{document}
+\setkeys{Gin}{width=.85\textwidth}
+\renewcommand{\topfraction}{.9}
+\renewcommand{\bottomfraction}{.9}
+\renewcommand{\textfraction}{.1}
+\maketitle
+
+
+\begin{abstract}
+  For many lines of insurance, the ultimate loss associated with a
+  particular exposure (accident or policy) year may not be realized
+  (and hence known) for many calendar years; instead these losses
+  develop as time progresses.  The actuarial concept of loss
+  development aims at estimating (at the level of the aggregate loss
+  triangle) the ultimate loss by exposure year, given their respective
+  stage of maturity (as defined by the time distance between the
+  exposure year and the latest observed calendar year). This vignette
+  describes and demonstrates loss development using of the package
+  \lossDev{}, which centers on a Bayesian time series model.  Notable
+  features of this model are a skewed Student-\emph{t} distribution
+  with time-varying scale and skewness parameters, the use of an
+  expert prior for the calendar year effect, and the ability to
+  accommodate a structural break in the consumption path of services.
+  \R{} and the package are open-source software projects and can be
+  freely downloaded from CRAN: \url{http://cran.r-project.org} and
+  \url{http://lossdev.r-forge.r-project.org/}.
+\end{abstract}
+
+
+\section{Installation}
+At the time of writing this vignette, the current version of \lossDev{}
+is \lossDevVersion{},  which has been released as an \R{} package and
+can be downloaded from \url{http://lossdev.r-forge.r-project.org/}.
+\lossDev{} should be available on CRAN shortly.  (For instructions on
+installing \R{} packages please see the help files for \R{}.)
+\lossDev{} requires \Rpackage{rjags} for
+installation. \Rpackage{rjags} requires that a valid version of
+\JAGS{} be installed on the system.  \JAGS{} is an open source program
+for analysis of Bayesian hierarchical models using Markov Chain Monte
+Carlo (MCMC) simulation and can be freely download from
+\url{http://calvin.iarc.fr/~martyn/software/jags/}.
+
+\section{Model Overview}
+
+\lossDev{} identifies three time dimensions in the data-generating
+process of the loss triangle.  Specifically, the incremental payments
+are driven by three time series processes, which manifest themselves
+in exposure growth, development, and the calendar year effect; these
+processes are illustrated in Figure~\ref{fig:TriangleDynamics}.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics{3TimeDimensions.jpg}
+  \caption{Triangle Dynamics.}
+  \label{fig:TriangleDynamics}
+\end{figure}
+
+In the model, the growth rate that represents the calendar year effect
+is denoted $\kappa$.  The rate of exposure growth, $\eta$, is net of
+the calendar year effect.  The growth rate $\delta$ is the rate of
+decay in incremental payments, adjusted for the calendar year effect.
+Incremental payments that have been adjusted for the calendar year
+effect (and, hence, inflation) represent consumption of units of
+services; for instance, for an auto bodily injury triangle, this
+consumption pertains to medical services.  A decline in consumption at
+the level of the aggregate loss triangle may be due to claimants
+exiting or due to remaining claimants decreasing their consumption.
+
+For a more detailed explanation, including model equations, please see \\
+Schmid, Frank A. ``Robust Loss Development Using MCMC,'' 2009.
+
+
+\lossDev{} currently provides two models,  both of which are designed
+to develop annual loss triangles.
+
+Section~\ref{sec:UsingtheStandardModelforEstimation} uses the first
+(``standard'') model, which assumes that all exposure years are
+subject to a common consumption path.
+
+Section~\ref{sec:UsingtheBreakModelforEstimation} uses the second
+(``change point'') model to develop a loss triangle with a structural
+break in the consumption path, thus assuming that earlier exposure
+years are subject to one consumption path and later exposure years are
+subject to another.
+
+
+
+
+
+\section{Using the Standard Model for Estimation}
+\label{sec:UsingtheStandardModelforEstimation}
+\subsection{Data}
+The standard model (which does not allow for a structural break) is
+demonstrated on a loss triangle from Automatic Facilitative business
+in General Liability (excluding Asbestos \& Environmental).  The
+payments are on an incurred basis.
+
+This triangle is taken from \\
+Mack, Thomas, ``Which
+Stochastic Model is Underlying the Chain Ladder Method,'' \textit{Casualty
+Actuarial Society Forum}, Fall 1995, pp. 229-240,
+\url{http://www.casact.org/pubs/forum/95fforum/95ff229.pdf}.
+
+
+\subsection{Model Specification}
+Standard models are specified with the function
+\Rfunction{makeStandardAnnualInput}.  This function takes as input all
+data used in the estimation process.
+\Rfunction{makeStandardAnnualInput} also allows the user to vary the
+model specification through several arguments.  Most of these
+arguments have defaults that should be suitable for most purposes.
+
+To ensure portability, the data used in this vignette is packaged in
+\lossDev{} and as such is loaded using the \Rfunction{data}
+function. However, the user wishing to develop other loss triangles
+should load the data using standard R functions (such as
+\Rfunction{read.table} or \Rfunction{read.csv}).  See the \R{} manual
+for assistance.
+
+\subsubsection{Loading and Manipulating  the Data}
+\label{sec:standardModelData}
+\paragraph{The Triangle}
+As input, \Rfunction{makeStandardAnnualInput} can take either a
+cumulative loss triangle or an incremental loss triangle (or in the
+case where one might not be directly calculable from the other, both
+triangles may be supplied).  \Rfunction{makeStandardAnnualInput}
+expects any supplied loss triangle to be a matrix.  The row names for
+the matrix must be the Accident (or Policy) Year and must appear in
+ascending order.  The matrix must be square and \emph{all} values
+below the latest observed diagonal must be missing; missing values on
+and above this diagonal are permitted.
+
+Note the negative value in Accident Year 1982 in the example triangle.
+Because incremental payments are modeled on the log scale, this value
+will be treated as missing, which could result in a slightly
+overstated ultimate loss.  A comparison of predicted vs observed
+cumulative payments in Figure~\ref{fig:standardfinalCumulativeDiff}
+indicates that, at least in this instance, this possible overstatement
+is not a concern.
+
+<<setValueSoUsersCanLookAtAllPlots,echo=FALSE>>=
+options(device.ask.default=FALSE)
+@
+
+
+
+<<LoadTriangleForStandardModel>>=
+library(lossDev) #load the library
+
+## load the triangle, "data" loads the triangle as a data.frame so it must be coerced into a matrix
+data(IncrementalGeneralLiablityTriangle)
+IncrementalGeneralLiablityTriangle <- as.matrix(IncrementalGeneralLiablityTriangle)
+#print(IncrementalGeneralLiablityTriangle[(-5:0) + dim(IncrementalGeneralLiablityTriangle)[1], 1:6])
+print(IncrementalGeneralLiablityTriangle)
+
+@
+\paragraph{The Stochastic Inflation Prior}
+Incremental payments may be subject to inflation.  One can supply
+\Rfunction{makeStandardAnnualInput} with a price index, such as the
+CPI, as an expert prior for the rate of inflation.  The supplied rate
+of inflation must cover the years of the supplied incremental triangle
+and may extend (both into the past and future) beyond these years.  If
+a future year's rate of inflation is needed but is yet unobserved, it
+will be simulated from an Ornstein--Uhlenbeck process that has been
+calibrated to the supplied inflation series.
+
+For this example, the CPI is taken as a prior for the stochastic rate
+of inflation.
+
+Note that observed rates of inflation that extend beyond the last
+observed diagonal in \Robject{IncrementalGeneralLiablityTriangle} are
+not utilized in this example, although \lossDev{} is capable of doing
+so.
+
+<<LoadCPIForStandardModel>>=
+## load the stochastic inflation series, "data" loads the series as a data.frame so it must be coerced into a vector
+data(CPI)
+CPI <- as.matrix(CPI)[,1]
+CPI.rate <- CPI[-1] / CPI[-length(CPI)] - 1
+CPI.rate.length <- length(CPI.rate)
+print(CPI.rate[(-10):0 + CPI.rate.length])
+
+##restrict the cpi to only those years available when the triangle created
+CPI.years <- as.integer(names(CPI.rate))
+years.available <- CPI.years <= max(as.integer(dimnames(IncrementalGeneralLiablityTriangle)[[1]]))
+
+CPI.rate <- CPI.rate[years.available]
+CPI.rate.length <- length(CPI.rate)
+print(CPI.rate[(-10):0 + CPI.rate.length])
+
+@
+\subsubsection{Selection of Model Options}
+\label{sec:standardSelectionOfModelOptions}
+The function \Rfunction{makeStandardAnnualInput} has many options to
+allow for customization of model specification; however, not all
+options will be illustrated in this tutorial.
+
+For this example, the loss history is supplied as incremental payments
+to the argument \Robject{incremental.payments}.  The exposure year
+type of this triangle is set to Accident Year by setting the value of
+\Robject{exp.year.type} to ``ay.''  The default is ``ambiguous'' which
+should be sufficient in most cases as this information is only
+utilized by a handful of functions and the information can be supplied
+(or overridden calling those functions).
+
+The function allows for the specification of two rates of inflation
+(in addition to a zero rate of inflation).  One of these rates is
+allowed to be stochastic, meaning that uncertainty in future rates of
+this inflation series are simulated from a process calibrated to the
+observed series. For the current demonstration, it will be assumed
+that the CPI is the only applicable inflation rate, and that this rate
+is stochastic.  This is done by setting the value of
+\Robject{stoch.inflation.rate} to \Robject{CPI.rate} (which was
+created earlier).  The user has the option of specifying what
+percentage of dollars inflate at \Robject{stoch.inflation.rate}, with
+this value being allowed to vary for each cell of the triangle. For
+the current illustration, it is assumed that all dollars (in all
+periods) follow the CPI. This is done by setting
+\Robject{stoch.inflation.weight} to 1 and
+\Robject{non.stoch.inflation.weight} to 0.
+
+By default, the measurement equation for the logarithm of the
+incremental payments is a Student-\textit{t}.  The user has the option
+of using a skewed-\textit{t} by setting the value of
+\Robject{use.skew.t} to TRUE.  For this demonstration, a
+skewed-\textit{t} will be used.
+
+Because \lossDev{} is designed to develop loss triangles to ultimate,
+some assumptions must be made with regard to the extension of the
+consumption path beyond the number of development years in the
+observed triangle.  The default assumes the last estimated decay rate
+(i.e., growth rate of consumption) is applicable for all future
+development years, and such is assumed for this example.  This default
+can be overridden by the argument \Robject{projected.rate.of.decay}.
+Additionally, either the final number of (possibly) non-zero payments
+must be supplied via the argument \Robject{total.dev.years} or the
+number of non-zero payments in addition to the number of development
+years in the observed triangle must be supplied via the argument
+\Robject{extra.dev.years}.  Similarly, the number of additional,
+projected exposure years can also be specified.
+
+
+
+<<CreateTheStandardModelInputObject>>=
+standard.model.input <- makeStandardAnnualInput(incremental.payments = IncrementalGeneralLiablityTriangle,
+                                                stoch.inflation.weight = 1,
+                                                non.stoch.inflation.weight = 0,
+                                                stoch.inflation.rate = CPI.rate,
+                                                exp.year.type = 'ay',
+                                                extra.dev.years=5,
+                                                use.skew.t=TRUE)
+
+
+@
+\subsection{Estimating the Model}
+\label{sec:estimatingTheStandardModel}
+Once the model has been specified, it can be estimated.
+
+\paragraph{MCMC Overview}
+The model is Bayesian and estimated by means of Markov chain Monte
+Carlo Simulation (MCMC).  To perform MCMC, a Markov chain is
+constructed in such a way that the limiting distribution of the chain
+is the posterior distribution of interest.  The chain is initialized
+with starting values and then run until it has reached a point of
+convergence in which samples adequately represent random (albeit
+sequentially dependent) draws from this posterior distribution. The
+set of iterations performed (and discarded) until samples are assumed
+to be draws from the posterior is called a ``burn-in.'' After the
+burn-in, the chain is iterated further to collect samples.  The
+samples are then used to calculated the statistic of interest.
+
+While the user is not responsible for the construction of the Markov
+chain, he is responsible for assessing the chains' convergence.
+(Section~\ref{sec:standardAssessingConvergence} gives some pointers on
+this.)  The most common way of accomplishing this task is to run
+several chains simultaneously with each chain having been started with
+a different set of initial values.  Once all chains are producing
+similar results, one can assume that the chains have converged.
+
+To estimate the model, the function \Rfunction{runLossDevModel} is
+called with the first argument being the input object created by
+\Rfunction{makeStandardAnnualInput}. To specify the number of
+iterations to discard, the user sets the value of \Robject{burnIn}.
+To specify the number of iterations to perform after the burn-in, set
+the value of \Robject{sampleSize}.  To set the number of chains to run
+simultaneously, supply a value for \Robject{nChains}.  The default
+value for \Robject{nChains} is 3, which should be sufficient for most
+cases.
+
+It is also common practice (due to possible autocorrelation in the
+samples) to apply ``thining,'' which means that only every n-th draw
+is stored.  The argument \Robject{thin} is available for this purpose.
+
+\paragraph{Memory Issues}
+MCMC can require large amounts of memory.  To allow \lossDev{} to work
+with limited hardware, the \R{} package \Rpackage{filehash} is used to
+cache the codas of monitored values to the hard-drive in an efficient
+way. While such caching can allow estimation of large triangles on
+computers with limited memory, it can also slow down some
+computations.  The user has the option of turning this feature on and
+off.  This is done via the function \Rfunction{lossDevOptions} by
+setting the argument \Robject{keepCodaOnDisk} to TRUE or FALSE.
+
+\R{} also makes available the function \Rfunction{memory.limit}, which
+one may find useful.
+
+
+<<EstiamteTheStandardModel>>=
+standard.model.output <- runLossDevModel(standard.model.input,
+                                         burnIn=30.0E+3,
+                                         sampleSize=30.0E+3,
+                                         thin=10)
+
+
+
+@
+
+
+\subsection{Examining Output}
+\Rfunction{makeStandardAnnualInput} returns a complex output object.
+\lossDev{} provides several user-level functions to access the
+information contained in this object.  Many of these functions are
+described below.
+
+\subsubsection{Assessing Convergence}
+\label{sec:standardAssessingConvergence}
+As mentioned, the user is responsible for assessing the convergence of
+the Markov chains used to estimate the model. To this aim, \lossDev{}
+provides several functions to produce trace and density plots.
+
+Arguably, the most important charts for assessing convergence are the
+trace plots associated with the three time dimensions of the
+model. Convergence of exposure growth, the consumption path, and the
+calendar year effect are assessed in
+Figures~\ref{fig:standardEtaTracePlot},
+\ref{fig:standardConsumptionPathTracePlot}, and
+\ref{fig:standardCalendarYearErrorTracePlot} respectively.  These
+charts are produced with the functions
+\Rfunction{exposureGrowthTracePlot},
+\Rfunction{consumptionPathTracePlot}, and
+\Rfunction{calendarYearEffectErrorTracePlot}.
+
+\begin{figure}[h]
+  \centering
+
+<<plotStandardexposureGrowthTrace, fig=T, height=7, width=14>>=
+exposureGrowthTracePlot(standard.model.output)
+
+@
+\caption{Trace plots for select exposure growth parameters.}
+\label{fig:standardEtaTracePlot}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+
+<<plotStandardConsumptionPathTrace, fig=T, height=7, width=14>>=
+consumptionPathTracePlot(standard.model.output)
+
+@
+\caption{Trace plots for select development years on the consumption path.}
+\label{fig:standardConsumptionPathTracePlot}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+
+<<plotStandardConsumptionPathTrace, fig=T, height=7, width=14>>=
+calendarYearEffectErrorTracePlot(standard.model.output)
+
+@
+\caption{Trace plots for select calendar year effect errors.}
+\label{fig:standardCalendarYearErrorTracePlot}
+\end{figure}
+
+
+\subsubsection{Assessing Model Fit}
+\label{sec:standardAssesingModelFit}
+\lossDev{} provides many diagnostic charts to asses how well the model
+fits the observed triangle.
+
+\paragraph{Residuals}
+For the analysis of residuals, \lossDev{} provides the function
+\Rfunction{triResi}. \Rfunction{triResi} plots the residuals (on the
+log scale) by the three time dimensions.  The time dimension is
+selected by means of the argument \Robject{timeAxis}.  By default,
+residual charts are standardized to account for any assumed/estimated
+heteroskedasticity in the (log) incremental payments.  These charts
+can be found in Figures~\ref{fig:stanResiDevYear},
+\ref{fig:stanResiExpYear}, and \ref{fig:stanResiCalYear}.
+
+Note that because (the log) incremental payments are allowed to be
+skewed, the residuals need not be symmetric.
+
+\begin{figure}[h]
+  \centering
+
+<<standardResiByDevYear, fig=T, height=7, width=14>>=
+triResi(standard.model.output, timeAxis='dy')
+
+@
+\caption{Residuals by development year.}
+\label{fig:stanResiDevYear}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+
+<<standardResiByExpYear, fig=T, height=7, width=14>>=
+triResi(standard.model.output, timeAxis='ey')
+
+@
+\caption{Residuals by exposure year.}
+\label{fig:stanResiExpYear}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+
+<<standardResiByCalYear, fig=T, height=7, width=14>>=
+triResi(standard.model.output, timeAxis='cy')
+
+@
+\caption{Residuals by calendar year.}
+\label{fig:stanResiCalYear}
+\end{figure}
+
+\paragraph{QQ-Plot}
+\lossDev{} provides a QQ-Plot in the function \Rfunction{QQPlot}.
+\Rfunction{QQPlot} plots the median of simulated incremental payments
+(sorted at each simulation) against the observed incremental payments.
+Plotted points from a well calibrated model will be close to the
+45-degree line.  These results are shown in Figure~\ref{fig:standardQQ}.
+
+\begin{figure}[h]
+  \centering
+
+<<standardQQ, fig=T, height=7, width=14>>=
+QQPlot(standard.model.output)
+
+@
+\caption{QQ-Plot.}
+\label{fig:standardQQ}
+\end{figure}
+
+\paragraph{Comparison of Cumulative Payments}
+As a means of assessing how well the predicted cumulative payments
+line up with the observed values, \lossDev{} provides the function
+\Rfunction{finalCumulativeDiff}.  This function plots the relative
+difference between the predicted and observed cumulative payments
+(when such payments exists) for the last observed cumulative payment
+in each exposure year, alongside credible intervals. These relative
+differences, which are shown in
+Figure~\ref{fig:standardfinalCumulativeDiff}, can be useful for
+assessing the impact of negative incremental payments, as discussed.
+
+\begin{figure}[h]
+  \centering
+
+<<standardfinalCumulativeDiff, fig=T, height=7, width=14>>=
+finalCumulativeDiff(standard.model.output)
+
+@
+\caption{Difference in Final Observed Cumulative Payments.}
+\label{fig:standardfinalCumulativeDiff}
+\end{figure}
+
+
+
+\subsubsection{Extracting Inference and Results}
+\label{sec:standardExtractingInferenceandResults}
+After compiling, burning-in, and sampling, the user will wish to extract
+results from the output.  Many of the functions mentioned in this
+section also return the values of some plotted information.  These
+values are returned invisibly and as such are not printed at the REPL
+unless such an operation is requested. Additionally, many of these
+functions also provide an option to suppress plotting.
+
+
+\paragraph{Predicted Payments}
+Perhaps the most practically useful function is
+\Rfunction{predictedPayments}.  This function can plot and return the
+estimated incremental predicated payments.  As the function can also
+plot the observed values against the predicted values
+(\Robject{plotObservedValues}), it also serves as a diagnostic tool.
+The log incremental payments are plotted against the predicted values
+in Figure~\ref{fig:standardPredictedInc}.
+
+\begin{figure}[h]
+  \centering
+
+<<standardPredictedInc, fig=T, height=7, width=14>>=
+predictedPayments(standard.model.output,
+                  type='incremental',
+                  logScale=TRUE)
+@
+\caption{Predicted Incremental Payments.}
+\label{fig:standardPredictedInc}
+\end{figure}
+
+
+\Rfunction{predictedPayments} can also plot and return the estimated
+cumulative payments and has the option of taking observed payments at
+``face value'' (meaning that predicted payments are replaced with
+observed payments whenever possible) in the returned calculations;
+this can be useful for the construction of reserve estimates.  In
+Figure~\ref{fig:standardPredictedCumul}, only the predicted cumulative
+payments are plotted.  The function is also used to construct an
+estimate (with credible intervals) of the ultimate loss.
+
+
+<<standardPredictedCumul, fig=F>>=
+standard.ult <- predictedPayments(standard.model.output,
+                                  type='cumulative',
+                                  plotObservedValues=FALSE,
+                                  mergePredictedWithObserved=TRUE,
+                                  logScale=TRUE,
+                                  quantiles=c(0.025, 0.5, 0.0975),
+                                  plot=FALSE)
+standard.ult <- standard.ult[,,dim(standard.ult)[3]]
+print(standard.ult)
+
+@
+
+\begin{figure}[h]
+  \centering
+
+<<standardPredictedCumul, fig=T, height=7, width=14>>=
+predictedPayments(standard.model.output,
+                  type='cumulative',
+                  plotObservedValues=FALSE,
+                  logScale=TRUE)
+
+@
+\caption{Predicted Cumulative Payments.}
+\label{fig:standardPredictedCumul}
+\end{figure}
+
+\paragraph{Consumption Path}
+\lossDev{} makes the consumption path available via
+\Rfunction{consumptionPath}.  The consumption path is the trajectory
+of exposure-adjusted and calendar year effect-adjusted log incremental
+payments and is modeled as a linear spline.  The standard model
+assumes a common consumption path for all exposure years in the
+triangle.  The use of this function is demonstrated in
+Figure~\ref{fig:standardConsumptionPath}; the displayed consumption
+path represents the exposure level of the first exposure year in the
+triangle.
+
+\begin{figure}[h]
+  \centering
+
+<<standardConsumptionPath, fig=T, height=7, width=14>>=
+consumptionPath(standard.model.output)
+
+
+@
+\caption{Consumption Path.}
+\label{fig:standardConsumptionPath}
+\end{figure}
+
+\paragraph{Knots in the Consumption Path}
+The consumption path is modeled as a linear
+spline.  The number of knots in this spline is endogenous to the
+model.  The function \Rfunction{numberOfKnots} can be used to extract
+information regarding the posterior number of knots.  All else equal,
+a higher number of knots indicates a higher degree of non-linearity.
+Figure~\ref{fig:standardNumberOfKnots} illustrates the use of this
+function.
+
+\begin{figure}[h]
+  \centering
+
+<<standardNumberOfKnots, fig=T, height=7, width=14>>=
+numberOfKnots(standard.model.output)
+
+
+@
+\caption{Number of Knots.}
+\label{fig:standardNumberOfKnots}
+\end{figure}
+
+\paragraph{Rate of Decay}
+While the consumption path illustrates the level of exposure-adjusted
+and calendar year effect-adjusted log incremental payments, sometimes
+one may prefer to examine the development time force in terms of a
+decay rate. The rate of decay from one development year to the next
+(which is approximately the slope of the consumption path) is made
+available via the function \Rfunction{rateOfDecay}. As the standard
+model assumes a common consumption path for all exposure years, the
+standard model has only a single decay rate vector.  An example of
+this function can be found in Figure~\ref{fig:standardRateOfDecay}.
+
+\begin{figure}[h]
+  \centering
+
+<<standardRateOfDecay, fig=T, height=7, width=14>>=
+rateOfDecay(standard.model.output)
+
+
+@
+\caption{Rate Of Decay.}
+\label{fig:standardRateOfDecay}
+\end{figure}
+
+\paragraph{Exposure Growth}
+The year over year changes in the estimated exposure level are made
+available by the function \Rfunction{exposureGrowth}. An example of
+this function can be found in
+Figure~\ref{fig:standardExposureYearGrowth}.
+
+\begin{figure}[h]
+  \centering
+
+<<standardExposureYearGrowth, fig=T, height=7, width=14>>=
+exposureGrowth(standard.model.output)
+
+
+@
+\caption{Exposure Growth.}
+\label{fig:standardExposureYearGrowth}
+\end{figure}
+
+\paragraph{Calendar Year Effect}
+The model assumes that the cells on a diagonal are subject to a
+correlated shock.  The shock consists of a component exogenous to the
+triangle (generally represented by a price index, such as the CPI) and
+an endogenous stochastic component.  This endogenous component is the
+calendar year effect error, defined as the difference between the
+estimated calendar year effect and the expert prior for the rate of
+inflation.  As \lossDev{} allows the user to vary the exogenous
+component for each cell, graphically displaying the entire calendar
+year effect requires three dimensions.  This is done by plotting a
+grid of colored blocks and varying the intensity of each color
+according to the associated calendar year effect.  An example of this
+can be found in Figure~\ref{fig:standardCalendarYearEffect}.  Note
+that the value in cell (1,1) is undefined.
+
+\begin{figure}[h]
+  \centering
+
+<<standardCalendarYearEffect, fig=T, height=7, width=14>>=
+calendarYearEffect(standard.model.output)
+
+
+@
+\caption{Calendar Year Effect.}
+\label{fig:standardCalendarYearEffect}
+\end{figure}
+
+Alternatively, one could merely plot the endogenous stochastic
+component.  As this calendar year effect error is common to all cells
+on a given diagonal, the number of dimensions is reduced by one.  An
+illustration of the calendar year effect error is displayed in
+Figure~\ref{fig:standardCalendarYearEffectErrors}.  In this example,
+the calendar year effect error displays a fair degree of
+autocorrelation.  \lossDev{} can account for such correlation by
+setting the argument \Robject{use.ar1.in.calendar.year} in
+\Rfunction{makeStandardAnnualInput} to TRUE.  Exploring this is left
+as an exercise to the reader.
+
+\begin{figure}[h]
+  \centering
+
+<<standardCalendarYearEffectErrors, fig=T, height=7, width=14>>=
+calendarYearEffectErrors(standard.model.output)
+
+
+@
+\caption{Calendar Year Effect Errors.}
+\label{fig:standardCalendarYearEffectErrors}
+\end{figure}
+
+
+\paragraph{Changes In Variance}
+As development time progresses, the number of transactions that
+comprise a given incremental payment declines.  This can lead to an
+increase in the variance of the log incremental payments even as the
+level of the payments may decrease.  In order to account for this
+potential increase in variance, the model (optionally) allows for the
+scale parameter of the Student-\emph{t} to vary with development time.
+This scale parameter is smoothed via a second-order random walk on the
+log scale.  As a result, the standard deviation can vary for each
+development year.  An example is displayed in
+Figure~\ref{fig:standardSTDvsDev}.
+
+\begin{figure}[h]
+  \centering
+
+<<standardSTDvsDev, fig=T, height=7, width=14>>=
+standardDeviationVsDevelopmentTime(standard.model.output)
+
+
+@
+\caption{Standard Deviation vs Development Time.}
+\label{fig:standardSTDvsDev}
+\end{figure}
+
+
+
+
+\paragraph{Skewness Parameter}
+The measurement equation for the log incremental payments is
+(optionally) a skewed-\emph{t}.  \Rfunction{skewnessParameter} allows
+for the illustration of the posterior skewness parameter.  (For
+reference, the prior is also illustrated.)  While the skewness
+parameter does not directly translate into the estimated skewness, the
+two are related.  For instance, a skewness parameter of zero would
+correspond to zero skew.  An example is displayed in
+Figure~\ref{fig:standardSkew}.
+
+\begin{figure}[h]
+  \centering
+
+<<standardSkew, fig=T, height=7, width=14>>=
+skewnessParameter(standard.model.output)
+
+
+@
+\caption{Skewness Parameter.}
+\label{fig:standardSkew}
+\end{figure}
+
+\paragraph{Degrees of Freedom}
+The degrees of freedom associated with the measurement equation is
+endogenous to the model estimation.  To ensure existence of moments,
+when estimating a skewed-\emph{t}, the degrees of freedom is
+constrained to be greater than 4; otherwise this value is constrained
+to be greater than 2.  All else equal, lower degrees of freedom
+indicate the presence of heavy tails.
+
+The \lossDev{} function \Rfunction{degreesOfFreedom} allows for the
+illustration of the posterior degrees of freedom.  (For reference, the
+prior is also illustrated.) Figure~\ref{fig:standardSkew} displays the
+posterior degrees of freedom for this example.
+
+\begin{figure}[h]
+  \centering
+
+<<standardDegreesOfFreedom, fig=T, height=7, width=14>>=
+degreesOfFreedom(standard.model.output)
+
+
+@
+\caption{Degrees Of Freedom.}
+\label{fig:standardDegreesOfFreedom}
+\end{figure}
+
+\subsubsection{The Ornstein--Uhlenbeck Process}
+Future values for the assumed stochastic rate
+of inflation are simulated from an Ornstein--Uhlenbeck process.
+\lossDev{} allows the user to examine predicted and forecast values as
+well as some of the underlying parameters.  Such options are outlined
+below.
+
+\paragraph{Fit and Forecast}
+To display the fitted values vs the observed values (as well as the
+forecast values) the user must use the function
+\Rfunction{stochasticInflation}.  The chart for the example
+illustrated above is displayed in
+Figure~\ref{fig:standardStochInflation}.
+
+\begin{figure}[h]
+  \centering
+
+<<standardStochInflation, fig=T, height=7, width=14>>=
+stochasticInflation(standard.model.output)
+
+
+@
+\caption{Stochastic Inflation Fit.}
+\label{fig:standardStochInflation}
+\end{figure}
+
+\paragraph{Stationary Mean}
+The Ornstein--Uhlenbeck process has a stationary mean; disturbances
+from this mean are assumed to be correlated. Specifically, the
+projected rate of inflation will (geometrically) approach the
+stationay mean as time progresses.  This stationary mean can be
+graphed with the function
+\Rfunction{StochasticInflationStationaryMean}.  The chart for the
+example illustrated above is displayed in
+Figure~\ref{fig:standardStochInflationStationaryMean}.
+
+\begin{figure}[h]
+  \centering
+
+<<standardStochInflationStationaryMean, fig=T, height=7, width=14>>=
+stochasticInflationStationaryMean(standard.model.output)
+
+
+@
+\caption{Estimated Stochastic Inflation Stationary Mean.}
+\label{fig:standardStochInflationStationaryMean}
+\end{figure}
+
+\paragraph{Autocorrelation}
+The Ornstein -- Uhlenbeck process assumes that the influence of a
+disturbance decays geometrically with time.  The parameter governing
+this rate is traditionally referred to as $\rho$. To obtain this
+value, call the function \Rfunction{StochasticInflationRhoParameter}.
+The chart for the example illustrated above is displayed in
+Figure~\ref{fig:standardStochInflationRhoParameter}.
+
+\begin{figure}[h]
+  \centering
+
+<<standardStochInflationRhoParameter, fig=T, height=7, width=14>>=
+stochasticInflationRhoParameter(standard.model.output)
+
+
+@
+\caption{Estimated Stochastic Inflation Rho Parameter.}
+\label{fig:standardStochInflationRhoParameter}
+\end{figure}
+
+
+
+<<cleanUpWorkSpace,echo=FALSE>>=
+rm(list=ls())
+gc()
+gc()
+@
+
+
+\section{Using the Change Point Model for Estimation}
+\label{sec:UsingtheBreakModelforEstimation}
+
+
+The standard model outlined in
+Section~\ref{sec:UsingtheStandardModelforEstimation} assumes the same
+consumption path for all exposure years.  Due to changes in the loss
+environment, this may not be appropriate for all loss triangles. A
+triangle that may have experienced a structural break in the
+consumption path is outlined below.
+
+\subsection{Data}
+The triangle used for this example is a Private Passenger Auto Bodily
+Injury Liability triangle and consists of accident year data on a paid basis.
+
+In December 1986, a judicial decision limited the ability of judges to
+dismiss cases.  This judicial decision may have brought about a change
+in the consumption path, thus making this triangle a good example for
+the change point model.
+
+This triangle is taken from \\
+Hayne, Roger M., ``Measurement of Reserve Variability,''
+\textit{Casualty Actuarial Society Forum}, Fall 2003, pp. 141-172,
+\url{http://www.casact.org/pubs/forum/03fforum/03ff141.pdf}.
+
+
+\subsection{Model Specification}
+
+
+\subsubsection{Loading and Manipulating  the Data}
+\label{sec:breakLoadingtheData}
+\paragraph{The Triangle}
+Section~\ref{sec:standardModelData} supplied incremental payments as
+model input.  For variety, cumulative payments are supplied in this
+example.
+
+Note the large number of payments at zero amounts.  Because the model
+will treat these payments as missing values (since they are equal to
+negative infinity on the log scale), the predicted payments may be
+overstated.  This issue is addressed in
+Section~\ref{sec:accoutingForZeros}.
+
+<<lossTriangleForBreakModel>>=
+data(CumulativeAutoBodilyInjuryTriangle)
+CumulativeAutoBodilyInjuryTriangle <- as.matrix(CumulativeAutoBodilyInjuryTriangle)
+sample.col <- (dim(CumulativeAutoBodilyInjuryTriangle)[2] - 6:0)
+print(decumulate(CumulativeAutoBodilyInjuryTriangle)[1:7, sample.col])
+
+@
+\paragraph{The Stochastic Inflation Expert Prior}
+The MCPI (Medical Care Component of the CPI) is chosen as a an expert
+prior for the stochastic rate of inflation.  While in
+Section~\ref{sec:standardModelData} the expert prior did not extend
+beyond the observed diagonals (for realism), here a few extra observed
+years of the MCPI inflation are used for illustration purposes.
+
+<<mcpiForBreakModel>>=
+
+data(MCPI)
+MCPI <- as.matrix(MCPI)[,1]
+MCPI.rate <- MCPI[-1] / MCPI[-length(MCPI)] - 1
+print(MCPI.rate[(-10):0 + length(MCPI.rate)])
+
+MCPI.years <- as.integer(names(MCPI.rate))
+max.exp.year <- max(as.integer(dimnames(CumulativeAutoBodilyInjuryTriangle)[[1]]))
+years.to.keep <- MCPI.years <=  max.exp.year + 3
+MCPI.rate <- MCPI.rate[years.to.keep]
+
+@
+\subsubsection{Selection of Model Options}
+
+While \Rfunction{makeStandardAnnualInput}
+(Section~\ref{sec:standardSelectionOfModelOptions}) is used to specify
+models without a change point (i.e., structural break),
+\Rfunction{makeBreakAnnualInput} is used to specify models with a
+change point.  \Rfunction{makeBreakAnnualInput} has most of its
+arguments in common with \Rfunction{makeStandardAnnualInput}, and all
+these common arguments carry their meanings forward.  However,
+\Rfunction{makeBreakAnnualInput} adds a few new arguments; these are
+for specifying the location of the structural break.
+
+Most notable is the argument \Robject{first.year.in.new.regime} which,
+as the name suggests, indicates the first year in which the new
+consumption path applies.  This argument can be supplied with a single
+value, in which case the model will give a hundred percent probability
+that this year is the first year in the new regime.  However, this
+argument can also be supplied with a range of contiguous years, and the
+model will then estimate the first year in the new regime.  Because the
+possible break occurs in late 1986, the range of years chosen for this
+example is 1986 to 1987.
+
+The prior for the first year in the new regime is a discretized beta
+distribution.  The user has the option of choosing the parameters for
+this prior by setting the argument
+\Robject{prior.for.first.year.in.new.regime}.  Here, since the change
+was in late 1986, we choose a prior that accords more probability to
+the later year.
+
+The argument \Robject{bound.for.skewness.parameter} is set to 5.  This
+avoids the MCMC chain from ``getting stuck'' in the lower tail of the
+distribution (in this particular example). One should use the function
+\Rfunction{skewnessParemeter} (Figure~\ref{fig:breakSkew}) to evaluate
+the need to set this value.  If the user is experiencing difficulties
+with the skewed-\textit{t}, he may wish to use the
+non-skewed-\textit{t} by setting the argument \Robject{use.skew.t}
+equal to FALSE (which is the default).
+
+
+<<CreatingTheBreakInputObjectl>>=
+break.model.input <- makeBreakAnnualInput(cumulative.payments = CumulativeAutoBodilyInjuryTriangle,
+                                          stoch.inflation.weight = 1,
+                                          non.stoch.inflation.weight = 0,
+                                          stoch.inflation.rate = MCPI.rate,
+                                          first.year.in.new.regime = c(1986, 1987),
+                                          prior.for.first.year.in.new.regime=c(2,1),
+                                          exp.year.type = 'ay',
+                                          extra.dev.years = 5,
+                                          use.skew.t = TRUE,
+                                          bound.for.skewness.parameter=5)
+@
+\subsection{Estimating the Model}
+Just like in Section~\ref{sec:estimatingTheStandardModel}, the S4
+object returned by \Rfunction{makeBreakAnnualInput} must be supplied
+to the function \Rfunction{runLossDevModel} in order to produce
+estimates.
+
+<<EstimateTheBreakModel>>=
+break.model.output <- runLossDevModel(break.model.input,
+                                      burnIn=30.0E+3,
+                                      sampleSize=30.0E+3,
+                                      thin=10)
+
+@
+
+\subsection{Examining Output}
+\subsubsection{Assessing Convergence}
+As discussed, the user must examine the MCMC runs for
+convergence using the same functions mentioned in
+Section~\ref{sec:standardAssessingConvergence}.  To avoid repetition,
+only a few of the previously illustrated charts will be discussed
+below.
+
+
+Because the change point model has two consumption paths, the method
+\Rfunction{consumptionPathTracePlot} for output related to this model
+has an additional argument when it comes to specifing the consumption
+path. If the argument \Robject{preBreak} equals TRUE, then the trace
+for the consumption path relevant to exposure years prior to the
+structural break will be plotted.  Otherwise, the trace for the
+consumption path relevant to exposure years after the break will be
+plotted.
+
+The trace for the pre-break consumption path is plotted in
+Figure~\ref{fig:breakConsumptionPathTracePlotPreBreak}.  The trace for
+the post-break path is plotted in
+Figure~\ref{fig:breakConsumptionPathTracePlotPostBreak}.
+
+\begin{figure}[h]
+  \centering
+<<plotBreakConsumptionPathTracePreBreak, fig=T, height=7, width=14>>=
+consumptionPathTracePlot(break.model.output, preBreak=TRUE)
+
+@
+\caption{Trace plots for select development years on the pre-break consumption path.}
+\label{fig:breakConsumptionPathTracePlotPreBreak}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+<<plotBreakConsumptionPathTracePostBreak, fig=T, height=7, width=14>>=
+consumptionPathTracePlot(break.model.output, preBreak=FALSE)
+
+@
+\caption{Trace plots for select development years on the post-break consumption path.}
+\label{fig:breakConsumptionPathTracePlotPostBreak}
+\end{figure}
+
+
+\subsubsection{Assessing Model Fit}
+All of the functions mentioned in
+Section~\ref{sec:standardAssesingModelFit} are available for the
+change point model as well.
+
+\paragraph{Residuals}
+One feature of \Rfunction{triResi} not mentioned in
+Section~\ref{sec:standardAssesingModelFit} is the option to turn off
+the standardization.  As discussed, the model accounts for an increase
+in the variance of incremental payments as development time progresses
+by allowing a scale parameter to vary with development time.  By
+default, \Rfunction{triResi} accounts for this by standardizing all
+the residuals to have a standard deviation of one.  Turning off this
+feature (via the argument \Robject{standardize}) can provide insight
+into this process.
+
+The standardized residuals for the change point model are displayed by
+development time in Figure~\ref{fig:breakResiDevYearStandardized}.
+Figure~\ref{fig:breakResiDevYearUnStandardized} shows the residuals
+without this standardization.
+
+\begin{figure}[h]
+  \centering
+
+<<breakResiDevYearStandardized, fig=T, height=7, width=14>>=
+triResi(break.model.output, timeAxis='dy')
+
+@
+\caption{(Standardized) Residuals by development year.}
+\label{fig:breakResiDevYearStandardized}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+
+<<breakResiDevYearUnStandardized, fig=T, height=7, width=14>>=
+triResi(break.model.output, standardize=FALSE, timeAxis='dy')
+
+@
+\caption{(Unstandardized) Residuals by development year.}
+\label{fig:breakResiDevYearUnStandardized}
+\end{figure}
+
+\paragraph{Comparison of Cumulative Payments}
+As mentioned, the loss triangle used to illustrate the change point
+model has a non-negligible number of incremental payments at the zero
+amount.  Figure~\ref{fig:breakfinalCumulativeDiff} uses the function
+\Rfunction{finalCumulativeDiff} to examine the impact of treating
+these values as missing.
+
+\begin{figure}[h]
+  \centering
+
+<<breakfinalCumulativeDiff, fig=T, height=7, width=14>>=
+finalCumulativeDiff(break.model.output)
+
+@
+\caption{Difference in Final Observed Cumulative Payments.}
+\label{fig:breakfinalCumulativeDiff}
+\end{figure}
+
+
+
+\subsubsection{Extracting Inference and Results}
+As was done for the standard model, the user will want to draw
+inferences from the change point model.  All of the functions
+discussed in Section~\ref{sec:standardExtractingInferenceandResults}
+are available for this purpose--though some will plot slightly
+different charts and return answers in slightly different ways.  In
+addition, a few functions are made available to deal with the change
+point.  These functions have no meaning for the standard model
+discussed in Section~\ref{sec:UsingtheStandardModelforEstimation}.
+
+
+\paragraph{Predicted Payments}
+
+Figure~\ref{fig:breakPredictedInc} again uses the function
+\Rfunction{predictedPayments} to plot the predicted incremental
+payments vs the observed incremental payments. The impact of treating
+incremental payments of zero as missing values is most noticeable in
+this chart.
+
+\begin{figure}[h]
+  \centering
+
+<<breakPredictedInc, fig=T, height=7, width=14>>=
+predictedPayments(break.model.output,
+                  type='incremental',
+                  logScale=TRUE)
+@
+\caption{Predicted Incremental Payments.}
+\label{fig:breakPredictedInc}
+\end{figure}
+
+
+
+\paragraph{Consumption Path}
+Figure~\ref{fig:breakConsumptionPath} plots the consumption path for
+the change point model, again using the function
+\Rfunction{consumptionPath}.  Note that now two consumption paths are
+plotted -- one for the pre-break path and one for the post-break path.
+Both the pre- and post- break paths represent the exposure level of
+the first exposure year.
+
+\begin{figure}[h]
+  \centering
+
+<<breakConsumptionPath, fig=T, height=7, width=14>>=
+consumptionPath(break.model.output)
+
+
+@
+\caption{Consumption Path.}
+\label{fig:breakConsumptionPath}
+\end{figure}
+
+\paragraph{Knots in the Consumption Path}
+Figure~\ref{fig:breakNumberOfKnots} displays the posterior number of
+knots for the change point model example, again using the function
+\Rfunction{numberOfKnots}.  Note that the number of knots of both the
+pre-break and the post-break consumption paths are plotted.
+
+\begin{figure}[h]
+  \centering
+
+<<breakNumberOfKnots, fig=T, height=7, width=14>>=
+numberOfKnots(break.model.output)
+
+
+@
+\caption{Number of Knots.}
+\label{fig:breakNumberOfKnots}
+\end{figure}
+
+\paragraph{Rate of Decay}
+Figure~\ref{fig:breakRateOfDecay} uses the function
+\Rfunction{rateOfDecay} to plot the rate of decay from one development
+year to the next for both the pre- and post- break regimes.  This can
+be useful in assessing the impact of a structural break in the
+run-off.
+
+\begin{figure}[h]
+  \centering
+
+<<breakRateOfDecay, fig=T, height=7, width=14>>=
+rateOfDecay(break.model.output)
+
+
+@
+\caption{Rate Of Decay.}
+\label{fig:breakRateOfDecay}
+\end{figure}
+
+\paragraph{Calendar Year Effect}
+Figure~\ref{fig:breakCalendarYearEffect} uses the function
+\Rfunction{calendarYearEffect} to plot the calendar year effect for
+the change point model.  By default, \Rfunction{calendarYearEffect}
+will plot the calendar year effect for all (observed and projected)
+incremental payments.  Setting the argument \Robject{restrictedSize}
+to TRUE will plot the calendar year effect for only the observed
+incremental payments and the projected incremental payments needed to
+``square'' the triangle.  This feature can be useful for insurance
+lines with long tails.
+
+\begin{figure}[h]
+  \centering
+
+<<breakCalendarYearEffect, fig=T, height=7, width=14>>=
+calendarYearEffect(break.model.output)
+
+
+@
+\caption{Calendar Year Effect.}
+\label{fig:breakCalendarYearEffect}
+\end{figure}
+
+Figure~\ref{fig:breakCalendarYearEffectErrors} shows the calendar year
+effect error which is plotted using the function
+\Rfunction{calendarYearEffectErrors}.
+
+\paragraph{Autocorrelation in Calendar Year Effect}
+The autocorrelation exhibited in
+Figure~\ref{fig:breakCalendarYearEffectErrors} is too strong to
+ignore.  Figure~\ref{fig:breakCalendarYearEffectErrorsWithAR1}
+illustrates the use of \Rfunction{makeBreakAnnualInput}'s argument
+\Robject{use.ar1.in.calendar.year}.
+
+\begin{figure}[h]
+  \centering
+
+<<breakCalendarYearEffectErrors, fig=T, height=7, width=14>>=
+calendarYearEffectErrors(break.model.output)
+
+
+@
+\caption{Calendar Year Effect Errors (Without AR1).}
+\label{fig:breakCalendarYearEffectErrors}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+<<breakCalendarYearEffectErrorsAR1WithAR1, fig=T, height=7, width=14>>=
+
+break.model.input.w.ar1 <- makeBreakAnnualInput(cumulative.payments = CumulativeAutoBodilyInjuryTriangle,
+                                                stoch.inflation.weight = 1,
+                                                non.stoch.inflation.weight = 0,
+                                                stoch.inflation.rate = MCPI.rate,
+                                                first.year.in.new.regime = c(1986, 1987),
+                                                prior.for.first.year.in.new.regime=c(2,1),
+                                                exp.year.type = 'ay',
+                                                extra.dev.years = 5,
+                                                use.skew.t = TRUE,
+                                                bound.for.skewness.parameter=5,
+                                                use.ar1.in.calendar.year = TRUE)
+break.model.output.w.ar1 <- runLossDevModel(break.model.input.w.ar1,
+                                            burnIn=30.0E+3,
+                                            sampleSize=30.0E+3,
+                                            thin=10)
+calendarYearEffectErrors(break.model.output.w.ar1)
+
+@
+\caption{Calendar Year Effect Errors (With AR1).}
+\label{fig:breakCalendarYearEffectErrorsWithAR1}
+\end{figure}
+
+Setting \Robject{use.ar1.in.calendar.year} to TRUE enables the use of
+an additional function:
+\Rfunction{calendarYearEffectAutoregressiveParameter}.  This function
+will plot the autoregressive parameter associated with the calendar
+year effect error.  Figure~\ref{fig:breakAutoregressiveParameter}
+illustrates the use of this function.
+
+\begin{figure}[h]
+  \centering
+<<breakAutoregressiveParameter, fig=T, height=7, width=14>>=
+
+calendarYearEffectAutoregressiveParameter(break.model.output.w.ar1)
+@
+
+<<cleanUpBreakAR1,echo=FALSE>>=
+rm(break.model.output.w.ar1, break.model.input.w.ar1)
+@
+
+@
+\caption{Calendar Year Effect Autoregressive Parameter.}
+
+\label{fig:breakAutoregressiveParameter}
+\end{figure}
+
+\paragraph{Skewness Parameter}
+Figure~\ref{fig:breakSkew} displays the skewness parameter for the
+change point model example by using the function
+\Rfunction{skewnessParemeter}.  The result of setting
+\Robject{bound.for.skewness.parameter} to 5 is visible in the chart.
+
+\begin{figure}[h]
+  \centering
+
+<<breakSkew, fig=T, height=7, width=14>>=
+skewnessParameter(break.model.output)
+
+
+@
+\caption{Skewness Parameter.}
+\label{fig:breakSkew}
+\end{figure}
+
+
+\paragraph{First Year in New Regime}
+The posterior for the first year in which the post-break consumption
+path applies can be obtained via the function
+\Rfunction{firstYearInNewRegime}. Figure~\ref{fig:breakFirstYearInNewRegime}
+shows the posterior (and prior) for the first year in the new regime.
+Note how the choice of the argument
+\Robject{prior.for.first.year.in.new.regime} to
+\Rfunction{makeBreakAnnualInput} has affected the prior.
+
+
+\begin{figure}[h]
+  \centering
+
+<<breakFirstYearInNewRegime, fig=T, height=7, width=14>>=
+firstYearInNewRegime(break.model.output)
+
+
+@
+\caption{First Year in New Regime.}
+\label{fig:breakFirstYearInNewRegime}
+\end{figure}
+
+\section{Accounting for Incremental Payments of Zero}
+\label{sec:accoutingForZeros}
+As mentioned in Section~\ref{sec:breakLoadingtheData} and illustrated
+in Figure~\ref{fig:breakPredictedInc}, the triangle used as an example
+for the change point model contains several incremental payments of
+zero which, if ignored, could cause the predicted losses to be
+overestimated.
+
+\lossDev{} provides a means to account for these payments at the zero
+amount.  This is done by estimating a secondary, auxiliary model to
+determine the probably that a payment will be greater than zero.
+Predicted payments are then weighted by this probability.
+
+\subsection{Estimating the Auxiliary Model}
+To account for payments at zero amounts, the function
+\Rfunction{accountForZeroPayments} is called with the first argument
+being an object returned from a call to \Rfunction{runLossDevModel}.
+This function will then return another object which, when called by
+certain functions already mentioned, will incorporate into the
+calculation the probability that any particular payment is zero.
+<<accountForZeros>>=
+break.model.output.w.zeros <- accountForZeroPayments(break.model.output)
+@
+
+\subsection{Assessing Convergence of the Auxiliary Model}
+The MCMC run used to estimate the auxiliary model must be checked for
+convergence.  \lossDev{} provides the function
+\Rfunction{gompertzParameters} to this end.
+
+The auxiliary model uses a (two-parameter) gompertz function to model
+the incremental payments at the zero amount.  Which of these
+parameters is plotted by \Rfunction{gompertzParameters} is determined
+by the argument \Robject{parameter}.
+
+Figure~\ref{fig:zeroPaymentsScale} plots the parameter that determines
+the steepness of the curve.  This parameter can be examined by setting
+\Robject{parameter} equal to ``scale.''
+
+
+\begin{figure}[h]
+  \centering
+
+<<zeroPaymentsScale, fig=T, height=7, width=14>>=
+gompertzParameters(break.model.output.w.zeros, parameter='scale')
+
+
+@
+\caption{Gompertz Scale Parameter.}
+\label{fig:zeroPaymentsScale}
+\end{figure}
+
+
+Figure~\ref{fig:zeroPayments50505} plots the parameter that determines
+the point in development time at which the curve assigns equal
+probability to payments being zero and payments being greater than
+zero; this parameter can be examined by setting \Robject{parameter}
+equal to ``fifty.fifty.''
+
+\begin{figure}[h]
+  \centering
+
+<<zeroPayments5050, fig=T, height=7, width=14>>=
+gompertzParameters(break.model.output.w.zeros, parameter='fifty.fifty')
+
+
+@
+\caption{Gompertz Location Parameter.}
+\label{fig:zeroPayments50505}
+\end{figure}
+
+
+\subsection{Assessing Fit of the Auxiliary Model}
+One can plot the observed empirical probabilities of payments being
+greater than zero against the predicted (and projected) probabilities.
+This is done with the function \Rfunction{probablityOfPayment}.
+Figure~\ref{fig:zeroPaymentsCurve} plot this chart.
+
+\begin{figure}[h]
+  \centering
+
+<<zeroPaymentsCurve, fig=T, height=7, width=14>>=
+probablityOfPayment(break.model.output.w.zeros)
+
+
+@
+\caption{Probability of Non-Zero Payment.}
+\label{fig:zeroPaymentsCurve}
+\end{figure}
+
+\subsection{Incorporating the Probability of Non-Zero Payment}
+Once the auxiliary model has been estimated and its output verified,
+the functions \Rfunction{predictedPayments},
+\Rfunction{finalCumulativeDiff}, and \Rfunction{tailFactor} will
+incorporate this information into their calculations.
+
+Figure~\ref{fig:breakPredictedIncWithZeros} displays the predicted
+incremental payments after accounting for the probability that some of
+them may be zero.  This should be compared with
+Figure~\ref{fig:breakPredictedInc}, which does not account for the
+possibility that payments may be zero.
+
+\begin{figure}[h]
+  \centering
+
+<<breakPredictedIncWithZeros, fig=T, height=7, width=14>>=
+predictedPayments(break.model.output.w.zeros,
+                  type='incremental',
+                  logScale=TRUE)
+@
+\caption{Predicted Incremental Payments (Accounting for Zero Payments).}
+\label{fig:breakPredictedIncWithZeros}
+\end{figure}
+
+
+
+
+
+\end{document}

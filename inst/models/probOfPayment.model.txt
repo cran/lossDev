@@ -1,0 +1,94 @@
+##################################################################################################
+##                                                                                              ##
+##    lossDev is an R-package.                                                                  ##
+##    It is a Bayesian time series model of loss development.                                   ##
+##    Features include skewed Student-t distribution with time-varying scale parameters,        ##
+##    an expert prior for the calendar year effect,                                             ##
+##    and accommodation for structural breaks in the consumption path of services.              ##
+##                                                                                              ##
+##    Copyright © 2009, National Council On Compensation Insurance Inc.,                        ##
+##                                                                                              ##
+##    This file is part of lossDev.                                                             ##
+##                                                                                              ##
+##    lossDev is free software: you can redistribute it and/or modify                           ##
+##    it under the terms of the GNU General Public License as published by                      ##
+##    the Free Software Foundation, either version 3 of the License, or                         ##
+##    (at your option) any later version.                                                       ##
+##                                                                                              ##
+##    This program is distributed in the hope that it will be useful,                           ##
+##    but WITHOUT ANY WARRANTY; without even the implied warranty of                            ##
+##    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                             ##
+##    GNU General Public License for more details.                                              ##
+##                                                                                              ##
+##    You should have received a copy of the GNU General Public License                         ##
+##    along with this program.  If not, see <http://www.gnu.org/licenses/>.                     ##
+##                                                                                              ##
+##################################################################################################
+
+
+model
+{
+
+
+    #measurement
+    for(i in 1:K)
+        {
+        for(j in 1:K)
+            {
+            u[i,j] ~ dbern(p[i,j])
+            }
+        }
+        
+    for(i in 1:(K+H))
+        {
+        for(j in 1:L.vec[i])
+            {
+            prob.of.non.zero.payment[i,j] <- p[i,j]
+            }
+        for(j in (L.vec[i] + 1):(max(L.vec[i]) + 1))
+            {
+            prob.of.non.zero.payment[i,j] <- 0
+            }
+        }
+         
+
+    #first row
+    
+    scale.log.mu <- log(scale.prior)  - 1 / (2 * scale.log.tau)
+    fifty.fifty.log.mu <- log(fifty.fifty.prior)- 1 / (2 * fifty.fifty.log.tau)
+    
+    scale.log ~ dnorm(scale.log.mu, scale.log.tau)
+    fifty.fifty.log ~ dnorm(fifty.fifty.log.mu, fifty.fifty.log.tau)
+    
+    scale <- exp(scale.log)
+    fifty.fifty <- exp(fifty.fifty.log)
+    
+    scale.log.tau ~ dgamma(1.0E+1,1.0E-1)
+    fifty.fifty.log.tau ~ dgamma(1.0E+1,1.0E-1)
+    
+    b <- scale
+    c[1] <- -log(-log(0.5)) / b - fifty.fifty
+    for(j in 1:L.vec[1])
+        {
+        p[1,j] <- 1 - exp(-exp(-b * (j + c[1])))
+        }
+        
+    
+    
+    #second row and on
+    shift <- 0
+    fifty.fifty.[1] <- fifty.fifty + 0
+    for(i in 2:(K+H))
+        {
+        fifty.fifty.[i] <- fifty.fifty.[i-1] + shift
+        c[i] <- -log(-log(0.5)) / b - fifty.fifty.[i]
+        for(j in 1:L.vec[i])
+            {
+            p[i,j] <- 1 - exp(-exp(-b * (j + c[i])))
+            }
+        }
+
+
+
+}
+#

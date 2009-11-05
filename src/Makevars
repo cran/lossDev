@@ -1,0 +1,70 @@
+##################################################################################################
+##                                                                                              ##
+##    lossDev is an R-package.                                                                  ##
+##    It is a Bayesian time series model of loss development.                                   ##
+##    Features include skewed Student-t distribution with time-varying scale parameters,        ##
+##    an expert prior for the calendar year effect,                                             ##
+##    and accommodation for structural breaks in the consumption path of services.              ##
+##                                                                                              ##
+##    Copyright © 2009, National Council On Compensation Insurance Inc.,                        ##
+##                                                                                              ##
+##    This file is part of lossDev.                                                             ##
+##                                                                                              ##
+##    lossDev is free software: you can redistribute it and/or modify                           ##
+##    it under the terms of the GNU General Public License as published by                      ##
+##    the Free Software Foundation, either version 3 of the License, or                         ##
+##    (at your option) any later version.                                                       ##
+##                                                                                              ##
+##    This program is distributed in the hope that it will be useful,                           ##
+##    but WITHOUT ANY WARRANTY; without even the implied warranty of                            ##
+##    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                             ##
+##    GNU General Public License for more details.                                              ##
+##                                                                                              ##
+##    You should have received a copy of the GNU General Public License                         ##
+##    along with this program.  If not, see <http://www.gnu.org/licenses/>.                     ##
+##                                                                                              ##
+##################################################################################################
+
+
+#PKG_CXXFLAGS=@CXXFLAGS@
+
+PKG_CPPFLAGS=-I../jags-linux/include/ -I/appl10/sce/version/v031810/include/JAGS/.. -I/appl10/sce/version/v031810/include/JAGS   -DMATHLIB_STANDALONE
+
+PKG_LIBS=-L/appl10/sce/version/v060409/lib/ -llapack -lcblas -lf77blas -latlas -ljrmath -ljags /appl10/sce/version/v060409/lib//JAGS/modules/basemod.so /appl10/sce/version/v060409/lib//JAGS/modules/bugs.so   -L/appl10/sce/version/v060409/lib -L/usr/lib/gcc/x86_64-redhat-linux/4.1.2 -L/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -lgfortranbegin -lgfortran -lm
+
+OBJECTS.samplers=samplers/ExpandableArray.o samplers/Knots.o samplers/RJumpSpline.o  samplers/RJumpSplineFactory.o samplers/RealSlicerOV.o  samplers/SliceFactoryOV.o 
+OBJECTS.distributions=distributions/DSpline.o distributions/DChisqrOV.o distributions/DTOV.o distributions/DNormOV.o distributions/DUnifOV.o
+OBJECTS.root=RJump.o
+
+OBJECTS= $(OBJECTS.samplers) $(OBJECTS.distributions) $(OBJECTS.root)
+
+all: before $(SHLIB) after
+
+clean:
+	rm -f $(OBJECTS)
+
+before: clean
+
+after:
+#	mv lossDev.so rjump.so
+
+#all: $(SHLIB)
+#all: rjump.so
+#
+#rjump.so: RJump.o DSpline.o RJumpSpline.o RJumpSplineFactory.o
+#	$(CXX) $(CXXFLAGS) RJump.o DSpline.o RJumpSpline.o RJumpSplineFactory.o -o rjump.so -shared
+#
+#RJump.o: RJump.cpp RJump.h
+#	$(CXX) $(CXXFLAGS) $(PKG_CPPFLAGS) -c RJump.cpp
+#
+#DSpline.o: distributions/DSpline.cpp distributions/DSpline.h
+#	$(CXX) $(CXXFLAGS) $(PKG_CPPFLAGS) -c distributions/DSpline.cpp
+#
+#RJumpSpline.o: samplers/RJumpSpline.cpp samplers/RJumpSpline.h
+#	$(CXX) $(CXXFLAGS) $(PKG_CPPFLAGS) -c samplers/RJumpSpline.cpp
+#
+#JumpSplineFactory.o: samplers/RJumpSplineFactory.cpp samplers/RJumpSplineFactory.h
+#	$(CXX) $(CXXFLAGS) $(PKG_CPPFLAGS) -c samplers/RJumpSplineFactory.cpp
+#
+#clean:
+#	rm -r *.o; rm rjump.so
