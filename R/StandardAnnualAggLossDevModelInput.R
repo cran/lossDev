@@ -38,7 +38,7 @@ NULL
 ##' @name StandardAnnualAggLossDevModelInput-class
 ##' @docType class
 ##' @seealso \code{\linkS4class{LossDevModelInput}}
-##' @seealso \code{\linkS4class{StandardAnnualAggLossDevModelInput}}
+##'  \code{\linkS4class{StandardAnnualAggLossDevModelInput}}
 setClass(
          'StandardAnnualAggLossDevModelInput',
          representation(priorForKnotPositions='numeric',

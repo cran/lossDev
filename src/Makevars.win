@@ -30,7 +30,7 @@ $(error JAGS_ROOT must be set.)
 endif
 
 PKG_CPPFLAGS=-I"$(JAGS_ROOT)/include" -I"$(JAGS_ROOT)/include/rng" -I"$(JAGS_ROOT)/include/distribution" -DMATHLIB_STANDALONE
-PKG_LIBS=-L"$(JAGS_ROOT)/lib" $(BLAS_LIBS) $(LAPACK_LIBS) -ljrmath -ljags
+PKG_LIBS=-L"$(JAGS_ROOT)/bin" $(BLAS_LIBS) $(LAPACK_LIBS) -ljrmath-0 -ljags-2
 
 OBJECTS.samplers=samplers/ExpandableArray.o samplers/Knots.o samplers/RJumpSpline.o  samplers/RJumpSplineFactory.o samplers/RealSlicerOV.o  samplers/SliceFactoryOV.o samplers/MNorm.o
 OBJECTS.distributions=distributions/DSpline.o distributions/DChisqrOV.o distributions/DTOV.o distributions/DNormOV.o distributions/DUnifOV.o distributions/RScalarDist.o

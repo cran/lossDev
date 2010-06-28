@@ -5,7 +5,7 @@
 \details{Chains with high autocorrelation require a longer burnin and more samples to fully explore the parameter space.}
 \value{Called for the side effect of plotting.}
 \docType{methods}
-\seealso{\code{\link{mcmcACF}}}
-\seealso{\code{\link[=mcmcACF,BreakAnnualAggLossDevModelOutput-method]{mcmcACF("BreakAnnualAggLossDevModelOutput")}}}
+\seealso{\code{\link{mcmcACF}}
+\code{\link[=mcmcACF,BreakAnnualAggLossDevModelOutput-method]{mcmcACF("BreakAnnualAggLossDevModelOutput")}}}
 \section{TODO}{Add option to plot other values.  Currently only plots \dQuote{First Rate Of Decay,} \dQuote{First Calendar Year Effect Error,} and \dQuote{First Exposure Year Growth.}}
 \arguments{\item{object}{The object from which to plot autocorrelations.}}

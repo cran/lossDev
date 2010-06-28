@@ -23,7 +23,7 @@
 \setlength{\parindent}{0em}
 
 
-\newcommand{\lossDevVersion}{0.9.3}
+\newcommand{\lossDevVersion}{0.9.4}
 \newcommand{\lossDev}{\Rpackage{lossDev}}
 \newcommand{\JAGS}{JAGS}
 

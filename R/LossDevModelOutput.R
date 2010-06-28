@@ -51,7 +51,6 @@ setClass(
 ##' @name getModelOutputNodes
 ##' @param object The object from which to get the expected nodes.
 ##' @return A character vector with each element corresponding to the name of an expected node.
-##' @docType genericFunction
 ##' @seealso \code{\link[=getModelOutputNodes,LossDevModelOutput-method]{getModelOutputNodes("LossDevModelOutput")}}
 setGenericVerif('getModelOutputNodes',
                 function(object)

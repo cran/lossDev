@@ -40,7 +40,7 @@ NULL
 ##' @name StandardAnnualAggLossDevModelOutputWithZeros-class
 ##' @docType class
 ##' @seealso \code{\linkS4class{LossDevModelOutput}}
-##' @seealso \code{\linkS4class{AnnualAggLossDevModelOutputWithZeros}}
+##'  \code{\linkS4class{AnnualAggLossDevModelOutputWithZeros}}
 setClass(
          'StandardAnnualAggLossDevModelOutputWithZeros',
          representation(
@@ -57,7 +57,7 @@ setClass(
 ##' @name BreakAnnualAggLossDevModelOutputWithZeros-class
 ##' @docType class
 ##' @seealso \code{\linkS4class{LossDevModelOutput}}
-##' @seealso \code{\linkS4class{AnnualAggLossDevModelOutputWithZeros}}
+##'  \code{\linkS4class{AnnualAggLossDevModelOutputWithZeros}}
 setClass(
          'BreakAnnualAggLossDevModelOutputWithZeros',
          representation(
@@ -74,8 +74,8 @@ setClass(
 ##' @name AnnualAggLossDevModelOutputWithZeros-class
 ##' @docType class
 ##' @seealso \code{\linkS4class{LossDevModelOutput}}
-##' @seealso \code{\linkS4class{BreakAnnualAggLossDevModelOutputWithZeros}}
-##' @seealso \code{\linkS4class{StandardAnnualAggLossDevModelOutputWithZeros}}
+##'  \code{\linkS4class{BreakAnnualAggLossDevModelOutputWithZeros}}
+##'  \code{\linkS4class{StandardAnnualAggLossDevModelOutputWithZeros}}
 setClassUnion('AnnualAggLossDevModelOutputWithZeros', c('StandardAnnualAggLossDevModelOutputWithZeros', 'BreakAnnualAggLossDevModelOutputWithZeros'))
 
 ##' The gompertz function. Intended for internal use only.
@@ -330,8 +330,8 @@ estimate.priors <- function(p)
 ##' @return Mainly called for the side effect of plotting the difference between final actual and predicted cumulative payments by exposure year.  Also returns a named array for the percentiles in the plot.  Returned invisibly.
 ##' @docType methods
 ##' @seealso \code{\link{accountForZeroPayments}}
-##' @seealso \code{\link{finalCumulativeDiff}}
-##' @seealso \code{\link{finalCumulativeDiff,AnnualAggLossDevModelOutput-method}}
+##'  \code{\link{finalCumulativeDiff}}
+##'  \code{\link{finalCumulativeDiff,AnnualAggLossDevModelOutput-method}}
 setMethod('finalCumulativeDiff',
           signature(object='AnnualAggLossDevModelOutputWithZeros'),
           function(object, plot, expYearRange)
@@ -381,10 +381,10 @@ setMethod('finalCumulativeDiff',
 ##' @return Mainly called for the side effect of plotting.  Also returns tail factors for \emph{all} attachment points through \code{finalAttachment}.  See Details. Returned invisibly.
 ##' @docType methods
 ##' @seealso \code{\link{accountForZeroPayments}}
-##' @seealso \code{\link{tailFactor}}
-##' @seealso \code{\link[=tailFactor,BreakAnnualAggLossDevModelOutput-method]{tailFactor("BreakAnnualAggLossDevModelOutput")}}
-##' @seealso \code{\link[=tailFactor,StandardAnnualAggLossDevModelOutputWithZeros-method]{tailFactor("StandardAnnualAggLossDevModelOutputWithZeros")}}
-##' @seealso \code{\link[=tailFactor,StandardAnnualAggLossDevModelOutput-method]{tailFactor("StandardAnnualAggLossDevModelOutput")}}
+##'  \code{\link{tailFactor}}
+##'  \code{\link[=tailFactor,BreakAnnualAggLossDevModelOutput-method]{tailFactor("BreakAnnualAggLossDevModelOutput")}}
+##'  \code{\link[=tailFactor,StandardAnnualAggLossDevModelOutputWithZeros-method]{tailFactor("StandardAnnualAggLossDevModelOutputWithZeros")}}
+##'  \code{\link[=tailFactor,StandardAnnualAggLossDevModelOutput-method]{tailFactor("StandardAnnualAggLossDevModelOutput")}}
 setMethod('tailFactor',
           signature(object='BreakAnnualAggLossDevModelOutputWithZeros'),
           function(object, attachment, useObservedValues, firstIsHalfReport, finalAttachment, plot, expYearRange)
@@ -451,10 +451,10 @@ setMethod('tailFactor',
 ##' @return Mainly called for the side effect of plotting.  Also returns tail factors for \emph{all} attachment points through \code{finalAttachment}.  See Details. Returned invisibly.
 ##' @docType methods
 ##' @seealso \code{\link{accountForZeroPayments}}
-##' @seealso \code{\link{tailFactor}}
-##' @seealso \code{\link[=tailFactor,BreakAnnualAggLossDevModelOutput-method]{tailFactor("BreakAnnualAggLossDevModelOutput")}}
-##' @seealso \code{\link[=tailFactor,BreakAnnualAggLossDevModelOutputWithZeros-method]{tailFactor("BreakAnnualAggLossDevModelOutputWithZeros")}}
-##' @seealso \code{\link[=tailFactor,StandardAnnualAggLossDevModelOutput-method]{tailFactor("StandardAnnualAggLossDevModelOutput")}}
+##'  \code{\link{tailFactor}}
+##'  \code{\link[=tailFactor,BreakAnnualAggLossDevModelOutput-method]{tailFactor("BreakAnnualAggLossDevModelOutput")}}
+##'  \code{\link[=tailFactor,BreakAnnualAggLossDevModelOutputWithZeros-method]{tailFactor("BreakAnnualAggLossDevModelOutputWithZeros")}}
+##'  \code{\link[=tailFactor,StandardAnnualAggLossDevModelOutput-method]{tailFactor("StandardAnnualAggLossDevModelOutput")}}
 setMethod('tailFactor',
           signature(object='StandardAnnualAggLossDevModelOutputWithZeros'),
           function(object, attachment, useObservedValues, firstIsHalfReport, finalAttachment, plot, expYearRange)
@@ -490,7 +490,7 @@ setMethod('tailFactor',
 ##' @return Mainly called for the side effect of plotting.  Also returns a named array (with the same structure as the input triangle) containing the predicted log incremental payments.  Returned invisibly.
 ##' @docType methods
 ##' @seealso \code{\link{accountForZeroPayments}}
-##' @seealso \code{\link{predictedPayments}}
+##'  \code{\link{predictedPayments}}
 setMethod('predictedPayments',
           signature(object='AnnualAggLossDevModelOutputWithZeros'),
           f <- function(object, type, logScale, mergePredictedWithObserved, plotObservedValues, plotPredictedOnlyWhereObserved, quantiles, plot)
@@ -520,7 +520,6 @@ setMethod('predictedPayments',
 ##' @name probablityOfPayment
 ##' @seealso \code{\link{accountForZeroPayments}}
 ##' @exportMethod probablityOfPayment
-##' @docType genericFunction
 setGenericVerif('probablityOfPayment',
                 function(object, plot=TRUE)
             {
@@ -609,7 +608,6 @@ setMethod('probablityOfPayment',
 ##' @param plotDensity A logical value. If \code{TRUE}, then the density is plotted. If \code{plotTrace} is also \code{TRUE}, then two plots are generated.  If they are both \code{FALSE}, then only the statistics are returned.
 ##' @param plotTrace A logical value. If \code{TRUE}, then the trace is plotted. If \code{plotDensity} is also \code{TRUE}, then two plots are generated.  If they are both \code{FALSE}, then only the statistics are returned.
 ##' @return Mainly called for the side effect of plotting.
-##' @docType genericFunction
 ##' @seealso \code{\link{gompertzParameters,AnnualAggLossDevModelOutputWithZeros-method}}
 ##' @exportMethod gompertzParameters
 setGenericVerif('gompertzParameters',
@@ -634,7 +632,6 @@ setGenericVerif('gompertzParameters',
 ##' @param plotDensity A logical value. If \code{TRUE}, then the density is plotted. If \code{plotTrace} is also \code{TRUE}, then two plots are generated.  If they are both \code{FALSE}, then only the statistics are returned.
 ##' @param plotTrace A logical value. If \code{TRUE}, then the trace is plotted. If \code{plotDensity} is also \code{TRUE}, then two plots are generated.  If they are both \code{FALSE}, then only the statistics are returned.
 ##' @return Mainly called for the side effect of plotting.
-##' @docType genericFunction
 ##' @seealso \code{\link{gompertzParameters}}
 setMethod('gompertzParameters',
           signature(object='AnnualAggLossDevModelOutputWithZeros'),

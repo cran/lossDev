@@ -19,9 +19,8 @@ and an exposure year type of \dQuote{accident year} corresponds to \code{firstIs
 
 If \code{expYearRange} is \dQuote{fullyObs}, then only exposure years with a non missing value in the first column will be plotted.}
 \value{Mainly called for the side effect of plotting.}
-\docType{genericFunction}
-\seealso{\code{\link[=tailFactor,StandardAnnualAggLossDevModelOutput-method]{tailFactor("StandardAnnualAggLossDevModelOutput")}}}
-\seealso{\code{\link[=tailFactor,BreakAnnualAggLossDevModelOutput-method]{tailFactor("BreakAnnualAggLossDevModelOutput")}}}
+\seealso{\code{\link[=tailFactor,StandardAnnualAggLossDevModelOutput-method]{tailFactor("StandardAnnualAggLossDevModelOutput")}}
+\code{\link[=tailFactor,BreakAnnualAggLossDevModelOutput-method]{tailFactor("BreakAnnualAggLossDevModelOutput")}}}
 \arguments{\item{object}{The object from which to plot the predicted tail factors and return tail factors for \emph{all} attachment points.}
 \item{attachment}{An integer value specifying the attachment point for the tail.  Must be at least 1. See Details for more information.}
 \item{useObservedValues}{A logical value.  If \code{TRUE}, observed values are substituted for predicted values whenever possible in the calculation.  If \code{FALSE}, only predicted values are used.}

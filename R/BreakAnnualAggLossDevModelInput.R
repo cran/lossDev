@@ -37,7 +37,7 @@ NULL
 ##' @name BreakAnnualAggLossDevModelInput-class
 ##' @docType class
 ##' @seealso \code{\linkS4class{LossDevModelInput}}
-##' @seealso \code{\linkS4class{StandardAnnualAggLossDevModelInput}}
+##'  \code{\linkS4class{StandardAnnualAggLossDevModelInput}}
 setClass(
          'BreakAnnualAggLossDevModelInput',
          representation(

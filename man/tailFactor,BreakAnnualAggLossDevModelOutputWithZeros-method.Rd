@@ -24,11 +24,11 @@ These are the tail factors estimated when assuming all years where in the pre-br
 }}
 \value{Mainly called for the side effect of plotting.  Also returns tail factors for \emph{all} attachment points through \code{finalAttachment}.  See Details. Returned invisibly.}
 \docType{methods}
-\seealso{\code{\link{accountForZeroPayments}}}
-\seealso{\code{\link{tailFactor}}}
-\seealso{\code{\link[=tailFactor,BreakAnnualAggLossDevModelOutput-method]{tailFactor("BreakAnnualAggLossDevModelOutput")}}}
-\seealso{\code{\link[=tailFactor,StandardAnnualAggLossDevModelOutputWithZeros-method]{tailFactor("StandardAnnualAggLossDevModelOutputWithZeros")}}}
-\seealso{\code{\link[=tailFactor,StandardAnnualAggLossDevModelOutput-method]{tailFactor("StandardAnnualAggLossDevModelOutput")}}}
+\seealso{\code{\link{accountForZeroPayments}}
+\code{\link{tailFactor}}
+\code{\link[=tailFactor,BreakAnnualAggLossDevModelOutput-method]{tailFactor("BreakAnnualAggLossDevModelOutput")}}
+\code{\link[=tailFactor,StandardAnnualAggLossDevModelOutputWithZeros-method]{tailFactor("StandardAnnualAggLossDevModelOutputWithZeros")}}
+\code{\link[=tailFactor,StandardAnnualAggLossDevModelOutput-method]{tailFactor("StandardAnnualAggLossDevModelOutput")}}}
 \arguments{\item{object}{The object from which to plot the predicted tail factors and return tail factors for \emph{all} attachment points.}
 \item{attachment}{An integer value specifying the attachment point for the tail.  Must be at least 1. See Details for more info.}
 \item{useObservedValues}{A logical value.  If \code{TRUE}, observed values are substituted for predicted values whenever possible in the calculation.  If \code{FALSE}, only predicted values are used.}

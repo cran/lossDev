@@ -124,7 +124,6 @@ getNonMissingIndexes <- function(m)
 ##' @name getTriDim
 ##' @param object The object from which to get the dim of the observed triangle.
 ##' @return An integer vector of the dimension of the observed triangle.
-##' @docType genericFunction
 setGenericVerif('getTriDim',
                  function(object)
                  standardGeneric('getTriDim'))

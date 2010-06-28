@@ -9,8 +9,8 @@ This is a method to allow for the retrieval and illustration of these rates of d
 Because the model is Bayesian, the estimated rates of decay come as distributions; only the medians are plotted and/or returned.}
 \value{Mainly called for the side effect of plotting.  Also returns the plotted statistics.  Returned invisibly.}
 \docType{methods}
-\seealso{\code{\link{rateOfDecay}}}
-\seealso{\code{\link[=rateOfDecay,StandardAnnualAggLossDevModelOutput-method]{rateOfDecay("StandardAnnualAggLossDevModelOutput")}}}
-\seealso{\code{\link{consumptionPath}}}
+\seealso{\code{\link{rateOfDecay}}
+\code{\link[=rateOfDecay,StandardAnnualAggLossDevModelOutput-method]{rateOfDecay("StandardAnnualAggLossDevModelOutput")}}
+\code{\link{consumptionPath}}}
 \arguments{\item{object}{The object from which to plot and/or return the estimated rate of decay.}
 \item{plot}{A logical value. If \code{TRUE}, then the plot is generated and the statistics are returned; otherwise only the statistics are returned.}}

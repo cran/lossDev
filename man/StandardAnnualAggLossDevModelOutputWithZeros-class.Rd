@@ -5,5 +5,5 @@
 \details{\code{StandardAnnualAggLossDevModelOutputWithZeros} is a special class designed to be merged with aggregate annual model objects.
 It adds one extra node \code{prob.of.non.zero.payment} to the list of slots.}
 \docType{class}
-\seealso{\code{\linkS4class{LossDevModelOutput}}}
-\seealso{\code{\linkS4class{AnnualAggLossDevModelOutputWithZeros}}}
+\seealso{\code{\linkS4class{LossDevModelOutput}}
+\code{\linkS4class{AnnualAggLossDevModelOutputWithZeros}}}

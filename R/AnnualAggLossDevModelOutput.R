@@ -20,7 +20,7 @@
 ##    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                             ##
 ##    GNU General Public License for more details.                                              ##
 ##                                                                                              ##
-##    You should have receed a copy of the GNU General Public License                         ##
+##    You should have receed a copy of the GNU General Public License                           ##
 ##    along with this program.  If not, see <http://www.gnu.org/licenses/>.                     ##
 ##                                                                                              ##
 ##################################################################################################
@@ -71,9 +71,8 @@ setClass(
 ##' @param object The object from which to plot and/or return the posterior predicted exposure growth.
 ##' @param plot A logical value. If \code{TRUE}, the plot is generated and the statistics are returned; otherwise only the statistics are returned.
 ##' @return Mainly called for the side effect of plotting the exposure growth.  Also returns a named numeric vector for the median of the posterior for the exposure growth on the real (not log) scale.  Returned invisibly.
-##' @docType genericFunction
 ##' @seealso \code{\link[=exposureGrowth,AnnualAggLossDevModelOutput-method]{exposureGrowth("AnnualAggLossDevModelOutput")}}
-##' @seealso \code{\link{exposureGrowthTracePlot}}
+##'  \code{\link{exposureGrowthTracePlot}}
 ##' @exportMethod exposureGrowth
 setGenericVerif('exposureGrowth',
                 function(object, plot=TRUE)
@@ -87,7 +86,7 @@ setGenericVerif('exposureGrowth',
 ##' @return Mainly called for the side effect of plotting the exposure growth.  Also returns a named numeric vector for the median of the posterior for the exposure growth on the real (not log) scale.  Returned invisibly.
 ##' @docType methods
 ##' @seealso \code{\link{exposureGrowth}}
-##' @seealso \code{\link{exposureGrowthTracePlot}}
+##'  \code{\link{exposureGrowthTracePlot}}
 setMethod('exposureGrowth',
           signature(object='AnnualAggLossDevModelOutput'),
           function(object, plot)
@@ -172,7 +171,6 @@ setMethod('exposureGrowth',
 ##' @param plot A logical value. If \code{TRUE}, the plot is generated and the statistics are returned; otherwise only the statistics are returned.
 ##' @param expYearRange Either a range of years (for example c(1995, 2006)) or one of the keywords \dQuote{all} or \dQuote{fullyObs}.
 ##' @return Mainly called for the side effect of plotting.
-##' @docType genericFunction
 ##' @seealso \code{\link[=finalCumulativeDiff,AnnualAggLossDevModelOutput-method]{finalCumulativeDiff("AnnualAggLossDevModelOutput")}}
 ##' @exportMethod finalCumulativeDiff
 setGenericVerif('finalCumulativeDiff',
@@ -320,9 +318,8 @@ setMethod('finalCumulativeDiff',
 ##' @param timeAxis A character value describing along which of the three time axes to plot the residuals: \sQuote{dy} for development year time, \sQuote{cy} for calendar year time, \sQuote{ey} for exposure year time.
 ##' @param plot A logical value. If \code{TRUE}, the plot is generated and the statistics are returned; otherwise only the statistics are returned.
 ##' @return Mainly called for the side effect of plotting.
-##' @docType genericFunction
 ##' @seealso \code{\link[=triResi,AnnualAggLossDevModelOutput-method]{triResi("AnnualAggLossDevModelOutput")}}
-##' @seealso \code{\link{QQPlot}}
+##'  \code{\link{QQPlot}}
 ##' @exportMethod triResi
 setGenericVerif('triResi',
                 function(object, timeAxis=c('dy', 'cy', 'ey'), standardize=TRUE, plot=TRUE)
@@ -341,7 +338,7 @@ setGenericVerif('triResi',
 ##' @return Mainly called for the side effect of plotting.  Also returns a named array with the same structure as the input triangle.  Returned invisibly.
 ##' @docType methods
 ##' @seealso \code{\link{triResi}}
-##' @seealso \code{\link{QQPlot}}
+##'  \code{\link{QQPlot}}
 setMethod('triResi',
           signature(object='AnnualAggLossDevModelOutput'),
           function(object, timeAxis, standardize, plot)
@@ -502,9 +499,8 @@ setMethod('triResi',
 ##' @name QQPlot
 ##' @param object The object from which to plot the values.
 ##' @return Mainly called for the side effect of plotting.
-##' @docType genericFunction
 ##' @seealso \code{\link[=QQPlot,AnnualAggLossDevModelOutput-method]{QQPlot("AnnualAggLossDevModelOutput")}}
-##' @seealso \code{\link{triResi}}
+##'  \code{\link{triResi}}
 ##' @exportMethod QQPlot
 setGenericVerif('QQPlot',
                 function(object)
@@ -520,7 +516,7 @@ setGenericVerif('QQPlot',
 ##' @return NULL. Called for the side effect of plotting.
 ##' @docType methods
 ##' @seealso \code{\link{QQPlot}}
-##' @seealso \code{\link{triResi}}
+##'  \code{\link{triResi}}
 setMethod('QQPlot',
           signature(object='AnnualAggLossDevModelOutput'),
           function(object)
@@ -601,7 +597,6 @@ setMethod('QQPlot',
 ##' @param plotDensity A logical value. If \code{TRUE}, then the density is plotted. If \code{plotTrace} is also \code{TRUE}, then two plots are generated.  If they are both \code{FALSE}, then only the statistics are returned.
 ##' @param plotTrace A logical value. If \code{TRUE}, then the trace is plotted. If \code{plotDensity} is also \code{TRUE}, then two plots are generated.  If they are both \code{FALSE}, then only the statistics are returned.
 ##' @return Mainly called for the side effect of plotting.
-##' @docType genericFunction
 ##' @seealso \code{\link[=skewnessParameter,AnnualAggLossDevModelOutput-method]{skewnessParameter("AnnualAggLossDevModelOutput")}}
 ##' @exportMethod skewnessParameter
 setGenericVerif('skewnessParameter',
@@ -679,11 +674,10 @@ setMethod('skewnessParameter',
 ##' @param plotDensity A logical value. If \code{TRUE}, the density is plotted. If \code{plotTrace} is also \code{TRUE}, then two plots are generated.  If they are both \code{FALSE}, then only the statistics are returned.
 ##' @param plotTrace A logical value. If \code{TRUE}, the trace is plotted. If \code{plotDensity} is also \code{TRUE}, then two plots are generated.  If they are both \code{FALSE}, then only the statistics are returned.
 ##' @return Mainly called for the side effect of plotting.
-##' @docType genericFunction
 ##' @seealso \code{\link[=autoregressiveParameter,AnnualAggLossDevModelOutput-method]{autoregressiveParameter("AnnualAggLossDevModelOutput")}}
-##' @seealso \code{\link{standardDeviationOfCalendarYearEffect}}
-##' @seealso \code{\link{calendarYearEffect}}
-##' @seealso \code{\link{calendarYearEffectErrors}}
+##'  \code{\link{standardDeviationOfCalendarYearEffect}}
+##'  \code{\link{calendarYearEffect}}
+##'  \code{\link{calendarYearEffectErrors}}
 ##' @exportMethod autoregressiveParameter
 setGenericVerif('autoregressiveParameter',
                 function(object, plotDensity=TRUE, plotTrace=TRUE)
@@ -701,9 +695,9 @@ setGenericVerif('autoregressiveParameter',
 ##' @return Mainly called for the side effect of plotting.  Also returns a named array with select quantiles of the posterior for the autoregressive parameter.  Returned invisibly.
 ##' @docType methods
 ##' @seealso \code{\link{autoregressiveParameter}}
-##' @seealso \code{\link{standardDeviationOfCalendarYearEffect}}
-##' @seealso \code{\link{calendarYearEffect}}
-##' @seealso \code{\link{calendarYearEffectErrors}}
+##'  \code{\link{standardDeviationOfCalendarYearEffect}}
+##'  \code{\link{calendarYearEffect}}
+##'  \code{\link{calendarYearEffectErrors}}
 setMethod('autoregressiveParameter',
           signature(object='AnnualAggLossDevModelOutput'),
           function(object,  plotDensity, plotTrace)
@@ -721,11 +715,10 @@ setMethod('autoregressiveParameter',
 ##' @param plotDensity A logical value. If \code{TRUE}, the density is plotted. If \code{plotTrace} is also \code{TRUE}, then two plots are generated.  If they are both \code{FALSE}, then only the statistics are returned.
 ##' @param plotTrace A logical value. If \code{TRUE}, the trace is plotted. If \code{plotDensity} is also \code{TRUE}, then two plots are generated.  If they are both \code{FALSE}, then only the statistics are returned.
 ##' @return Mainly called for the side effect of plotting.
-##' @docType genericFunction
 ##' @seealso \code{\link[=calendarYearEffectAutoregressiveParameter,AnnualAggLossDevModelOutput-method]{calendarYearEffectAutoregressiveParameter("AnnualAggLossDevModelOutput")}}
-##' @seealso \code{\link{standardDeviationOfCalendarYearEffect}}
-##' @seealso \code{\link{calendarYearEffect}}
-##' @seealso \code{\link{calendarYearEffectErrors}}
+##'  \code{\link{standardDeviationOfCalendarYearEffect}}
+##'  \code{\link{calendarYearEffect}}
+##'  \code{\link{calendarYearEffectErrors}}
 ##' @exportMethod calendarYearEffectAutoregressiveParameter
 setGenericVerif('calendarYearEffectAutoregressiveParameter',
                 function(object, plotDensity=TRUE, plotTrace=TRUE)
@@ -742,9 +735,9 @@ setGenericVerif('calendarYearEffectAutoregressiveParameter',
 ##' @return Mainly called for the side effect of plotting.  Also returns a named array with select quantiles of the posterior for the autoregressive parameter.  Returned invisibly.
 ##' @docType methods
 ##' @seealso \code{\link{calendarYearEffectAutoregressiveParameter}}
-##' @seealso \code{\link{standardDeviationOfCalendarYearEffect}}
-##' @seealso \code{\link{calendarYearEffect}}
-##' @seealso \code{\link{calendarYearEffectErrors}}
+##'  \code{\link{standardDeviationOfCalendarYearEffect}}
+##'  \code{\link{calendarYearEffect}}
+##'  \code{\link{calendarYearEffectErrors}}
 setMethod('calendarYearEffectAutoregressiveParameter',
           signature(object='AnnualAggLossDevModelOutput'),
           function(object,  plotDensity, plotTrace)
@@ -779,7 +772,6 @@ setMethod('calendarYearEffectAutoregressiveParameter',
 ##' @param plotDensity A logical value. If \code{TRUE}, the density is plotted. If \code{plotTrace} is also \code{TRUE}, then two plots are generated.  If they are both \code{FALSE}, then only the statistics are returned.
 ##' @param plotTrace A logical value. If \code{TRUE}, the trace is plotted. If \code{plotDensity} is also \code{TRUE}, then two plots are generated.  If they are both \code{FALSE}, then only the statistics are returned.
 ##' @return Mainly called for the side effect of plotting.
-##' @docType genericFunction
 ##' @seealso \code{\link[=exposureGrowthAutoregressiveParameter,AnnualAggLossDevModelOutput-method]{exposureGrowthAutoregressiveParameter("AnnualAggLossDevModelOutput")}}
 ##' @exportMethod exposureGrowthAutoregressiveParameter
 setGenericVerif('exposureGrowthAutoregressiveParameter',
@@ -834,7 +826,6 @@ setMethod('exposureGrowthAutoregressiveParameter',
 ##' @param plotDensity A logical value. If \code{TRUE}, the density is plotted. If \code{plotTrace} is also \code{TRUE}, then two plots are generated.  If they are both \code{FALSE}, then only the statistics are returned.
 ##' @param plotTrace A logical value. If \code{TRUE}, the trace is plotted. If \code{plotDensity} is also \code{TRUE}, then two plots are generated.  If they are both \code{FALSE}, then only the statistics are returned.
 ##' @return Mainly called for the side effect of plotting.
-##' @docType genericFunction
 ##' @seealso \code{\link[=meanExposureGrowth,AnnualAggLossDevModelOutput-method]{meanExposureGrowth("AnnualAggLossDevModelOutput")}}
 ##' @exportMethod meanExposureGrowth
 setGenericVerif('meanExposureGrowth',
@@ -878,7 +869,6 @@ setMethod('meanExposureGrowth',
 ##' @param plotDensity A logical value. If \code{TRUE}, the density is plotted. If \code{plotTrace} is also \code{TRUE}, then two plots are generated.  If they are both \code{FALSE}, then only the statistics are returned.
 ##' @param plotTrace A logical value. If \code{TRUE}, the trace is plotted. If \code{plotDensity} is also \code{TRUE}, then two plots are generated.  If they are both \code{FALSE}, then only the statistics are returned.
 ##' @return Mainly called for the side effect of plotting.
-##' @docType genericFunction
 ##' @seealso \code{\link[=degreesOfFreedom,AnnualAggLossDevModelOutput-method]{degreesOfFreedom("AnnualAggLossDevModelOutput")}}
 ##' @exportMethod degreesOfFreedom
 setGenericVerif('degreesOfFreedom',
@@ -919,7 +909,6 @@ setMethod('degreesOfFreedom',
 ##' @param plotDensity A logical value. If \code{TRUE}, then the density is plotted. If \code{plotTrace} is also \code{TRUE}, then two plots are generated.  If they are both \code{FALSE}, then only the statistics are returned.
 ##' @param plotTrace A logical value. If \code{TRUE}, then the trace is plotted. If \code{plotDensity} is also \code{TRUE}, then two plots are generated.  If they are both \code{FALSE}, then only the statistics are returned.
 ##' @return Mainly called for the side effect of plotting.
-##' @docType genericFunction
 ##' @seealso \code{\link[=standardDeviationOfExposureGrowth,AnnualAggLossDevModelOutput-method]{standardDeviationOfExposureGrowth("AnnualAggLossDevModelOutput")}}
 ##' @exportMethod standardDeviationOfExposureGrowth
 setGenericVerif('standardDeviationOfExposureGrowth',
@@ -935,8 +924,8 @@ setGenericVerif('standardDeviationOfExposureGrowth',
 ##' @return Mainly called for the side effect of plotting.  Also returns a named array with select quantiles of the posterior for the standard deviation of exposure growth.  Returned invisibly.
 ##' @docType methods
 ##' @seealso \code{\link{standardDeviationOfExposureGrowth}}
-##' @seealso \code{\link{exposureGrowth}}
-##' @seealso \code{\link{meanExposureGrowth}}
+##'  \code{\link{exposureGrowth}}
+##'  \code{\link{meanExposureGrowth}}
 setMethod('standardDeviationOfExposureGrowth',
           signature(object='AnnualAggLossDevModelOutput'),
           function(object,  plotDensity, plotTrace)
@@ -961,12 +950,11 @@ setMethod('standardDeviationOfExposureGrowth',
 ##' @param plotDensity A logical value. If \code{TRUE}, the density is plotted. If \code{plotTrace} is also \code{TRUE}, then two plots are generated.  If they are both \code{FALSE}, only the statistics are returned.
 ##' @param plotTrace A logical value. If \code{TRUE}, the trace is plotted. If \code{plotDensity} is also \code{TRUE}, then two plots are generated.  If they are both \code{FALSE}, only the statistics are returned.
 ##' @return Mainly called for the side effect of plotting.
-##' @docType genericFunction
-##' @seealso \code{\link[=standardDeviationOfCalendarYearEffect,AnnualAggLossDevModelOutput-method]{standardDeviationOfCalendarYearEffect("AnnualAggLossDevModelOutput")}}
 ##' @exportMethod standardDeviationOfCalendarYearEffect
-##' @seealso \code{\link{calendarYearEffect}}
-##' @seealso \code{\link{calendarYearEffectErrors}}
-##' @seealso \code{\link{autoregressiveParameter}}
+##' @seealso \code{\link[=standardDeviationOfCalendarYearEffect,AnnualAggLossDevModelOutput-method]{standardDeviationOfCalendarYearEffect("AnnualAggLossDevModelOutput")}}
+##'  \code{\link{calendarYearEffect}}
+##'  \code{\link{calendarYearEffectErrors}}
+##'  \code{\link{autoregressiveParameter}}
 setGenericVerif('standardDeviationOfCalendarYearEffect',
                 function(object, plotDensity=TRUE, plotTrace=TRUE)
                 standardGeneric('standardDeviationOfCalendarYearEffect'))
@@ -980,9 +968,9 @@ setGenericVerif('standardDeviationOfCalendarYearEffect',
 ##' @return Mainly called for the side effect of plotting.  Also returns a named array with select quantiles of the posterior for the standard deviation of the calendar year effect.  Returned invisibly.
 ##' @docType methods
 ##' @seealso \code{\link{standardDeviationOfCalendarYearEffect}}
-##' @seealso \code{\link{calendarYearEffect}}
-##' @seealso \code{\link{calendarYearEffectErrors}}
-##' @seealso \code{\link{autoregressiveParameter}}
+##'  \code{\link{calendarYearEffect}}
+##'  \code{\link{calendarYearEffectErrors}}
+##'  \code{\link{autoregressiveParameter}}
 setMethod('standardDeviationOfCalendarYearEffect',
           signature(object='AnnualAggLossDevModelOutput'),
           function(object,  plotDensity, plotTrace)
@@ -1010,9 +998,8 @@ setMethod('standardDeviationOfCalendarYearEffect',
 ##' @param plotDensity A logical value. If \code{TRUE}, then the density is plotted. If \code{plotTrace} is also \code{TRUE}, then two plots are generated.  If they are both \code{FALSE}, then only the statistics are returned.
 ##' @param plotTrace A logical value. If \code{TRUE}, then the trace is plotted. If \code{plotDensity} is also \code{TRUE}, then two plots are generated.  If they are both \code{FALSE}, only the statistics are returned.
 ##' @return Mainly called for the side effect of plotting.
-##' @docType genericFunction
 ##' @seealso \code{\link[=standardDeviationForScaleInnovation,AnnualAggLossDevModelOutput-method]{standardDeviationForScaleInnovation("AnnualAggLossDevModelOutput")}}
-##' @seealso \code{\link{standardDeviationVsDevelopmentTime}}
+##'  \code{\link{standardDeviationVsDevelopmentTime}}
 ##' @exportMethod standardDeviationForScaleInnovation
 setGenericVerif('standardDeviationForScaleInnovation',
                 function(object, plotDensity=TRUE, plotTrace=TRUE)
@@ -1027,8 +1014,8 @@ setGenericVerif('standardDeviationForScaleInnovation',
 ##' @return Mainly called for the side effect of plotting.  Also returns a named array with some select quantiles of the posterior for the standard deviation in question.  Returned invisibly.
 ##' @docType methods
 ##' @seealso \code{\link{standardDeviationForScaleInnovation}}
-##' @seealso \code{\link{scaleParameter}}
-##' @seealso \code{\link{standardDeviationVsDevelopmentTime}}
+##'  \code{\link{scaleParameter}}
+##'  \code{\link{standardDeviationVsDevelopmentTime}}
 setMethod('standardDeviationForScaleInnovation',
           signature(object='AnnualAggLossDevModelOutput'),
           function(object,  plotDensity, plotTrace)
@@ -1064,7 +1051,6 @@ setMethod('standardDeviationForScaleInnovation',
 ##' @param plotDensity A logical value. If \code{TRUE}, then the density is plotted. If \code{plotTrace} is also \code{TRUE}, then two plots are generated.  If they are both \code{FALSE}, then only the statistics are returned.
 ##' @param plotTrace A logical value. If \code{TRUE}, then the trace is plotted. If \code{plotDensity} is also \code{TRUE}, then two plots are generated.  If they are both \code{FALSE}, then only the statistics are returned.
 ##' @return Mainly called for the side effect of plotting.
-##' @docType genericFunction
 ##' @seealso \code{\link[=scaleParameter,AnnualAggLossDevModelOutput-method]{scaleParameter("AnnualAggLossDevModelOutput")}}
 ##' @exportMethod scaleParameter
 setGenericVerif('scaleParameter',
@@ -1118,10 +1104,9 @@ setMethod('scaleParameter',
 ##' @param plotDensity A logical value. If \code{TRUE}, the density is plotted. If \code{plotTrace} is also \code{TRUE}, then two plots are generated.  If they are both \code{FALSE}, only the statistics are returned.
 ##' @param plotTrace A logical value. If \code{TRUE}, the trace is plotted. If \code{plotDensity} is also \code{TRUE}, then two plots are generated.  If they are both \code{FALSE}, only the statistics are returned.
 ##' @return Mainly called for the side effect of plotting.
-##' @docType genericFunction
 ##' @seealso \code{\link[=stochasticInflationRhoParameter,AnnualAggLossDevModelOutput-method]{stochasticInflationRhoParameter("AnnualAggLossDevModelOutput")}}
-##' @seealso \code{\link{stochasticInflationStationaryMean}}
-##' @seealso \code{\link{stochasticInflation}}
+##'  \code{\link{stochasticInflationStationaryMean}}
+##'  \code{\link{stochasticInflation}}
 ##' @exportMethod stochasticInflationRhoParameter
 setGenericVerif('stochasticInflationRhoParameter',
                 function(object, plotDensity=TRUE, plotTrace=TRUE)
@@ -1138,8 +1123,8 @@ setGenericVerif('stochasticInflationRhoParameter',
 ##' @return Mainly called for the side effect of plotting.  Also returns a named array with select quantiles of the \eqn{rho} parameter.  Returned invisibly.
 ##' @docType methods
 ##' @seealso \code{\link{stochasticInflationRhoParameter}}
-##' @seealso \code{\link{stochasticInflationStationaryMean}}
-##' @seealso \code{\link{stochasticInflation}}
+##'  \code{\link{stochasticInflationStationaryMean}}
+##'  \code{\link{stochasticInflation}}
 setMethod('stochasticInflationRhoParameter',
           signature(object='AnnualAggLossDevModelOutput'),
           function(object, plotDensity, plotTrace)
@@ -1174,10 +1159,9 @@ setMethod('stochasticInflationRhoParameter',
 ##' @param plotDensity A logical value. If \code{TRUE}, the density is plotted. If \code{plotTrace} is also \code{TRUE}, then two plots are generated.  If they are both \code{FALSE}, then only the statistics are returned.
 ##' @param plotTrace A logical value. If \code{TRUE}, the trace is plotted. If \code{plotDensity} is also \code{TRUE}, then two plots are generated.  If they are both \code{FALSE}, then only the statistics are returned.
 ##' @return Mainly called for the side effect of plotting.
-##' @docType genericFunction
 ##' @seealso \code{\link[=stochasticInflationStationaryMean,AnnualAggLossDevModelOutput-method]{stochasticInflationStationaryMean("AnnualAggLossDevModelOutput")}}
-##' @seealso \code{\link{stochasticInflationRhoParameter}}
-##' @seealso \code{\link{stochasticInflation}}
+##'  \code{\link{stochasticInflationRhoParameter}}
+##'  \code{\link{stochasticInflation}}
 ##' @exportMethod stochasticInflationStationaryMean
 setGenericVerif('stochasticInflationStationaryMean',
                 function(object, plotDensity=TRUE, plotTrace=TRUE)
@@ -1194,8 +1178,8 @@ setGenericVerif('stochasticInflationStationaryMean',
 ##' @return Mainly called for the side effect of plotting.  Also returns a named array with select quantiles of the stochastic inflation stationary mean.  Returned invisibly.
 ##' @docType methods
 ##' @seealso \code{\link{stochasticInflationStationaryMean}}
-##' @seealso \code{\link{stochasticInflationRhoParameter}}
-##' @seealso \code{\link{stochasticInflation}}
+##'  \code{\link{stochasticInflationRhoParameter}}
+##'  \code{\link{stochasticInflation}}
 setMethod('stochasticInflationStationaryMean',
           signature(object='AnnualAggLossDevModelOutput'),
           function(object, plotDensity, plotTrace)
@@ -1232,10 +1216,9 @@ setMethod('stochasticInflationStationaryMean',
 ##' @param extraYears An integer expressing the (maximum) number of years to plot (beyond the final observed year).  Must be at least zero.  Default is 15.
 ##' @param plot A logical value. If \code{TRUE}, the plot is generated and the statistics are returned; otherwise only the statistics are returned.
 ##' @return Mainly called for the side effect of plotting.
-##' @docType genericFunction
 ##' @seealso \code{\link[=stochasticInflation,AnnualAggLossDevModelOutput-method]{stochasticInflation("AnnualAggLossDevModelOutput")}}
-##' @seealso \code{\link{stochasticInflationRhoParameter}}
-##' @seealso \code{\link{stochasticInflationStationaryMean}}
+##'  \code{\link{stochasticInflationRhoParameter}}
+##'  \code{\link{stochasticInflationStationaryMean}}
 ##' @exportMethod stochasticInflation
 setGenericVerif('stochasticInflation',
                 function(object, extraYears=15, plot=TRUE)
@@ -1259,8 +1242,8 @@ setGenericVerif('stochasticInflation',
 ##' @return Mainly called for the side effect of plotting.  Also returns a named array of the median predicted inflation rate (not on the log scale).  Returned invisibly.
 ##' @docType methods
 ##' @seealso \code{\link{stochasticInflation}}
-##' @seealso \code{\link{stochasticInflationRhoParameter}}
-##' @seealso \code{\link{stochasticInflationStationaryMean}}
+##'  \code{\link{stochasticInflationRhoParameter}}
+##'  \code{\link{stochasticInflationStationaryMean}}
 setMethod('stochasticInflation',
           signature(object='AnnualAggLossDevModelOutput'),
           function(object, extraYears, plot)
@@ -1392,12 +1375,11 @@ setMethod('stochasticInflation',
 ##' @param extraYears An integer expressing the (maximum) number of years to plot (beyond the final observed calendar year).  Must be greater than or equal to zero.  Default is 15.
 ##' @param plot A logical value. If \code{TRUE}, the plot is generated and the statistics are returned; otherwise only the statistics are returned.
 ##' @return Mainly called for the side effect of plotting.
-##' @docType genericFunction
 ##' @seealso \code{\link[=calendarYearEffectErrors,AnnualAggLossDevModelOutput-method]{calendarYearEffectErrors("AnnualAggLossDevModelOutput")}}
-##' @seealso \code{\link{calendarYearEffect}}
-##' @seealso \code{\link{autoregressiveParameter}}
-##' @seealso \code{\link{standardDeviationOfCalendarYearEffect}}
-##' @seealso \code{\link{calendarYearEffectErrorTracePlot}}
+##'  \code{\link{calendarYearEffect}}
+##'  \code{\link{autoregressiveParameter}}
+##'  \code{\link{standardDeviationOfCalendarYearEffect}}
+##'  \code{\link{calendarYearEffectErrorTracePlot}}
 ##' @exportMethod calendarYearEffectErrors
 setGenericVerif('calendarYearEffectErrors',
                 function(object, extraYears=15, plot=TRUE)
@@ -1421,10 +1403,10 @@ setGenericVerif('calendarYearEffectErrors',
 ##' @return Mainly called for the side effect of plotting.  Also returns a named array with the median predicted errors (not on the log scale).  Returned invisibly.
 ##' @docType methods
 ##' @seealso \code{\link{calendarYearEffectErrors}}
-##' @seealso \code{\link{calendarYearEffect}}
-##' @seealso \code{\link{autoregressiveParameter}}
-##' @seealso \code{\link{standardDeviationOfCalendarYearEffect}}
-##' @seealso \code{\link{calendarYearEffectErrorTracePlot}}
+##'  \code{\link{calendarYearEffect}}
+##'  \code{\link{autoregressiveParameter}}
+##'  \code{\link{standardDeviationOfCalendarYearEffect}}
+##'  \code{\link{calendarYearEffectErrorTracePlot}}
 setMethod('calendarYearEffectErrors',
           signature(object='AnnualAggLossDevModelOutput'),
           function(object, extraYears, plot)
@@ -1521,12 +1503,11 @@ setMethod('calendarYearEffectErrors',
 ##' @param restrictedSize A logical value.  If \code{TRUE}, the plotted calendar year effect is restricted to the square of dimension equal to the observed triangle with which the model was estimated.
 ##' @param plot A logical value. If \code{TRUE}, the plot is generated and the statistics are returned; otherwise only the statistics are returned.
 ##' @return Mainly called for the side effect of plotting.
-##' @docType genericFunction
 ##' @seealso \code{\link[=calendarYearEffect,AnnualAggLossDevModelOutput-method]{calendarYearEffect("AnnualAggLossDevModelOutput")}}
-##' @seealso \code{\link{calendarYearEffectErrors}}
-##' @seealso \code{\link{autoregressiveParameter}}
-##' @seealso \code{\link{standardDeviationOfCalendarYearEffect}}
-##' @seealso \code{\link{calendarYearEffectErrorTracePlot}}
+##'  \code{\link{calendarYearEffectErrors}}
+##'  \code{\link{autoregressiveParameter}}
+##'  \code{\link{standardDeviationOfCalendarYearEffect}}
+##'  \code{\link{calendarYearEffectErrorTracePlot}}
 ##' @exportMethod calendarYearEffect
 setGenericVerif('calendarYearEffect',
                 function(object, restrictedSize=FALSE, plot=TRUE)
@@ -1546,10 +1527,10 @@ setGenericVerif('calendarYearEffect',
 ##' @return Mainly called for the side effect of plotting.  Also returns a named array with the median predicted values (not on the log scale).  Returned invisibly.
 ##' @docType methods
 ##' @seealso \code{\link{calendarYearEffect}}
-##' @seealso \code{\link{calendarYearEffectErrors}}
-##' @seealso \code{\link{autoregressiveParameter}}
-##' @seealso \code{\link{standardDeviationOfCalendarYearEffect}}
-##' @seealso \code{\link{calendarYearEffectErrorTracePlot}}
+##'  \code{\link{calendarYearEffectErrors}}
+##'  \code{\link{autoregressiveParameter}}
+##'  \code{\link{standardDeviationOfCalendarYearEffect}}
+##'  \code{\link{calendarYearEffectErrorTracePlot}}
 setMethod('calendarYearEffect',
           signature(object='AnnualAggLossDevModelOutput'),
           function(object, restrictedSize, plot)
@@ -1606,7 +1587,6 @@ setMethod('calendarYearEffect',
 ##' @param quantiles A vector of quantiles for the predicted payments to return.  Useful for constructing credible intervals.
 ##' @param plot A logical value. If \code{TRUE}, then the plot is generated and the statistics are returned; otherwise only the statistics are returned.
 ##' @return Mainly called for the side effect of plotting.
-##' @docType genericFunction
 ##' @seealso \code{\link[=predictedPayments,AnnualAggLossDevModelOutput-method]{predictedPayments("AnnualAggLossDevModelOutput")}}
 ##' @exportMethod predictedPayments
 setGenericVerif('predictedPayments',
@@ -1864,7 +1844,6 @@ setMethod('predictedPayments',
 ##' @param object The object from which to plot and/or return the estimated standard deviation by development year.
 ##' @param plot A logical value. If \code{TRUE}, the plot is generated and the statistics are returned; otherwise only the statistics are returned.
 ##' @return Mainly called for the side effect of plotting.
-##' @docType genericFunction
 ##' @seealso \code{\link[=standardDeviationVsDevelopmentTime,AnnualAggLossDevModelOutput-method]{standardDeviationVsDevelopmentTime("AnnualAggLossDevModelOutput")}}
 ##' @exportMethod standardDeviationVsDevelopmentTime
 setGenericVerif('standardDeviationVsDevelopmentTime',
@@ -1945,9 +1924,8 @@ setMethod('standardDeviationVsDevelopmentTime',
 ##' @param object The object from which to generate the trace plots.
 ##' @param elements A numeric vector indicating the elements for which to plot the trace.  Valid values are 2 through the total number of exposure years.  If NULL, values are selected automatically.
 ##' @return NULL invisibly.  Only called for the side effect of plotting.
-##' @docType genericFunction
 ##' @seealso \code{\link[=exposureGrowthTracePlot,AnnualAggLossDevModelOutput-method]{exposureGrowthTracePlot("AnnualAggLossDevModelOutput")}}
-##' @seealso \code{\link{exposureGrowth}}
+##'  \code{\link{exposureGrowth}}
 ##' @exportMethod exposureGrowthTracePlot
 setGenericVerif('exposureGrowthTracePlot',
                 function(object, elements=NULL)
@@ -1962,7 +1940,7 @@ setGenericVerif('exposureGrowthTracePlot',
 ##' @return NULL invisibly.  Only called for the side effect of plotting.
 ##' @docType methods
 ##' @seealso \code{\link{exposureGrowthTracePlot}}
-##' @seealso \code{\link{exposureGrowth}}
+##'  \code{\link{exposureGrowth}}
 setMethod('exposureGrowthTracePlot',
           signature(object='AnnualAggLossDevModelOutput'),
           function(object, elements)
@@ -1999,9 +1977,8 @@ setMethod('exposureGrowthTracePlot',
 ##' @param object The object from which to generate the trace plots.
 ##' @param elements A numeric vector indicating the elements for which to plot the trace.  Valid values are 2 through the total number of exposure years(observed and forecast).  If NULL, values are selected automatically.
 ##' @return NULL invisibly.  Only called for the side effect of plotting.
-##' @docType genericFunction
 ##' @seealso \code{\link[=calendarYearEffectErrorTracePlot,AnnualAggLossDevModelOutput-method]{calendarYearEffectErrorTracePlot("AnnualAggLossDevModelOutput")}}
-##' @seealso \code{\link{calendarYearEffectErrors}}
+##'  \code{\link{calendarYearEffectErrors}}
 ##' @exportMethod calendarYearEffectErrorTracePlot
 setGenericVerif('calendarYearEffectErrorTracePlot',
                 function(object, elements=NULL)
@@ -2015,7 +1992,7 @@ setGenericVerif('calendarYearEffectErrorTracePlot',
 ##' @return NULL invisibly.  Only called for the side effect of plotting.
 ##' @docType methods
 ##' @seealso \code{\link{calendarYearEffectErrorTracePlot}}
-##' @seealso \code{\link{calendarYearEffectErrors}}
+##'  \code{\link{calendarYearEffectErrors}}
 setMethod('calendarYearEffectErrorTracePlot',
           signature(object='AnnualAggLossDevModelOutput'),
           function(object, elements)
@@ -2060,9 +2037,8 @@ setMethod('calendarYearEffectErrorTracePlot',
 ##' @param linespace Adjusts the spacing between observed and predicted values.
 ##' @param plot A logical value. If \code{TRUE}, the plot is generated and the statistics are returned; otherwise only the statistics are returned.
 ##' @return Mainly called for the side effect of plotting.  Also returns a numeric matrix of plotted statistics.
-##' @docType genericFunction
 ##' @seealso \code{\link[=lossDevelopmentFactors,AnnualAggLossDevModelOutput-method]{lossDevelopmentFactors("AnnualAggLossDevModelOutput")}}
-##' @seealso \code{\link{tailFactor}}
+##'  \code{\link{tailFactor}}
 ##' @exportMethod lossDevelopmentFactors
 setGenericVerif('lossDevelopmentFactors',
                 function(object, cex.text=.77, linespace=0.5,  plot=TRUE)
@@ -2086,7 +2062,7 @@ setGenericVerif('lossDevelopmentFactors',
 ##' @return Mainly called for the side effect of plotting, but also returns a numeric matrix of plotted statistics.
 ##' @docType methods
 ##' @seealso \code{\link{lossDevelopmentFactors}}
-##' @seealso \code{\link{tailFactor}}
+##'  \code{\link{tailFactor}}
 setMethod('lossDevelopmentFactors',
           signature(object='AnnualAggLossDevModelOutput'),
           function(object, cex.text, linespace, plot)
@@ -2167,9 +2143,8 @@ setMethod('lossDevelopmentFactors',
 ##' @param elements A numeric vector indicating for which elements to plot the trace.  Valid values are 2 through the number of columns in the observed triangle.  If NULL, values are selected automatically.
 ##' @param \dots Additional arguments used by methods.
 ##' @return NULL invisibly.  Only called for the side effect of plotting.
-##' @docType genericFunction
 ##' @seealso \code{\link[=rateOfDecayTracePlot,StandardAnnualAggLossDevModelOutput-method]{rateOfDecayTracePlot("StandardAnnualAggLossDevModelOutput")}}
-##' @seealso \code{\link{rateOfDecay}}
+##'  \code{\link{rateOfDecay}}
 ##' @exportMethod rateOfDecayTracePlot
 setGenericVerif('rateOfDecayTracePlot',
                 function(object, elements=NULL, ...)
@@ -2182,9 +2157,8 @@ setGenericVerif('rateOfDecayTracePlot',
 ##' @param elements A numeric vector indicating the elements for which to plot the trace.  Valid values are 1 through the number of development years (columns) in the observed triangle.  If NULL, values are selected automatically.
 ##' @param \dots Additional arguments used by methods.
 ##' @return NULL invisibly.  Only called for the side effect of plotting.
-##' @docType genericFunction
 ##' @seealso \code{\link[=consumptionPathTracePlot,StandardAnnualAggLossDevModelOutput-method]{consumptionTracePlot("StandardAnnualAggLossDevModelOutput")}}
-##' @seealso \code{\link{consumptionPath}}
+##'  \code{\link{consumptionPath}}
 ##' @exportMethod consumptionPathTracePlot
 setGenericVerif('consumptionPathTracePlot',
                 function(object, elements=NULL, ...)
@@ -2202,10 +2176,9 @@ setGenericVerif('consumptionPathTracePlot',
 ##' @param object The object from which to plot and/or return the estimated consumption path.
 ##' @param plot A logical value. If \code{TRUE}, the plot is generated and the statistics are returned; otherwise only the statistics are returned.
 ##' @return Mainly called for the side effect of plotting.  Also returns the plotted statistics.  Returned invisibly.
-##' @docType genericFunction
 ##' @seealso \code{\link[=consumptionPath,StandardAnnualAggLossDevModelOutput-method]{consumptionPath("StandardAnnualAggLossDevModelOutput")}}
-##' @seealso \code{\link[=consumptionPath,BreakAnnualAggLossDevModelOutput-method]{consumptionPath("BreakAnnualAggLossDevModelOutput")}}
-##' @seealso \code{\link{consumptionPathTracePlot}}
+##' \code{\link[=consumptionPath,BreakAnnualAggLossDevModelOutput-method]{consumptionPath("BreakAnnualAggLossDevModelOutput")}}
+##' \code{\link{consumptionPathTracePlot}}
 ##' @exportMethod consumptionPath
 setGenericVerif('consumptionPath',
                 function(object, plot=TRUE)
@@ -2220,11 +2193,10 @@ setGenericVerif('consumptionPath',
 ##' @param object The object from which to plot and/or return the estimated rate of decay.
 ##' @param plot A logical value. If \code{TRUE}, the plot is generated and the statistics are returned; otherwise only the statistics are returned.
 ##' @return Mainly called for the side effect of plotting.  Also returns the plotted statistics.  Returned invisibly.
-##' @docType genericFunction
 ##' @seealso \code{\link[=rateOfDecay,StandardAnnualAggLossDevModelOutput-method]{rateOfDecay("StandardAnnualAggLossDevModelOutput")}}
-##' @seealso \code{\link[=rateOfDecay,BreakAnnualAggLossDevModelOutput-method]{rateOfDecay("BreakAnnualAggLossDevModelOutput")}}
-##' @seealso \code{\link{consumptionPath}}
-##' @seealso \code{\link{rateOfDecayTracePlot}}
+##'  \code{\link[=rateOfDecay,BreakAnnualAggLossDevModelOutput-method]{rateOfDecay("BreakAnnualAggLossDevModelOutput")}}
+##'  \code{\link{consumptionPath}}
+##'  \code{\link{rateOfDecayTracePlot}}
 ##' @exportMethod rateOfDecay
 setGenericVerif('rateOfDecay',
                 function(object, plot=TRUE)
@@ -2258,9 +2230,8 @@ setGenericVerif('rateOfDecay',
 ##' @param plot A logical value. If \code{TRUE}, the plot is generated and the statistics are returned; otherwise only the statistics are returned.
 ##' @param expYearRange Either a range of years (for example c(1995, 2006)) or one of the keywords \dQuote{all} or \dQuote{fullyObs}.
 ##' @return Mainly called for the side effect of plotting.
-##' @docType genericFunction
 ##' @seealso \code{\link[=tailFactor,StandardAnnualAggLossDevModelOutput-method]{tailFactor("StandardAnnualAggLossDevModelOutput")}}
-##' @seealso \code{\link[=tailFactor,BreakAnnualAggLossDevModelOutput-method]{tailFactor("BreakAnnualAggLossDevModelOutput")}}
+##'  \code{\link[=tailFactor,BreakAnnualAggLossDevModelOutput-method]{tailFactor("BreakAnnualAggLossDevModelOutput")}}
 ##' @exportMethod tailFactor
 setGenericVerif('tailFactor',
                 function(object, attachment, useObservedValues=FALSE, firstIsHalfReport=NA, finalAttachment=attachment, plot=TRUE, expYearRange='all')
@@ -2333,10 +2304,9 @@ setGenericVerif('tailFactor',
 ##' @param object The object from which to plot the number of knots.
 ##' @param plot A logical value. If \code{TRUE}, the plot is generated and the statistics are returned; otherwise only the statistics are returned.
 ##' @return Mainly called for the side effect of plotting.  Also returns statics on the number of knots.  Returned invisibly.
-##' @docType genericFunction
 ##' @seealso \code{\link{consumptionPath}}
-##' @seealso \code{\link[=numberOfKnots,StandardAnnualAggLossDevModelOutput-method]{numberOfKnots("StandardAnnualAggLossDevModelOutput")}}
-##' @seealso \code{\link[=numberOfKnots,BreakAnnualAggLossDevModelOutput-method]{numberOfKnots("BreakAnnualAggLossDevModelOutput")}}
+##'  \code{\link[=numberOfKnots,StandardAnnualAggLossDevModelOutput-method]{numberOfKnots("StandardAnnualAggLossDevModelOutput")}}
+##'  \code{\link[=numberOfKnots,BreakAnnualAggLossDevModelOutput-method]{numberOfKnots("BreakAnnualAggLossDevModelOutput")}}
 ##' @exportMethod numberOfKnots
 setGenericVerif('numberOfKnots',
                 function(object, plot=TRUE)
@@ -2351,9 +2321,8 @@ setGenericVerif('numberOfKnots',
 ##' @name mcmcACF
 ##' @param object The object from which to plot autocorrelations.
 ##' @return Called for the side effect of plotting.
-##' @docType genericFunction
 ##' @seealso \code{\link[=mcmcACF,StandardAnnualAggLossDevModelOutput-method]{mcmcACF("StandardAnnualAggLossDevModelOutput")}}
-##' @seealso \code{\link[=mcmcACF,BreakAnnualAggLossDevModelOutput-method]{mcmcACF("BreakAnnualAggLossDevModelOutput")}}
+##'  \code{\link[=mcmcACF,BreakAnnualAggLossDevModelOutput-method]{mcmcACF("BreakAnnualAggLossDevModelOutput")}}
 ##' @exportMethod mcmcACF
 setGenericVerif('mcmcACF',
                 function(object)

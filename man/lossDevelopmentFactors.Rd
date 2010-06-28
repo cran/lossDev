@@ -8,9 +8,8 @@ Since the model is Bayesian, each development factor comes as a distribution.  O
 The age-to-age factors are the ratios of the cumulative paid values at one period to the previous period.
 Note that the median of products is not the product of medians, and thus it is possible (or rather likely) that age-to-age factors will not line up with age-to-ultimate factors (see \code{\link{tailFactor}}).}
 \value{Mainly called for the side effect of plotting.  Also returns a numeric matrix of plotted statistics.}
-\docType{genericFunction}
-\seealso{\code{\link[=lossDevelopmentFactors,AnnualAggLossDevModelOutput-method]{lossDevelopmentFactors("AnnualAggLossDevModelOutput")}}}
-\seealso{\code{\link{tailFactor}}}
+\seealso{\code{\link[=lossDevelopmentFactors,AnnualAggLossDevModelOutput-method]{lossDevelopmentFactors("AnnualAggLossDevModelOutput")}}
+\code{\link{tailFactor}}}
 \arguments{\item{object}{The object from which to plot and/or return loss development factors.}
 \item{cex.text}{The \code{cex} value supplied to \code{text}. Adjusts the relative size of text.}
 \item{linespace}{Adjusts the spacing between observed and predicted values.}

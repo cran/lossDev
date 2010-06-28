@@ -9,7 +9,6 @@ Note: One cannot calculate the estimated incremental payments from the estimated
 If \code{mergePredictedWithObserved=TRUE} and \code{type="incremental"}, then any observed incremental payment will be used in place of its corresponding incremental payment.
 If \code{mergePredictedWithObserved=TRUE} and \code{type="cumulative"}, then only predicted incremental payments (by row) to the right of the last observed cumulative value will enter the calculation.}
 \value{Mainly called for the side effect of plotting.}
-\docType{genericFunction}
 \seealso{\code{\link[=predictedPayments,AnnualAggLossDevModelOutput-method]{predictedPayments("AnnualAggLossDevModelOutput")}}}
 \arguments{\item{object}{The object from which to plot predicted vs actual payments and from which to return predicted payments.}
 \item{type}{A single character value specifying whether to plot/return the predicted incremental or cumulative payments. Valid values are \dQuote{incremental} or \dQuote{cumulative.}  See details as to why these may not match up.}

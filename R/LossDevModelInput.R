@@ -52,7 +52,6 @@ setClass(
 ##' @name runLossDevModel
 ##' @param object The object containing the model to estimate.
 ##' @return object of class \code{LossDevModelOutput}.
-##' @docType genericFunction
 ##' @seealso \code{\link[=runLossDevModel,LossDevModelInput-method]{runLossDevModel("LossDevModelInput")}}
 ##' @exportMethod runLossDevModel
 setGenericVerif('runLossDevModel',
@@ -183,7 +182,6 @@ setMethod(
 ##' @name getJagsInits
 ##' @param object The object from which to retrieve initial values.
 ##' @return A function. Overriding methods should return a parameterless function that, when evaluated, returns a named list of initial values.
-##' @docType genericFunction
 setGenericVerif('getJagsInits',
                  function(object)
                  standardGeneric('getJagsInits'))
@@ -195,7 +193,6 @@ setGenericVerif('getJagsInits',
 ##' @name getJagsData
 ##' @param object The object from which to retrieve initial values.
 ##' @return This method returns a named list of data values.
-##' @docType genericFunction
 setGenericVerif('getJagsData',
                  function(object)
                  standardGeneric('getJagsData'))

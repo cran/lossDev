@@ -63,7 +63,7 @@ setClass(
 ##' @return Mainly called for the side effect of plotting.  Also returns the plotted statistics.  Returned invisibly.
 ##' @docType methods
 ##' @seealso \code{\link{consumptionPath}}
-##' @seealso \code{\link[=consumptionPath,BreakAnnualAggLossDevModelOutput-method]{consumptionPath("BreakAnnualAggLossDevModelOutput")}}
+##'  \code{\link[=consumptionPath,BreakAnnualAggLossDevModelOutput-method]{consumptionPath("BreakAnnualAggLossDevModelOutput")}}
 setMethod('consumptionPath',
           signature(object='StandardAnnualAggLossDevModelOutput'),
           function(object, plot)
@@ -98,8 +98,8 @@ setMethod('consumptionPath',
 ##' @return Mainly called for the side effect of plotting.  Also returns the plotted statistics.  Returned invisibly.
 ##' @docType methods
 ##' @seealso \code{\link{rateOfDecay}}
-##' @seealso \code{\link[=rateOfDecay,BreakAnnualAggLossDevModelOutput-method]{rateOfDecay("BreakAnnualAggLossDevModelOutput")}}
-##' @seealso \code{\link{consumptionPath}}
+##'  \code{\link[=rateOfDecay,BreakAnnualAggLossDevModelOutput-method]{rateOfDecay("BreakAnnualAggLossDevModelOutput")}}
+##'  \code{\link{consumptionPath}}
 setMethod('rateOfDecay',
           signature(object='StandardAnnualAggLossDevModelOutput'),
           function(object, plot)
@@ -203,7 +203,7 @@ setMethod('rateOfDecay',
 ##' @return Mainly called for the side effect of plotting.  Also returns tail factors for \emph{all} attachment points through \code{finalAttachment}.  Returned invisibly.
 ##' @docType methods
 ##' @seealso \code{\link{tailFactor}}
-##' @seealso \code{\link[=tailFactor,BreakAnnualAggLossDevModelOutput-method]{tailFactor("BreakAnnualAggLossDevModelOutput")}}
+##'  \code{\link[=tailFactor,BreakAnnualAggLossDevModelOutput-method]{tailFactor("BreakAnnualAggLossDevModelOutput")}}
 setMethod('tailFactor',
           signature(object='StandardAnnualAggLossDevModelOutput'),
           function(object, attachment, useObservedValues, firstIsHalfReport, finalAttachment, plot, expYearRange)
@@ -313,8 +313,8 @@ setMethod('tailFactor',
 ##' @return Mainly called for the side effect of plotting.  Also returns a named vector with names equal to the number of knots and values equal to the density.  Returned invisibly.
 ##' @docType methods
 ##' @seealso \code{\link{consumptionPath}}
-##' @seealso \code{\link{numberOfKnots}}
-##' @seealso \code{\link[=numberOfKnots,BreakAnnualAggLossDevModelOutput-method]{numberOfKnots("BreakAnnualAggLossDevModelOutput")}}
+##'  \code{\link{numberOfKnots}}
+##'  \code{\link[=numberOfKnots,BreakAnnualAggLossDevModelOutput-method]{numberOfKnots("BreakAnnualAggLossDevModelOutput")}}
 setMethod('numberOfKnots',
           signature(object='StandardAnnualAggLossDevModelOutput'),
           function(object, plot=TRUE)
@@ -428,7 +428,7 @@ setMethod('numberOfKnots',
 ##' @return NULL invisibly.  Only called for the side effect of plotting.
 ##' @docType methods
 ##' @seealso \code{\link{rateOfDecayTracePlot}}
-##' @seealso \code{\link{rateOfDecay}}
+##'  \code{\link{rateOfDecay}}
 setMethod('rateOfDecayTracePlot',
           signature(object='StandardAnnualAggLossDevModelOutput'),
           function(object, elements=NULL, ...)
@@ -468,7 +468,7 @@ setMethod('rateOfDecayTracePlot',
 ##' @return NULL invisibly.  Only called for the side effect of plotting.
 ##' @docType methods
 ##' @seealso \code{\link{consumptionPathTracePlot}}
-##' @seealso \code{\link{consumptionPath}}
+##'  \code{\link{consumptionPath}}
 setMethod('consumptionPathTracePlot',
           signature(object='StandardAnnualAggLossDevModelOutput'),
           function(object, elements=NULL, ...)
@@ -503,7 +503,7 @@ setMethod('consumptionPathTracePlot',
 ##' @return Called for the side effect of plotting.
 ##' @docType methods
 ##' @seealso \code{\link{mcmcACF}}
-##' @seealso \code{\link[=mcmcACF,BreakAnnualAggLossDevModelOutput-method]{mcmcACF("BreakAnnualAggLossDevModelOutput")}}
+##'  \code{\link[=mcmcACF,BreakAnnualAggLossDevModelOutput-method]{mcmcACF("BreakAnnualAggLossDevModelOutput")}}
 ##' @TODO Add option to plot other values.  Currently only plots \dQuote{First Rate Of Decay,} \dQuote{First Calendar Year Effect Error,} and \dQuote{First Exposure Year Growth.}
 setMethod('mcmcACF',
           signature(object='StandardAnnualAggLossDevModelOutput'),

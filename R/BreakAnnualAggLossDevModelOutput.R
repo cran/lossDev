@@ -66,7 +66,7 @@ setClass(
 ##' @return Mainly called for the side effect of plotting.  Also returns the plotted statistics.  Returned invisibly.
 ##' @docType methods
 ##' @seealso \code{\link{consumptionPath}}
-##' @seealso \code{\link[=consumptionPath,StandardAnnualAggLossDevModelOutput-method]{consumptionPath("StandardAnnualAggLossDevModelOutput")}}
+##'  \code{\link[=consumptionPath,StandardAnnualAggLossDevModelOutput-method]{consumptionPath("StandardAnnualAggLossDevModelOutput")}}
 setMethod('consumptionPath',
           signature(object='BreakAnnualAggLossDevModelOutput'),
           function(object, plot)
@@ -148,8 +148,8 @@ setMethod('consumptionPath',
 ##' @return Mainly called for the side effect of plotting.  Also returns the plotted statistics.  Returned invisibly.
 ##' @docType methods
 ##' @seealso \code{\link{rateOfDecay}}
-##' @seealso \code{\link[=rateOfDecay,StandardAnnualAggLossDevModelOutput-method]{rateOfDecay("StandardAnnualAggLossDevModelOutput")}}
-##' @seealso \code{\link{consumptionPath}}
+##'  \code{\link[=rateOfDecay,StandardAnnualAggLossDevModelOutput-method]{rateOfDecay("StandardAnnualAggLossDevModelOutput")}}
+##'  \code{\link{consumptionPath}}
 setMethod('rateOfDecay',
           signature(object='BreakAnnualAggLossDevModelOutput'),
           function(object, plot)
@@ -274,7 +274,7 @@ setMethod('rateOfDecay',
 ##' @return Mainly called for the side effect of plotting.  Also returns tail factors for \emph{all} attachment points through \code{finalAttachment}.  See Details. Returned invisibly.
 ##' @docType methods
 ##' @seealso \code{\link{tailFactor}}
-##' @seealso \code{\link[=tailFactor,StandardAnnualAggLossDevModelOutput-method]{tailFactor("StandardAnnualAggLossDevModelOutput")}}
+##'  \code{\link[=tailFactor,StandardAnnualAggLossDevModelOutput-method]{tailFactor("StandardAnnualAggLossDevModelOutput")}}
 setMethod('tailFactor',
           signature(object='BreakAnnualAggLossDevModelOutput'),
           function(object, attachment, useObservedValues, firstIsHalfReport, finalAttachment, plot, expYearRange)
@@ -436,8 +436,8 @@ setMethod('tailFactor',
 ##' @return Mainly called for the side effect of plotting.  Also returns a list of length 2 with each element containing a named vector with names equal to the number of knots and values equal to the density.  Returned invisibly.
 ##' @docType methods
 ##' @seealso \code{\link{consumptionPath}}
-##' @seealso \code{\link{numberOfKnots}}
-##' @seealso \code{\link[=numberOfKnots,StandardAnnualAggLossDevModelOutput-method]{numberOfKnots("StandardAnnualAggLossDevModelOutput")}}
+##'  \code{\link{numberOfKnots}}
+##'  \code{\link[=numberOfKnots,StandardAnnualAggLossDevModelOutput-method]{numberOfKnots("StandardAnnualAggLossDevModelOutput")}}
 setMethod('numberOfKnots',
           signature(object='BreakAnnualAggLossDevModelOutput'),
           function(object, plot=TRUE)
@@ -576,7 +576,7 @@ setMethod('numberOfKnots',
 ##' @return NULL invisibly.  Only called for the side effect of plotting.
 ##' @docType methods
 ##' @seealso \code{\link{rateOfDecayTracePlot}}
-##' @seealso \code{\link{rateOfDecay}}
+##'  \code{\link{rateOfDecay}}
 setMethod('rateOfDecayTracePlot',
           signature(object='BreakAnnualAggLossDevModelOutput'),
           function(object, elements=NULL, preBreak=TRUE, ...)
@@ -618,7 +618,7 @@ setMethod('rateOfDecayTracePlot',
 ##' @return NULL invisibly.  Only called for the side effect of plotting.
 ##' @docType methods
 ##' @seealso \code{\link{consumptionPathTracePlot}}
-##' @seealso \code{\link{consumptionPath}}
+##'  \code{\link{consumptionPath}}
 setMethod('consumptionPathTracePlot',
           signature(object='BreakAnnualAggLossDevModelOutput'),
           function(object, elements=NULL, preBreak=TRUE, ...)
@@ -655,7 +655,7 @@ setMethod('consumptionPathTracePlot',
 ##' @return Called for the side effect of plotting.
 ##' @docType methods
 ##' @seealso \code{\link{mcmcACF}}
-##' @seealso \code{\link[=mcmcACF,StandardAnnualAggLossDevModelOutput-method]{mcmcACF("StandardAnnualAggLossDevModelOutput")}}
+##'  \code{\link[=mcmcACF,StandardAnnualAggLossDevModelOutput-method]{mcmcACF("StandardAnnualAggLossDevModelOutput")}}
 ##' @TODO Add option to plot other values.  Currently only plots \dQuote{First Rate Of Decay} (for the pre and post break), \dQuote{First Calendar Year Effect Error,} and \dQuote{First Exposure Year Growth,}
 setMethod('mcmcACF',
           signature(object='BreakAnnualAggLossDevModelOutput'),
@@ -714,9 +714,8 @@ setMethod('mcmcACF',
 ##' @param object The object from which to plot and/or return the posterior change point estimate.
 ##' @param plot A logical value. If \code{TRUE}, the plot is generated and the statistics are returned; otherwise only the statistics are returned.
 ##' @return Mainly called for the side effect of plotting.
-##' @docType genericFunction
 ##' @seealso \code{\link[=firstYearInNewRegime,BreakAnnualAggLossDevModelOutput-method]{firstYearInNewRegime("BreakAnnualAggLossDevModelOutput")}}
-##' @seealso \code{\link{firstYearInNewRegimeTracePlot}}
+##'  \code{\link{firstYearInNewRegimeTracePlot}}
 ##' @exportMethod  firstYearInNewRegime
 setGenericVerif('firstYearInNewRegime',
                 function(object, plot=TRUE)
@@ -730,7 +729,7 @@ setGenericVerif('firstYearInNewRegime',
 ##' @return Mainly called for the side effect of plotting.  Also returns a named numeric vector with names corresponding to the first year in the new regime and with values corresponding to the density.  Returned invisibly.
 ##' @docType methods
 ##' @seealso \code{\link{firstYearInNewRegime}}
-##' @seealso \code{\link{firstYearInNewRegimeTracePlot}}
+##'  \code{\link{firstYearInNewRegimeTracePlot}}
 setMethod('firstYearInNewRegime',
           signature(object='BreakAnnualAggLossDevModelOutput'),
           function(object, plot)
@@ -824,9 +823,8 @@ setMethod('firstYearInNewRegime',
 ##' @name firstYearInNewRegimeTracePlot
 ##' @param object The object from which to generate the trace plot for the change point estimate.
 ##' @return Only called for the side effect of plotting.
-##' @docType genericFunction
 ##' @seealso \code{\link[=firstYearInNewRegimeTracePlot,BreakAnnualAggLossDevModelOutput-method]{firstYearInNewRegimeTracePlot("BreakAnnualAggLossDevModelOutput")}}
-##' @seealso \code{\link{firstYearInNewRegimeTracePlot}}
+##'  \code{\link{firstYearInNewRegimeTracePlot}}
 ##' @exportMethod  firstYearInNewRegimeTracePlot
 setGenericVerif('firstYearInNewRegimeTracePlot',
                 function(object)
@@ -839,7 +837,7 @@ setGenericVerif('firstYearInNewRegimeTracePlot',
 ##' @return Only called for the side effect of plotting.
 ##' @docType methods
 ##' @seealso \code{\link{firstYearInNewRegimeTracePlot}}
-##' @seealso \code{\link{firstYearInNewRegime}}
+##'  \code{\link{firstYearInNewRegime}}
 setMethod('firstYearInNewRegimeTracePlot',
           signature(object='BreakAnnualAggLossDevModelOutput'),
           function(object)

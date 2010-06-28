@@ -9,8 +9,8 @@ The median of this distribution is used as a point estimate when plotting and/or
 Note: One cannot calculate the estimated incremental payments from the estimated cumulative payments (and vice versa) since the median of sums need not be equal to the sum of medians.}
 \value{Mainly called for the side effect of plotting.  Also returns a named array (with the same structure as the input triangle) containing the predicted log incremental payments.  Returned invisibly.}
 \docType{methods}
-\seealso{\code{\link{accountForZeroPayments}}}
-\seealso{\code{\link{predictedPayments}}}
+\seealso{\code{\link{accountForZeroPayments}}
+\code{\link{predictedPayments}}}
 \arguments{\item{object}{The object of type \code{AnnualAggLossDevModelOutputWithZeros} from which to plot predicted vs actual payments and return predicted payments.}
 \item{type}{A singe character value specifying whether to plot/return the predicted incremental or cumulative payments. Valid values are "incremental" or "cumulative."  See details as to why these may not match up.}
 \item{logScale}{A logical value.  If \code{TRUE}, then values are plotted on a log scale.}
