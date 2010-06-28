@@ -42,8 +42,7 @@ NULL
 ##' @seealso \code{\linkS4class{LossDevModelOutput}}
 setClass(
          'AnnualAggLossDevModelOutput',
-         representation(
-                        inc.pred='NodeOutput',
+         representation(inc.pred='NodeOutput',
                         eta='NodeOutput',
                         eta.mu='NodeOutput',
                         sigma.eta='NodeOutput',
@@ -252,9 +251,11 @@ setMethod('finalCumulativeDiff',
 
           if(plot)
           {
+
+              expYearRange.seq <- seq(expYearRange[1], expYearRange[2])
               plot(
                    x=range(exp.years) + c(-1, +1),
-                   y=range(0, cumulative.resi.stats, na.rm=TRUE),
+                   y=range(as.vector(cumulative.resi.stats[,as.character(expYearRange.seq) ]), na.rm=TRUE),
                    type='n',
                    xlab=getExposureYearLabel(object@input),
                    ylab="Relative Difference Between Actual and Estimated Cumulatives",
@@ -263,42 +264,42 @@ setMethod('finalCumulativeDiff',
 
               abline(h=0,col='gray23',lwd=2,lty='dashed')
 
-              expYearRange.seq <- seq(expYearRange[1], expYearRange[2])
               for(i in seq_along(expYearRange.seq))
               {
                   year.i <- expYearRange.seq[i]
+                  i. <- match(year.i, object@input@exposureYears)
 
                   ##draw median to make it thick
                   off.set <- .45
                   lines(x=c(year.i-off.set, year.i+off.set),
-                        y=rep(cumulative.resi.stats['50%',i],2),
+                        y=rep(cumulative.resi.stats['50%',i.],2),
                         lwd=2)
 
                   ##upper 25%
                   off.set <- .45
                   upper.lower <- c('75%','50%')
                   lines(x=c(year.i-off.set, year.i+off.set, year.i+off.set, year.i-off.set, year.i-off.set),
-                        y=cumulative.resi.stats[upper.lower[c(1,1,2,2,1)],i])
+                        y=cumulative.resi.stats[upper.lower[c(1,1,2,2,1)],i.])
 
                   ##lower 25%
                   off.set <- .45
                   upper.lower <- c('50%','25%')
                   lines(x=c(year.i-off.set, year.i+off.set, year.i+off.set, year.i-off.set, year.i-off.set),
-                        y=cumulative.resi.stats[upper.lower[c(1,1,2,2,1)],i])
+                        y=cumulative.resi.stats[upper.lower[c(1,1,2,2,1)],i.])
 
 
                   ##lower%
                   off.set <- .25
                   upper.lower <- c('25%','10%')
                   lines(x=c(year.i-off.set, year.i+off.set, year.i+off.set, year.i-off.set, year.i-off.set),
-                        y=cumulative.resi.stats[upper.lower[c(1,1,2,2,1)],i])
+                        y=cumulative.resi.stats[upper.lower[c(1,1,2,2,1)],i.])
 
 
                   ##upper%
                   off.set <- .25
                   upper.lower <- c('90%','75%')
                   lines(x=c(year.i-off.set, year.i+off.set, year.i+off.set, year.i-off.set, year.i-off.set),
-                        y=cumulative.resi.stats[upper.lower[c(1,1,2,2,1)],i])
+                        y=cumulative.resi.stats[upper.lower[c(1,1,2,2,1)],i.])
 
 
               }
@@ -1592,11 +1593,14 @@ setMethod('calendarYearEffect',
 ##' The median of this distribution is used as a point estimate when plotting and/or returning values.
 ##' Note: One cannot calculate the estimated incremental payments from the estimated cumulative payments (and vice versa) since the median of sums need not be equal to the sum of medians.
 ##'
+##' If \code{mergePredictedWithObserved=TRUE} and \code{type="incremental"}, then any observed incremental payment will be used in place of its corresponding incremental payment.
+##' If \code{mergePredictedWithObserved=TRUE} and \code{type="cumulative"}, then only predicted incremental payments (by row) to the right of the last observed cumulative value will enter the calculation.
+##'
 ##' @name predictedPayments
 ##' @param object The object from which to plot predicted vs actual payments and from which to return predicted payments.
 ##' @param type A single character value specifying whether to plot/return the predicted incremental or cumulative payments. Valid values are \dQuote{incremental} or \dQuote{cumulative.}  See details as to why these may not match up.
 ##' @param logScale A logical value.  If \code{TRUE}, then values are plotted on a log scale.
-##' @param mergePredictedWithObserved A logical value.  If \code{TRUE}, then the returned values treat observed incremental payments at "face value"; otherwise predicted values are used in place of observed values.
+##' @param mergePredictedWithObserved A logical value.  See details.
 ##' @param plotObservedValues A logical value.  If \code{FALSE}, then only the predicted values are plotted.
 ##' @param plotPredictedOnlyWhereObserved A logical value.  If \code{TRUE}, then only the predicted incremental payments with valid corresponding observed (log) incremental payment are plotted. Ignored for \code{type="cumulative"}.
 ##' @param quantiles A vector of quantiles for the predicted payments to return.  Useful for constructing credible intervals.
@@ -1615,13 +1619,16 @@ setGenericVerif('predictedPayments',
 ##' The median of this distribution is used as a point estimate when plotting and/or returning values.
 ##' Note: One cannot calculate the estimated incremental payments from the estimated cumulative payments (and vice versa) since the median of sums need not be equal to the sum of medians.
 ##'
+##' If \code{mergePredictedWithObserved=TRUE} and \code{type="incremental"}, then any observed incremental payment will be used in place of its corresponding incremental payment.
+##' If \code{mergePredictedWithObserved=TRUE} and \code{type="cumulative"}, then only predicted incremental payments (by row) to the right of the last observed cumulative value will enter the calculation.
+##'
 ##' @name predictedPayments,AnnualAggLossDevModelOutput-method
 ##' @param object The object of type \code{AnnualAggLossDevModelOutput} from which to plot predicted vs actual payments and return predicted payments.
 ##' @param type A singe character value specifying whether to plot/return the predicted incremental or cumulative payments. Valid values are "incremental" or "cumulative."  See details as to why these may not match up.
 ##' @param logScale A logical value.  If \code{TRUE}, then values are plotted on a log scale.
 ##' @param mergePredictedWithObserved A logical value.  If \code{TRUE}, then the returned values treat observed incremental payments at "face value"; otherwise predicted values are used in place of observed values.
 ##' @param plotObservedValues A logical value.  If \code{FALSE}, then only the predicted values are plotted.
-##' @param plotPredictedOnlyWhereObserved A logical value.  If \code{TRUE}, then only the predicted incremental payments with valid corresponding observed (log) incremental payment are plotted. Ignored for \code{type="cumulative"}.
+##' @param plotPredictedOnlyWhereObserved A logical value.  See details.
 ##' @param quantiles A vector of quantiles for the predicted payments to return.  Usefull for constructing credible intervals.
 ##' @param plot A logical value. If \code{TRUE}, then the plot is generated and the statistics are returned; otherwise only the statistics are returned.
 ##' @return Mainly called for the side effect of plotting.  Also returns a named array (with the same structure as the input triangle) containing the predicted log incremental payments.  Returned invisibly.
@@ -1682,18 +1689,31 @@ setMethod('predictedPayments',
                   ans <- apply(ans, c(1, 2), quantile, quantiles)
 
               } else {
-                  tmp <- inc.pred.coda
-                  dimnames(tmp)[[1]] <-  min(object@input@exposureYears) - 1 + 1:dim(tmp)[1]
-                  tmp[1:K, 1:K, , ][!is.na(inc.obs)] <- inc.obs[!is.na(inc.obs)]
-                  tmp.cumul <- array(NA, dim(tmp), dimnames(tmp))
 
-                  tmp.cumul[,1,,] <-  tmp[,1,,]
+                  tmp <- array(NA,
+                               dim(inc.pred.coda),
+                               dimnames=list(min(object@input@exposureYears) - 1 + 1:dim(inc.pred.coda)[1], NULL))
 
-                  for(i in 2:dim(tmp.cumul)[2])
+                  tmp[1:K, 1:K, , ] <- cumul.obs
+
+
+
+                  for(i in 1:K)
                   {
-                      tmp.cumul[,i,,] <- tmp.cumul[,i-1,,] +  tmp[,i,,]
+                      j.lower <- which(!is.na(cumul.obs[i,]))
+                      if(length(j.lower) == 0)
+                      {
+                          j.lower <- 1
+                      } else {
+                          j.lower <- max(j.lower)
+                      }
+
+                      for(j in (j.lower+1):(dim(inc.pred.coda)[2]))
+                          tmp[i,j,,] <- tmp[i,j-1,,] +  inc.pred.coda[i,j,,]
                   }
-                  ans <- apply(tmp.cumul, c(1,2), quantile, quantiles)
+
+                  tmp[(K+1):(dim(cumul.pred.coda)[1]), , , ] <- cumul.pred.coda[(K+1):(dim(cumul.pred.coda)[1]), , , ]
+                  ans <- apply(tmp, c(1,2), quantile, probs = quantiles, na.rm = TRUE)
 
               }
 

@@ -40,11 +40,48 @@
 /rgb { setrgbcolor } def
 /s   { scalefont setfont } def
 % end   .ps.prolog
+% begin encoding
+/WinAnsiEncoding [
+ /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef
+ /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef
+ /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef
+ /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef
+ /space /exclam /quotedbl /numbersign /dollar /percent /ampersand /quoteright
+ /parenleft /parenright /asterisk /plus /comma /minus /period /slash
+ /zero /one /two /three /four /five /six /seven
+ /eight /nine /colon /semicolon /less /equal /greater /question
+ /at /A /B /C /D /E /F /G
+ /H /I /J /K /L /M /N /O
+ /P /Q /R /S /T /U /V /W
+ /X /Y /Z /bracketleft /backslash /bracketright /asciicircum /underscore
+ /grave /a /b /c /d /e /f /g
+ /h /i /j /k /l /m /n /o
+ /p /q /r /s /t /u /v /w
+ /x /y /z /braceleft /bar /braceright /asciitilde /.notdef
+ /Euro /.notdef /quotesinglbase /florin /quotedblbase /ellipsis /dagger /daggerdbl
+ /circumflex /perthousand /Scaron /guilsinglleft /OE /.notdef /Zcaron /.notdef
+ /.notdef /quoteleft /quoteright /quotedblleft /quotedblright /bullet /endash /emdash
+ /tilde /trademark /scaron /guilsinglright /oe /.notdef /zcaron /Ydieresis
+ /space /exclamdown /cent /sterling /currency /yen /brokenbar /section
+ /dieresis /copyright /ordfeminine /guillemotleft /logicalnot /hyphen /registered /macron
+ /degree /plusminus /twosuperior /threesuperior /acute /mu /paragraph /periodcentered
+ /cedilla /onesuperior /ordmasculine /guillemotright /onequarter /onehalf /threequarters /questiondown
+ /Agrave /Aacute /Acircumflex /Atilde /Adieresis /Aring /AE /Ccedilla
+ /Egrave /Eacute /Ecircumflex /Edieresis /Igrave /Iacute /Icircumflex /Idieresis
+ /Eth /Ntilde /Ograve /Oacute /Ocircumflex /Otilde /Odieresis /multiply
+ /Oslash /Ugrave /Uacute /Ucircumflex /Udieresis /Yacute /Thorn /germandbls
+ /agrave /aacute /acircumflex /atilde /adieresis /aring /ae /ccedilla
+ /egrave /eacute /ecircumflex /edieresis /igrave /iacute /icircumflex /idieresis
+ /eth /ntilde /ograve /oacute /ocircumflex /otilde /odieresis /divide
+ /oslash /ugrave /uacute /ucircumflex /udieresis /yacute /thorn /ydieresis
+]
+ def
+% end encoding
 %%IncludeResource: font Helvetica
 /Helvetica findfont
 dup length dict begin
   {1 index /FID ne {def} {pop pop} ifelse} forall
-  /Encoding ISOLatin1Encoding def
+  /Encoding WinAnsiEncoding def
   currentdict
   end
 /Font1 exch definefont pop
@@ -52,7 +89,7 @@ dup length dict begin
 /Helvetica-Bold findfont
 dup length dict begin
   {1 index /FID ne {def} {pop pop} ifelse} forall
-  /Encoding ISOLatin1Encoding def
+  /Encoding WinAnsiEncoding def
   currentdict
   end
 /Font2 exch definefont pop
@@ -60,7 +97,7 @@ dup length dict begin
 /Helvetica-Oblique findfont
 dup length dict begin
   {1 index /FID ne {def} {pop pop} ifelse} forall
-  /Encoding ISOLatin1Encoding def
+  /Encoding WinAnsiEncoding def
   currentdict
   end
 /Font3 exch definefont pop
@@ -68,7 +105,7 @@ dup length dict begin
 /Helvetica-BoldOblique findfont
 dup length dict begin
   {1 index /FID ne {def} {pop pop} ifelse} forall
-  /Encoding ISOLatin1Encoding def
+  /Encoding WinAnsiEncoding def
   currentdict
   end
 /Font4 exch definefont pop
@@ -366,6 +403,7 @@ o
 326.05 143.58 21.69 -21.69 r p2
 326.05 121.89 21.69 -21.69 r p2
 326.05 100.19 21.69 -21.69 r p2
+/bg { 0.5961 setgray } def
 326.05 78.50 21.69 -21.69 r p2
 /bg { 0 setgray } def
 347.74 468.99 21.69 -21.69 r p2
@@ -395,8 +433,9 @@ o
 347.74 165.27 21.69 -21.69 r p2
 347.74 143.58 21.69 -21.69 r p2
 347.74 121.89 21.69 -21.69 r p2
-347.74 100.19 21.69 -21.69 r p2
 /bg { 0.5961 setgray } def
+347.74 100.19 21.69 -21.69 r p2
+/bg { 0.5373 setgray } def
 347.74 78.50 21.69 -21.69 r p2
 /bg { 0.0706 setgray } def
 369.43 468.99 21.69 -21.69 r p2
@@ -424,10 +463,10 @@ o
 369.43 186.97 21.69 -21.69 r p2
 369.43 165.27 21.69 -21.69 r p2
 369.43 143.58 21.69 -21.69 r p2
-369.43 121.89 21.69 -21.69 r p2
 /bg { 0.5961 setgray } def
-369.43 100.19 21.69 -21.69 r p2
+369.43 121.89 21.69 -21.69 r p2
 /bg { 0.5373 setgray } def
+369.43 100.19 21.69 -21.69 r p2
 369.43 78.50 21.69 -21.69 r p2
 /bg { 0.2039 setgray } def
 391.13 468.99 21.69 -21.69 r p2
@@ -453,10 +492,10 @@ o
 391.13 208.66 21.69 -21.69 r p2
 391.13 186.97 21.69 -21.69 r p2
 391.13 165.27 21.69 -21.69 r p2
-391.13 143.58 21.69 -21.69 r p2
 /bg { 0.5961 setgray } def
-391.13 121.89 21.69 -21.69 r p2
+391.13 143.58 21.69 -21.69 r p2
 /bg { 0.5373 setgray } def
+391.13 121.89 21.69 -21.69 r p2
 391.13 100.19 21.69 -21.69 r p2
 391.13 78.50 21.69 -21.69 r p2
 /bg { 0.5961 setgray } def
@@ -481,10 +520,10 @@ o
 412.82 230.36 21.69 -21.69 r p2
 412.82 208.66 21.69 -21.69 r p2
 412.82 186.97 21.69 -21.69 r p2
-412.82 165.27 21.69 -21.69 r p2
 /bg { 0.5961 setgray } def
-412.82 143.58 21.69 -21.69 r p2
+412.82 165.27 21.69 -21.69 r p2
 /bg { 0.5373 setgray } def
+412.82 143.58 21.69 -21.69 r p2
 412.82 121.89 21.69 -21.69 r p2
 412.82 100.19 21.69 -21.69 r p2
 412.82 78.50 21.69 -21.69 r p2
@@ -509,10 +548,10 @@ o
 434.52 252.05 21.69 -21.69 r p2
 434.52 230.36 21.69 -21.69 r p2
 434.52 208.66 21.69 -21.69 r p2
-434.52 186.97 21.69 -21.69 r p2
 /bg { 0.5961 setgray } def
-434.52 165.27 21.69 -21.69 r p2
+434.52 186.97 21.69 -21.69 r p2
 /bg { 0.5373 setgray } def
+434.52 165.27 21.69 -21.69 r p2
 434.52 143.58 21.69 -21.69 r p2
 434.52 121.89 21.69 -21.69 r p2
 434.52 100.19 21.69 -21.69 r p2
@@ -536,10 +575,10 @@ o
 456.21 273.75 21.69 -21.69 r p2
 456.21 252.05 21.69 -21.69 r p2
 456.21 230.36 21.69 -21.69 r p2
-456.21 208.66 21.69 -21.69 r p2
 /bg { 0.5961 setgray } def
-456.21 186.97 21.69 -21.69 r p2
+456.21 208.66 21.69 -21.69 r p2
 /bg { 0.5373 setgray } def
+456.21 186.97 21.69 -21.69 r p2
 456.21 165.27 21.69 -21.69 r p2
 456.21 143.58 21.69 -21.69 r p2
 456.21 121.89 21.69 -21.69 r p2
@@ -562,10 +601,10 @@ o
 477.90 295.44 21.69 -21.69 r p2
 477.90 273.75 21.69 -21.69 r p2
 477.90 252.05 21.69 -21.69 r p2
-477.90 230.36 21.69 -21.69 r p2
 /bg { 0.5961 setgray } def
-477.90 208.66 21.69 -21.69 r p2
+477.90 230.36 21.69 -21.69 r p2
 /bg { 0.5373 setgray } def
+477.90 208.66 21.69 -21.69 r p2
 477.90 186.97 21.69 -21.69 r p2
 477.90 165.27 21.69 -21.69 r p2
 477.90 143.58 21.69 -21.69 r p2
@@ -588,10 +627,10 @@ o
 499.60 317.13 21.69 -21.69 r p2
 499.60 295.44 21.69 -21.69 r p2
 499.60 273.75 21.69 -21.69 r p2
-499.60 252.05 21.69 -21.69 r p2
 /bg { 0.5961 setgray } def
-499.60 230.36 21.69 -21.69 r p2
+499.60 252.05 21.69 -21.69 r p2
 /bg { 0.5373 setgray } def
+499.60 230.36 21.69 -21.69 r p2
 499.60 208.66 21.69 -21.69 r p2
 499.60 186.97 21.69 -21.69 r p2
 499.60 165.27 21.69 -21.69 r p2
@@ -613,10 +652,10 @@ o
 521.29 338.83 21.69 -21.69 r p2
 521.29 317.13 21.69 -21.69 r p2
 521.29 295.44 21.69 -21.69 r p2
-521.29 273.75 21.69 -21.69 r p2
 /bg { 0.5961 setgray } def
-521.29 252.05 21.69 -21.69 r p2
+521.29 273.75 21.69 -21.69 r p2
 /bg { 0.5373 setgray } def
+521.29 252.05 21.69 -21.69 r p2
 521.29 230.36 21.69 -21.69 r p2
 521.29 208.66 21.69 -21.69 r p2
 521.29 186.97 21.69 -21.69 r p2
@@ -624,7 +663,6 @@ o
 521.29 143.58 21.69 -21.69 r p2
 521.29 121.89 21.69 -21.69 r p2
 521.29 100.19 21.69 -21.69 r p2
-/bg { 0.5961 setgray } def
 521.29 78.50 21.69 -21.69 r p2
 /bg { 0.6667 setgray } def
 542.99 468.99 21.69 -21.69 r p2
@@ -639,10 +677,10 @@ o
 542.99 360.52 21.69 -21.69 r p2
 542.99 338.83 21.69 -21.69 r p2
 542.99 317.13 21.69 -21.69 r p2
-542.99 295.44 21.69 -21.69 r p2
 /bg { 0.5961 setgray } def
-542.99 273.75 21.69 -21.69 r p2
+542.99 295.44 21.69 -21.69 r p2
 /bg { 0.5373 setgray } def
+542.99 273.75 21.69 -21.69 r p2
 542.99 252.05 21.69 -21.69 r p2
 542.99 230.36 21.69 -21.69 r p2
 542.99 208.66 21.69 -21.69 r p2
@@ -650,9 +688,8 @@ o
 542.99 165.27 21.69 -21.69 r p2
 542.99 143.58 21.69 -21.69 r p2
 542.99 121.89 21.69 -21.69 r p2
-/bg { 0.5961 setgray } def
 542.99 100.19 21.69 -21.69 r p2
-/bg { 0.5373 setgray } def
+/bg { 0.5961 setgray } def
 542.99 78.50 21.69 -21.69 r p2
 /bg { 0.7373 setgray } def
 564.68 468.99 21.69 -21.69 r p2
@@ -665,10 +702,10 @@ o
 564.68 382.22 21.69 -21.69 r p2
 564.68 360.52 21.69 -21.69 r p2
 564.68 338.83 21.69 -21.69 r p2
-564.68 317.13 21.69 -21.69 r p2
 /bg { 0.5961 setgray } def
-564.68 295.44 21.69 -21.69 r p2
+564.68 317.13 21.69 -21.69 r p2
 /bg { 0.5373 setgray } def
+564.68 295.44 21.69 -21.69 r p2
 564.68 273.75 21.69 -21.69 r p2
 564.68 252.05 21.69 -21.69 r p2
 564.68 230.36 21.69 -21.69 r p2
@@ -676,10 +713,10 @@ o
 564.68 186.97 21.69 -21.69 r p2
 564.68 165.27 21.69 -21.69 r p2
 564.68 143.58 21.69 -21.69 r p2
-/bg { 0.5961 setgray } def
 564.68 121.89 21.69 -21.69 r p2
-/bg { 0.5373 setgray } def
+/bg { 0.5961 setgray } def
 564.68 100.19 21.69 -21.69 r p2
+/bg { 0.5373 setgray } def
 564.68 78.50 21.69 -21.69 r p2
 /bg { 0.6667 setgray } def
 586.37 468.99 21.69 -21.69 r p2
@@ -690,10 +727,10 @@ o
 586.37 403.91 21.69 -21.69 r p2
 586.37 382.22 21.69 -21.69 r p2
 586.37 360.52 21.69 -21.69 r p2
-586.37 338.83 21.69 -21.69 r p2
 /bg { 0.5961 setgray } def
-586.37 317.13 21.69 -21.69 r p2
+586.37 338.83 21.69 -21.69 r p2
 /bg { 0.5373 setgray } def
+586.37 317.13 21.69 -21.69 r p2
 586.37 295.44 21.69 -21.69 r p2
 586.37 273.75 21.69 -21.69 r p2
 586.37 252.05 21.69 -21.69 r p2
@@ -701,10 +738,10 @@ o
 586.37 208.66 21.69 -21.69 r p2
 586.37 186.97 21.69 -21.69 r p2
 586.37 165.27 21.69 -21.69 r p2
-/bg { 0.5961 setgray } def
 586.37 143.58 21.69 -21.69 r p2
-/bg { 0.5373 setgray } def
+/bg { 0.5961 setgray } def
 586.37 121.89 21.69 -21.69 r p2
+/bg { 0.5373 setgray } def
 586.37 100.19 21.69 -21.69 r p2
 586.37 78.50 21.69 -21.69 r p2
 /bg { 1 setgray } def
@@ -714,10 +751,10 @@ o
 608.07 425.60 21.69 -21.69 r p2
 608.07 403.91 21.69 -21.69 r p2
 608.07 382.22 21.69 -21.69 r p2
-608.07 360.52 21.69 -21.69 r p2
 /bg { 0.5961 setgray } def
-608.07 338.83 21.69 -21.69 r p2
+608.07 360.52 21.69 -21.69 r p2
 /bg { 0.5373 setgray } def
+608.07 338.83 21.69 -21.69 r p2
 608.07 317.13 21.69 -21.69 r p2
 608.07 295.44 21.69 -21.69 r p2
 608.07 273.75 21.69 -21.69 r p2
@@ -725,21 +762,23 @@ o
 608.07 230.36 21.69 -21.69 r p2
 608.07 208.66 21.69 -21.69 r p2
 608.07 186.97 21.69 -21.69 r p2
-/bg { 0.5961 setgray } def
 608.07 165.27 21.69 -21.69 r p2
-/bg { 0.5373 setgray } def
+/bg { 0.5961 setgray } def
 608.07 143.58 21.69 -21.69 r p2
+/bg { 0.5373 setgray } def
 608.07 121.89 21.69 -21.69 r p2
 608.07 100.19 21.69 -21.69 r p2
+/bg { 0.5961 setgray } def
 608.07 78.50 21.69 -21.69 r p2
+/bg { 0.5373 setgray } def
 629.76 468.99 21.69 -21.69 r p2
 629.76 447.30 21.69 -21.69 r p2
 629.76 425.60 21.69 -21.69 r p2
 629.76 403.91 21.69 -21.69 r p2
-629.76 382.22 21.69 -21.69 r p2
 /bg { 0.5961 setgray } def
-629.76 360.52 21.69 -21.69 r p2
+629.76 382.22 21.69 -21.69 r p2
 /bg { 0.5373 setgray } def
+629.76 360.52 21.69 -21.69 r p2
 629.76 338.83 21.69 -21.69 r p2
 629.76 317.13 21.69 -21.69 r p2
 629.76 295.44 21.69 -21.69 r p2
@@ -747,21 +786,23 @@ o
 629.76 252.05 21.69 -21.69 r p2
 629.76 230.36 21.69 -21.69 r p2
 629.76 208.66 21.69 -21.69 r p2
-/bg { 0.5961 setgray } def
 629.76 186.97 21.69 -21.69 r p2
-/bg { 0.5373 setgray } def
+/bg { 0.5961 setgray } def
 629.76 165.27 21.69 -21.69 r p2
+/bg { 0.5373 setgray } def
 629.76 143.58 21.69 -21.69 r p2
 629.76 121.89 21.69 -21.69 r p2
+/bg { 0.5961 setgray } def
 629.76 100.19 21.69 -21.69 r p2
+/bg { 0.5373 setgray } def
 629.76 78.50 21.69 -21.69 r p2
 651.46 468.99 21.69 -21.69 r p2
 651.46 447.30 21.69 -21.69 r p2
 651.46 425.60 21.69 -21.69 r p2
-651.46 403.91 21.69 -21.69 r p2
 /bg { 0.5961 setgray } def
-651.46 382.22 21.69 -21.69 r p2
+651.46 403.91 21.69 -21.69 r p2
 /bg { 0.5373 setgray } def
+651.46 382.22 21.69 -21.69 r p2
 651.46 360.52 21.69 -21.69 r p2
 651.46 338.83 21.69 -21.69 r p2
 651.46 317.13 21.69 -21.69 r p2
@@ -769,21 +810,23 @@ o
 651.46 273.75 21.69 -21.69 r p2
 651.46 252.05 21.69 -21.69 r p2
 651.46 230.36 21.69 -21.69 r p2
-/bg { 0.5961 setgray } def
 651.46 208.66 21.69 -21.69 r p2
-/bg { 0.5373 setgray } def
+/bg { 0.5961 setgray } def
 651.46 186.97 21.69 -21.69 r p2
+/bg { 0.5373 setgray } def
 651.46 165.27 21.69 -21.69 r p2
 651.46 143.58 21.69 -21.69 r p2
+/bg { 0.5961 setgray } def
 651.46 121.89 21.69 -21.69 r p2
+/bg { 0.5373 setgray } def
 651.46 100.19 21.69 -21.69 r p2
 651.46 78.50 21.69 -21.69 r p2
 673.15 468.99 21.69 -21.69 r p2
 673.15 447.30 21.69 -21.69 r p2
-673.15 425.60 21.69 -21.69 r p2
 /bg { 0.5961 setgray } def
-673.15 403.91 21.69 -21.69 r p2
+673.15 425.60 21.69 -21.69 r p2
 /bg { 0.5373 setgray } def
+673.15 403.91 21.69 -21.69 r p2
 673.15 382.22 21.69 -21.69 r p2
 673.15 360.52 21.69 -21.69 r p2
 673.15 338.83 21.69 -21.69 r p2
@@ -791,21 +834,23 @@ o
 673.15 295.44 21.69 -21.69 r p2
 673.15 273.75 21.69 -21.69 r p2
 673.15 252.05 21.69 -21.69 r p2
-/bg { 0.5961 setgray } def
 673.15 230.36 21.69 -21.69 r p2
-/bg { 0.5373 setgray } def
+/bg { 0.5961 setgray } def
 673.15 208.66 21.69 -21.69 r p2
+/bg { 0.5373 setgray } def
 673.15 186.97 21.69 -21.69 r p2
 673.15 165.27 21.69 -21.69 r p2
+/bg { 0.5961 setgray } def
 673.15 143.58 21.69 -21.69 r p2
+/bg { 0.5373 setgray } def
 673.15 121.89 21.69 -21.69 r p2
 673.15 100.19 21.69 -21.69 r p2
 673.15 78.50 21.69 -21.69 r p2
 694.85 468.99 21.69 -21.69 r p2
-694.85 447.30 21.69 -21.69 r p2
 /bg { 0.5961 setgray } def
-694.85 425.60 21.69 -21.69 r p2
+694.85 447.30 21.69 -21.69 r p2
 /bg { 0.5373 setgray } def
+694.85 425.60 21.69 -21.69 r p2
 694.85 403.91 21.69 -21.69 r p2
 694.85 382.22 21.69 -21.69 r p2
 694.85 360.52 21.69 -21.69 r p2
@@ -813,21 +858,23 @@ o
 694.85 317.13 21.69 -21.69 r p2
 694.85 295.44 21.69 -21.69 r p2
 694.85 273.75 21.69 -21.69 r p2
-/bg { 0.5961 setgray } def
 694.85 252.05 21.69 -21.69 r p2
-/bg { 0.5373 setgray } def
+/bg { 0.5961 setgray } def
 694.85 230.36 21.69 -21.69 r p2
+/bg { 0.5373 setgray } def
 694.85 208.66 21.69 -21.69 r p2
 694.85 186.97 21.69 -21.69 r p2
+/bg { 0.5961 setgray } def
 694.85 165.27 21.69 -21.69 r p2
+/bg { 0.5373 setgray } def
 694.85 143.58 21.69 -21.69 r p2
 694.85 121.89 21.69 -21.69 r p2
 694.85 100.19 21.69 -21.69 r p2
+/bg { 0.5961 setgray } def
 694.85 78.50 21.69 -21.69 r p2
 716.54 468.99 21.69 -21.69 r p2
-/bg { 0.5961 setgray } def
-716.54 447.30 21.69 -21.69 r p2
 /bg { 0.5373 setgray } def
+716.54 447.30 21.69 -21.69 r p2
 716.54 425.60 21.69 -21.69 r p2
 716.54 403.91 21.69 -21.69 r p2
 716.54 382.22 21.69 -21.69 r p2
@@ -835,17 +882,21 @@ o
 716.54 338.83 21.69 -21.69 r p2
 716.54 317.13 21.69 -21.69 r p2
 716.54 295.44 21.69 -21.69 r p2
-/bg { 0.5961 setgray } def
 716.54 273.75 21.69 -21.69 r p2
-/bg { 0.5373 setgray } def
+/bg { 0.5961 setgray } def
 716.54 252.05 21.69 -21.69 r p2
+/bg { 0.5373 setgray } def
 716.54 230.36 21.69 -21.69 r p2
 716.54 208.66 21.69 -21.69 r p2
+/bg { 0.5961 setgray } def
 716.54 186.97 21.69 -21.69 r p2
+/bg { 0.5373 setgray } def
 716.54 165.27 21.69 -21.69 r p2
 716.54 143.58 21.69 -21.69 r p2
 716.54 121.89 21.69 -21.69 r p2
+/bg { 0.5961 setgray } def
 716.54 100.19 21.69 -21.69 r p2
+/bg { 0.5373 setgray } def
 716.54 78.50 21.69 -21.69 r p2
 /bg { 0.5961 setgray } def
 738.23 468.99 21.69 -21.69 r p2
@@ -928,29 +979,34 @@ o
 1 setlinejoin
 10.00 setmiterlimit
 np
-800.22 135.83 m
+800.22 135.35 m
 3.45 0 l
 o
 np
-800.22 219.16 m
+800.22 218.58 m
 3.45 0 l
 o
 np
-800.22 302.48 m
+800.22 301.80 m
 3.45 0 l
 o
 np
-800.22 385.81 m
+800.22 385.03 m
+3.45 0 l
+o
+np
+800.22 468.25 m
 3.45 0 l
 o
 0.00 0.00 1008.00 504.00 cl
 0.00 0.00 1008.00 504.00 cl
 /Font1 findfont 10 s
 0 setgray
-808.86 132.24 (-0.2) 0 0 t
-808.86 215.57 (0.0) 0 0 t
-808.86 298.89 (0.2) 0 0 t
-808.86 382.22 (0.4) 0 0 t
+808.86 131.76 (-0.2) 0 0 t
+808.86 214.99 (0.0) 0 0 t
+808.86 298.21 (0.2) 0 0 t
+808.86 381.44 (0.4) 0 0 t
+808.86 464.66 (0.6) 0 0 t
 0.00 0.00 1008.00 504.00 cl
 0.00 0.00 1008.00 504.00 cl
 0.00 0.00 1008.00 504.00 cl

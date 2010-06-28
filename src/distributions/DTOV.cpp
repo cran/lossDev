@@ -12,11 +12,10 @@ using std::vector;
 #define DF(par) (*par[2])
 
 DTOV::DTOV()
-    : DistScalarRmath("dtOV", 3, DIST_UNBOUNDED, true, false)
+    : RScalarDist("dtOV", 3, DIST_UNBOUNDED)
 {}
 
-bool DTOV::checkParameterValue (vector<double const *> const &par,
-			      vector<vector<unsigned int> > const &dims) const
+bool DTOV::checkParameterValue (vector<double const *> const &par) const
 {
     return (TAU(par) > 0 && DF(par) > 0);
 }

@@ -48,7 +48,7 @@
 using std::vector;
 
 
-RJump::RJump()
+RJump::RJump():Module("lossDev")
 {
 
 
@@ -63,6 +63,7 @@ RJump::RJump()
 	insert(new RJumpSplineFactory);
 	//insert(new MultiVarSliceFactory);
 	insert(new SliceFactoryOV);
+	load();
 	
 	
 }

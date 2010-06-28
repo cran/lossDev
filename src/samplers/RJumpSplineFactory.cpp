@@ -29,11 +29,13 @@
 
 #include "RJumpSplineFactory.h"
 #include "RJumpSpline.h"
-#include <JAGS/graph/Node.h>
-#include <JAGS/graph/ConstantNode.h>
-#include <JAGS/sampler/Linear.h>
+#include <graph/Node.h>
+#include <graph/ConstantNode.h>
+#include <sampler/Linear.h>
+#include <sampler/GraphView.h>
 #include <vector>
 #include <set>
+#include <iostream>
 
 using std::set;
 using std::vector;
@@ -65,38 +67,70 @@ const
 			return false;
 	}
 	
-	
-    vector<StochasticNode const*> stoch_nodes;
-    vector<Node*> dtrm_nodes;
-    Sampler::classifyChildren(vector<StochasticNode*>(1,node), 
-		              graph, stoch_nodes, dtrm_nodes);
-	
+
+    GraphView gv(node, graph);
+    vector<StochasticNode const*> stoch_nodes = gv.stochasticChildren();
 
     // Check stochastic children
     for (unsigned int i = 0; i < stoch_nodes.size(); ++i) 
     {
     	StochasticNode const &sn = *stoch_nodes[i];
     	if(sn.distribution()->name() != "dnorm")
-    		return false;
+	    return false;
     	
     	if (isBounded(&sn))
-    		return false; //Truncated distribution
+	    return false; //Truncated distribution
+    }
+    
+    // Check linearity of deterministic descendants
+    if (!checkLinear(&gv, false))
+    	return false;
+ 
+    return true;
+}
+
+vector<Sampler*> RJumpSplineFactory::makeSamplers(set<StochasticNode*> const &nodes, Graph const &graph) const
+{
+    vector<Sampler*> samplers;
+    set<StochasticNode*> nodesThatWillBeSampled;
+    for(set<StochasticNode*>::iterator p(nodes.begin()); p != nodes.end(); ++p)
+    {
+	if(canSample(*p, graph) && nodesThatWillBeSampled.find(*p) == nodesThatWillBeSampled.end())
+	{
+	    StochasticNode *n = *p;
+	    StochasticNode *tmpNode = 0;
+	    
+	    vector<StochasticNode*> vnode;
+	    vnode.push_back(n);
+	    nodesThatWillBeSampled.insert(n);
+	    
+	    
+	    if(n->parents()[1]->dim()[0] == 2)
+	    {
+		tmpNode = const_cast<StochasticNode *>(dynamic_cast<StochasticNode const *>(n->parents()[1]->parents()[0]));
+		vnode.push_back(tmpNode);
+		nodesThatWillBeSampled.insert(tmpNode);
+		
+		tmpNode = const_cast<StochasticNode *>(dynamic_cast<StochasticNode const *>(n->parents()[1]->parents()[1]));
+		vnode.push_back(tmpNode);
+	       	nodesThatWillBeSampled.insert(tmpNode);
+	    } else {
+		
+		tmpNode = const_cast<StochasticNode *>(dynamic_cast<StochasticNode const *>(n->parents()[1]));
+		vnode.push_back(tmpNode);
+		nodesThatWillBeSampled.insert(tmpNode);
+	    }
+	    
+	    samplers.push_back(new RJumpSpline(new GraphView(vnode, graph, true)));
+	    vnode.clear();
+	    
+	}
     }
 
-    // Check linearity of deterministic descendants
-    if (!checkLinear(vector<StochasticNode*>(1, node), graph, false))
-    	return false;
-
-
-    
-	return true;
+    return samplers;
 }
 
-Sampler * RJumpSplineFactory::makeSingletonSampler(StochasticNode *node,
-				  Graph const &graph) const
+std::string RJumpSplineFactory::name() const
 {
-	std::vector<StochasticNode*> vnode;
-	vnode.push_back(node);	
-	return  new RJumpSpline(vnode, graph);
+    return "RJumpSplineFactory";
 }
-

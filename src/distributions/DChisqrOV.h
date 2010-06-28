@@ -1,7 +1,7 @@
 #ifndef DCHISQOV_H_
 #define DCHISQOV_H_
 
-#include <distribution/DistScalarRmath.h>
+#include "RScalarDist.h"
 
 /**
  * @short Chi square distribution
@@ -10,7 +10,7 @@
  * f(x|k) = 2^(-k/2) * x^(k/2 - 1) * exp(-x/2) / gamma(x/2); k > 0
  * </pre>
  */
-class DChisqrOV : public DistScalarRmath {
+class DChisqrOV : public RScalarDist {
  public:
   DChisqrOV();
 
@@ -24,9 +24,8 @@ class DChisqrOV : public DistScalarRmath {
   /**
    * Checks that k > 0
    */
-  bool checkParameterValue(std::vector<double const *> const &parameters,
-			   std::vector<std::vector<unsigned int> > const &dims)
-    const;
+  bool checkParameterValue(std::vector<double const *> const &parameters) const;
+
 };
 
 #endif /* DCHISQOV_H_ */

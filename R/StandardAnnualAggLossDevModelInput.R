@@ -41,7 +41,8 @@ NULL
 ##' @seealso \code{\linkS4class{StandardAnnualAggLossDevModelInput}}
 setClass(
          'StandardAnnualAggLossDevModelInput',
-         representation(priorForKnotPositions='numeric'),
+         representation(priorForKnotPositions='numeric',
+                        priorForNumberOfKnots='numeric'),
          contains='AnnualAggLossDevModelInput')
 
 
@@ -265,6 +266,19 @@ setClass(
 ##'     The effective value used by the model for this argument is the minimum of the supplied value and the last column in \code{incremental.payments} with a non-missing value (on the log scale).
 ##'     Note that since the scale parameter is assumed to follow a second-order random walk, a value of \code{2} results in an (effectively) unconstrained estimation for the scale parameter in the first column.
 ##'   }
+##'   \item{\bold{Number of Knots}}{
+##'     The consumption path is modeled (on the log scale) as a linear spline.
+##'     The number of knots in the spline is endogenous to the model estimation.
+##'     This allows the model to adapt to loss triangles of varying complexity.
+##'     In order to allow the user to give more credibility to models of a lower complexity (and possibly avoid overfitting), a truncated negative binomial prior is placed on the number of knots.
+##'     The truncation point is adjusted with the size of the triangle.
+##'     The paramters for this negative binomial can be specified with the argument \code{prior.for.number.of.knots}, which should be a vector of two elements.
+##'     The first element should be any realy number greater than zero.
+##'     If this number is an integer, it can be interpreted as the number of failures until the experiment is stopped.
+##'     The second parameter should be a real number greater than 0 but less than 1 and represents the success probability.
+##'     The mean of the (un-truncated) negative binomial is then \code{prior.for.number.of.knots[1] * prior.for.number.of.knots[2]/ (1 - prior.for.number.of.knots[2])}.
+##'     And the variance is \code{prior.for.number.of.knots[1] * prior.for.number.of.knots[2]/ (1 - prior.for.number.of.knots[2]) ^ 2}.
+##'   }
 ##' }
 ##'
 ##' @param incremental.payments A square matrix of incremental payments.  Row names must correspond to the exposure year. Only the upper-left (including the diagonal) of this matrix may have non-missing values.  Lower-right must be \code{NA}.
@@ -288,6 +302,7 @@ setClass(
 ##'
 ##' @param exp.year.type A single character value indicating the type of exposure years:  \sQuote{ambiguous}, \sQuote{py}, and \sQuote{ay} mean \sQuote{Exposure Year}, \sQuote{Policy Year}, and \sQuote{Accident Year}; respectively.
 ##' @param prior.for.knot.locations A single numeric value of at least 1.  The prior for the location of knots is a scaled beta with parameters \code{c(1,prior.for.knot.locations)}.  Large values produce stable consumption paths at high development years.
+##' @param prior.for.number.of.knots A two element vector giving the paramters for the prior number of knots. (See \emph{Number of Knots} in Details)
 ##' @param use.skew.t A logical value.  If \code{TRUE}, the model assumes that the observed and estimated log incremental payments are realizations from a skewed \eqn{t} distribution; if \code{FALSE} it assumes zero skewness. (See Reference.)
 ##' @param bound.for.skewness.parameter A positive numerical value representing the symetric boundaries for the skewness parameter.  In most cases, the default should be sufficient. Ignored if \code{use.skew.t=FALSE}.
 ##' @param last.column.with.scale.innovation A single integer. Must be at least 1 and at most the number of columns in \code{incremental.payments}.  See \emph{Measurment Error-Second Order Random Walk} in Details.
@@ -323,12 +338,15 @@ setClass(
 ##'   cumulative.payments=cumulate(incremental.payments),
 ##'   exp.year.type=c('ambiguous', 'py', 'ay'),
 ##'   prior.for.knot.locations=2,
+##'   prior.for.number.of.knots=c(3, 1/7),
 ##'   use.skew.t=FALSE,
 ##'   bound.for.skewness.parameter=10,
 ##'   last.column.with.scale.innovation=dim(incremental.payments)[2],
 ##'   use.ar1.in.calendar.year=FALSE,
 ##'   use.ar1.in.exposure.growth=TRUE,
 ##'   projected.rate.of.decay=NA)
+##'
+##'
 makeStandardAnnualInput <- function(incremental.payments=decumulate(cumulative.payments),
                                     extra.dev.years=1,
                                     extra.exp.years=1,
@@ -345,6 +363,7 @@ makeStandardAnnualInput <- function(incremental.payments=decumulate(cumulative.p
                                     cumulative.payments=cumulate(incremental.payments),
                                     exp.year.type=c('ambiguous', 'py', 'ay'),
                                     prior.for.knot.locations=2,
+                                    prior.for.number.of.knots=c(3, 1/7),
                                     use.skew.t=FALSE,
                                     bound.for.skewness.parameter=10,
                                     last.column.with.scale.innovation=dim(incremental.payments)[2],
@@ -799,6 +818,16 @@ makeStandardAnnualInput <- function(incremental.payments=decumulate(cumulative.p
         stop('"prior.for.knot.locations" must be at least 1')
     ans@priorForKnotPositions <- prior.for.knot.locations
 
+    if(!is.numeric(prior.for.number.of.knots) || length(prior.for.number.of.knots) != 2)
+          stop('"prior.for.number.of.knots" must be a numeric of length 2')
+    if(prior.for.number.of.knots[1] <= 0)
+        stop('"prior.for.number.of.knots[1]" must be greater than zero')
+    if(prior.for.number.of.knots[2] <= 0 ||prior.for.number.of.knots[2] >= 1 )
+        stop('"prior.for.number.of.knots[2]" must be greater than zero but less than one')
+    ans@priorForNumberOfKnots <- prior.for.number.of.knots
+
+
+
 
     if(use.skew.t)
         ans@allowForSkew <- TRUE
@@ -858,6 +887,8 @@ makeStandardAnnualInput <- function(incremental.payments=decumulate(cumulative.p
 ##'   \item{\code{x.0}}{A single value. The lower bound for the location of knots.}
 ##'   \item{\code{x.r}}{A single value. The upper bound for the location of knots.}
 ##'   \item{\code{beta.prior}}{A vector giving the prior for the location of knots.}
+##'   \item{\code{mu.number.of.knots.prior}}{The priors for the mean of the number of knots.}
+##'   \item{\code{number.of.knots.ubound}}{The upper bound for the number of knots.}
 ##' }
 ##' @name getJagsData,StandardAnnualLossDevModelInput-method
 ##' @param object An object of type \code{StandardAnnualAggLossDevModelInput} from which to collect the needed model input.
@@ -896,6 +927,10 @@ setMethod(
           ans$x.0 <- 1
           ans$x.r <- x.r()
           ans$beta.prior <- c(1,object@priorForKnotPositions)
+
+          ans$mu.number.of.knots.prior <- object@priorForNumberOfKnots
+          ans$mu.number.of.knots.prior[2] <- (1 - ans$mu.number.of.knots.prior[2]) / ans$mu.number.of.knots.prior[2]
+          ans$number.of.knots.ubound <- trunc(ans$K/2) + 1
           return(ans)
 
 

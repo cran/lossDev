@@ -30,8 +30,7 @@
 #ifndef RJUMPSPLINE_H_
 #define RJUMPSPLINE_H_
 
-#include <JAGS/sampler/Sampler.h>
-//#include <BUGS/distributions/DMNorm.h>
+#include <sampler/Sampler.h>
 #include "Knots.h"
 #include "ExpandableArray.h"
 class DMNorm;
@@ -43,6 +42,8 @@ class DMNorm;
  */
 class RJumpSpline : public Sampler
 {
+
+    GraphView * _mgv;
 	
   //which node do does the sampler update
   StochasticNode const* _snode;
@@ -100,8 +101,6 @@ class RJumpSpline : public Sampler
   unsigned int _numberOfSplines;
 
   ExpandableArray * _calPost_betas;
-  ExpandableArray * _calPost_C;
-  ExpandableArray * _calPost_delta;
   ExpandableArray * _calPost_Acopy;
 	
  private:
@@ -134,7 +133,7 @@ class RJumpSpline : public Sampler
 	
 	
  public:
-  RJumpSpline(std::vector<StochasticNode *> const &nodes, Graph const &graph);
+  RJumpSpline(GraphView *gv);
   virtual ~RJumpSpline();
   /**
    * Every sampler must update the vector of nodes and its immediate

@@ -343,7 +343,7 @@ model
     #last column is vector of n-1 normal error terms (first value is blank) with prior precision equal to last paremeter
     R.[1:K,1:6] ~ dspline(
                 z, #last values at which to evaluate the splines, 1 is for spline in first two columns
-                L.spline[1:2],#max number of knots, 1 is for spline in first two columns
+                k[1:2],#number of knots, 1 is for spline in first two columns
                 beta.prec,#precision for spline coeff (THIS IS A CONSTANT NON-STOCHASTIC)
                 x.0[1:2], #lowest value for a knot, 1 is for spline in first two columns
                 x.r[1:2], #highest value for a knot, 1 is for spline in first two columns
@@ -363,8 +363,8 @@ model
     tau.eta.mu <- precision.for.eta.mu
 
 
-    k[1] <- R.[1,2] + 0
-    k[2] <- R.[1,4] + 0
+    #k[1] <- R.[1,2] + 0
+    #k[2] <- R.[1,4] + 0
 
     R[1,1:K] <- R.[1:K,1]
 
@@ -374,11 +374,11 @@ model
         R[2,j] <- R[2,j-1] + (S[K-j+1,j] - S[K-j+1,j-1])
         }
 
-#    for(i in 1:2)
-#        {
-#        k[i] ~ dpois(kappa.spline[i])I(,L.spline[i])
-#        kappa.spline[i] ~ dgamma(2.25,0.75)
-#        }
+    for(i in 1:2)
+        {
+        k[i] ~ dpois(mu.number.of.knots[i])T(,number.of.knots.ubound[i])
+        mu.number.of.knots[i] ~ dgamma(mu.number.of.knots.prior[1,i], mu.number.of.knots.prior[2,i])
+        }
 
     beta.prec <- 0.0001
     L.spline[1] <- trunc(K/2)+1

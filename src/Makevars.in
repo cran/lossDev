@@ -26,14 +26,13 @@
 ##################################################################################################
 
 
-#PKG_CXXFLAGS=@CXXFLAGS@
 
-PKG_CPPFLAGS=-I../jags-linux/include/ -I@JAGS_INCLUDE@/.. -I@JAGS_INCLUDE@   -DMATHLIB_STANDALONE
+PKG_CPPFLAGS=-I"@JAGS_INCLUDE@" -I"@JAGS_INCLUDE@/rng" -I"@JAGS_INCLUDE@/distribution" -DMATHLIB_STANDALONE
 
-PKG_LIBS=-L@JAGS_LIB@ @LAPACK_LIBS@ @BLAS_LIBS@ -ljrmath -ljags @JAGS_LIB@/JAGS/modules/basemod.so @JAGS_LIB@/JAGS/modules/bugs.so @LIBS@ @FLIBS@
+PKG_LIBS=-L@JAGS_LIB@ $(BLAS_LIBS) $(LAPACK_LIBS) -ljrmath -ljags $(LIBS) $(FLIBS)
 
-OBJECTS.samplers=samplers/ExpandableArray.o samplers/Knots.o samplers/RJumpSpline.o  samplers/RJumpSplineFactory.o samplers/RealSlicerOV.o  samplers/SliceFactoryOV.o 
-OBJECTS.distributions=distributions/DSpline.o distributions/DChisqrOV.o distributions/DTOV.o distributions/DNormOV.o distributions/DUnifOV.o
+OBJECTS.samplers=samplers/ExpandableArray.o samplers/Knots.o samplers/RJumpSpline.o  samplers/RJumpSplineFactory.o samplers/RealSlicerOV.o  samplers/SliceFactoryOV.o samplers/MNorm.o
+OBJECTS.distributions=distributions/DSpline.o distributions/DChisqrOV.o distributions/DTOV.o distributions/DNormOV.o distributions/DUnifOV.o distributions/RScalarDist.o
 OBJECTS.root=RJump.o
 
 OBJECTS= $(OBJECTS.samplers) $(OBJECTS.distributions) $(OBJECTS.root)
@@ -47,24 +46,3 @@ before: clean
 
 after:
 #	mv lossDev.so rjump.so
-
-#all: $(SHLIB)
-#all: rjump.so
-#
-#rjump.so: RJump.o DSpline.o RJumpSpline.o RJumpSplineFactory.o
-#	$(CXX) $(CXXFLAGS) RJump.o DSpline.o RJumpSpline.o RJumpSplineFactory.o -o rjump.so -shared
-#
-#RJump.o: RJump.cpp RJump.h
-#	$(CXX) $(CXXFLAGS) $(PKG_CPPFLAGS) -c RJump.cpp
-#
-#DSpline.o: distributions/DSpline.cpp distributions/DSpline.h
-#	$(CXX) $(CXXFLAGS) $(PKG_CPPFLAGS) -c distributions/DSpline.cpp
-#
-#RJumpSpline.o: samplers/RJumpSpline.cpp samplers/RJumpSpline.h
-#	$(CXX) $(CXXFLAGS) $(PKG_CPPFLAGS) -c samplers/RJumpSpline.cpp
-#
-#JumpSplineFactory.o: samplers/RJumpSplineFactory.cpp samplers/RJumpSplineFactory.h
-#	$(CXX) $(CXXFLAGS) $(PKG_CPPFLAGS) -c samplers/RJumpSplineFactory.cpp
-#
-#clean:
-#	rm -r *.o; rm rjump.so

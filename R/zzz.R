@@ -81,7 +81,12 @@ myLibPath <- function() return(get('myLibPath', env=mutableState, inherits=FALSE
     lockBinding('myLibPath', env=mutableState)
 
     ##Load the JAGS module.
-    jags.module('lossDev', normalizePath(file.path(myLibPath(), myPkgName(), 'libs')))
+    rarch <- .Platform$r_arch
+    fp <- ifelse(nzchar(rarch),
+                 file.path(myLibPath(), myPkgName(), 'libs', rarch),
+                 file.path(myLibPath(), myPkgName(), 'libs'))
+    load.module('lossDev', normalizePath(fp))
+
 
     wd <- getwd()
     on.exit(setwd(wd))

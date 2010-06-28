@@ -260,7 +260,7 @@ setMethod(
           {
               ans$P <- getTriDim(object)[1] - 1
               N <- ans$H + max(ans$L.vec) - 1
-              ans$stoch.log.inf.c <- c(rep(0, ans$P), rep(NA, N))
+              ans$stoch.log.inf.c <- c(0, rep(NA, ans$P - 1), rep(NA, N))
 
               ans$w.stoch.pct.inf <- array(0, c(object@totalExpYears, object@totalDevYears))
               ans$stoch.log.inf.upper.bound <- array(3000, c(object@totalExpYears, object@totalDevYears))

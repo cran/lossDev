@@ -18,6 +18,7 @@ total.exp.years=extra.exp.years+dim(incremental.payments)[1],
 cumulative.payments=cumulate(incremental.payments),
 exp.year.type=c('ambiguous', 'py', 'ay'),
 prior.for.knot.locations=2,
+prior.for.number.of.knots=c(3, 1/7),
 use.skew.t=FALSE,
 bound.for.skewness.parameter=10,
 last.column.with.scale.innovation=dim(incremental.payments)[2],
@@ -243,6 +244,19 @@ A value of \code{dim(incremental.payments)[2]} allows for all columns to have th
 The effective value used by the model for this argument is the minimum of the supplied value and the last column in \code{incremental.payments} with a non-missing value (on the log scale).
 Note that since the scale parameter is assumed to follow a second-order random walk, a value of \code{2} results in an (effectively) unconstrained estimation for the scale parameter in the first column.
 }
+\item{\bold{Number of Knots}}{
+The consumption path is modeled (on the log scale) as a linear spline.
+The number of knots in the spline is endogenous to the model estimation.
+This allows the model to adapt to loss triangles of varying complexity.
+In order to allow the user to give more credibility to models of a lower complexity (and possibly avoid overfitting), a truncated negative binomial prior is placed on the number of knots.
+The truncation point is adjusted with the size of the triangle.
+The paramters for this negative binomial can be specified with the argument \code{prior.for.number.of.knots}, which should be a vector of two elements.
+The first element should be any realy number greater than zero.
+If this number is an integer, it can be interpreted as the number of failures until the experiment is stopped.
+The second parameter should be a real number greater than 0 but less than 1 and represents the success probability.
+The mean of the (un-truncated) negative binomial is then \code{prior.for.number.of.knots[1] * prior.for.number.of.knots[2]/ (1 - prior.for.number.of.knots[2])}.
+And the variance is \code{prior.for.number.of.knots[1] * prior.for.number.of.knots[2]/ (1 - prior.for.number.of.knots[2]) ^ 2}.
+}
 }}
 \references{Kim, Y., and J. McCulloch (2007) \dQuote{The Skew-Student Distribution with Application to U.S. Stock Market Returns and the Equity Premium,} Department of Economics, Ohio State University, October 2007}
 \value{An object of class \code{AggModelInput}.  The model specified by the returned object must then be estimated using the function \code{runLossDevModel}.}
@@ -262,6 +276,7 @@ Note that since the scale parameter is assumed to follow a second-order random w
 \item{cumulative.payments}{A numeric matrix with the same dim and dimnames as \code{incremental.payments}.  Must be a possible cumulative payment triangle of \code{incremental.payments}.  (See \emph{Cumulative Payments} Section.)}
 \item{exp.year.type}{A single character value indicating the type of exposure years:  \sQuote{ambiguous}, \sQuote{py}, and \sQuote{ay} mean \sQuote{Exposure Year}, \sQuote{Policy Year}, and \sQuote{Accident Year}; respectively.}
 \item{prior.for.knot.locations}{A single numeric value of at least 1.  The prior for the location of knots is a scaled beta with parameters \code{c(1,prior.for.knot.locations)}.  Large values produce stable consumption paths at high development years.}
+\item{prior.for.number.of.knots}{A two element vector giving the paramters for the prior number of knots. (See \emph{Number of Knots} in Details)}
 \item{use.skew.t}{A logical value.  If \code{TRUE}, the model assumes that the observed and estimated log incremental payments are realizations from a skewed \eqn{t} distribution; if \code{FALSE} it assumes zero skewness. (See Reference.)}
 \item{bound.for.skewness.parameter}{A positive numerical value representing the symetric boundaries for the skewness parameter.  In most cases, the default should be sufficient. Ignored if \code{use.skew.t=FALSE}.}
 \item{last.column.with.scale.innovation}{A single integer. Must be at least 1 and at most the number of columns in \code{incremental.payments}.  See \emph{Measurment Error-Second Order Random Walk} in Details.}

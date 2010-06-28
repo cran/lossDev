@@ -29,7 +29,8 @@
 
 #ifndef KNOTS_H_
 #define KNOTS_H_
-#include <JAGS/distribution/RNG.h>
+#include <RNG.h>
+#include <graph/StochasticNode.h>
 
 
 /*
@@ -60,6 +61,8 @@ class Knots
 	//number of knots
 	unsigned int *_currentK;
 	unsigned int _proposedK;
+	
+	StochasticNode const * _knotsNode;
 	
 	
 	//Position of Knots  these are stored on (0,1) and adjusted by _minT _maxT
@@ -109,7 +112,7 @@ private:
 	double dBeta(double const &x, double const &mu, double const &sig) const;	
 	
 public:
-	Knots(unsigned int nchain, double const * PriorForT, unsigned int const * KLimits, double const * TLimits);
+	Knots(unsigned int nchain, double const * PriorForT, StochasticNode const * knotsNode, double const * TLimits);
 	virtual ~Knots();
         double acceptProbBalance(unsigned int const &chain, TypeOfUpdate type) const;
         TypeOfUpdate createProposal(RNG * const & r, unsigned int chain);
@@ -121,6 +124,7 @@ public:
         double proposedValue(unsigned int const &chain, unsigned int const &i) const;
 
         double minT() const;
+	unsigned int maxK() const;
 
         void acceptProposedValues(unsigned int const &chain);
         

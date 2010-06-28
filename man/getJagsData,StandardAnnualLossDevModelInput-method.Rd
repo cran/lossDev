@@ -10,6 +10,8 @@ The following elements are appended:
 \item{\code{x.0}}{A single value. The lower bound for the location of knots.}
 \item{\code{x.r}}{A single value. The upper bound for the location of knots.}
 \item{\code{beta.prior}}{A vector giving the prior for the location of knots.}
+\item{\code{mu.number.of.knots.prior}}{The priors for the mean of the number of knots.}
+\item{\code{number.of.knots.ubound}}{The upper bound for the number of knots.}
 }}
 \value{A named list of the specific model elements.  See details for more info.}
 \docType{methods}

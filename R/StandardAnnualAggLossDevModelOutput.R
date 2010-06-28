@@ -281,16 +281,16 @@ setMethod('tailFactor',
 
           if(plot)
           {
+              expYearRange.seq <- seq(expYearRange[1], expYearRange[2])
+
               plot(x=range(total.exp.years),
-                   y=range(tail.matrix[,attachment.adj]),
+                   y=range(tail.matrix[as.character(expYearRange.seq), attachment.adj]),
                    xlab=getExposureYearLabel(object@input),
                    ylab=paste(attachment,"th to Ultimate Tail Factor",sep=""),
                    type='n',
                    cex.axis=1.25,
                    cex.lab=1.25)
 
-
-              expYearRange.seq <- seq(expYearRange[1], expYearRange[2])
               lines(x=expYearRange.seq,
                     y=tail.matrix[as.character(expYearRange.seq),attachment.adj],
                     type='b')
@@ -323,46 +323,95 @@ setMethod('numberOfKnots',
          k <- slot(object@k, 'value')
          k.vector <- as.vector(k)
 
-         breaks <- seq(from=-0.5,
-                       to=max(k.vector)+0.5,
-                       by=1)
+         jd <- getJagsData(object@input)
+
+         x.number.of.knots <- seq(from=0, to=jd$number.of.knots.ubound)
+         r <- jd$mu.number.of.knots.prior[1]
+         p <- 1 / (1 + jd$mu.number.of.knots.prior[2])
 
 
-         if(plot)
+         plot.data <- array(NA,
+                            c(length(x.number.of.knots), 3),
+                            list(NULL, c('NumberOfKnots', 'Prior', 'Posterior')))
+
+         k <- object@k@get.value.env$get.value()
+         N <- prod(dim(k))
+         for(i in seq_along(x.number.of.knots))
          {
-             h <- hist(
-                       k.vector,
-                       breaks=breaks,
-                       include.lowest=TRUE,
-                       plot=TRUE,
-                       freq=FALSE,
-                       all(diff(breaks)==1),
-                       ylim=c(0,1),
-                       xlim=range(breaks),
-                       cex.axis=1.25,
-                       cex.lab=1.25,
-                       cex.main=1.25,
-                       font.main=1,
-                       xlab='Number of Knots',
-                       ylab='Relative Frequency',
-                       main=NULL,
-                       xaxt='n',
-                       col='grey')
-
-
-             axis(1,
-                  at=0:max(k.vector),
-                  cex.axis=1.25)
-         } else {
-             h <- hist(
-                       k.vector,
-                       breaks=breaks,
-                       include.lowest=TRUE,
-                       plot=FALSE)
+             x.i <- x.number.of.knots[i]
+             plot.data[i, 'NumberOfKnots'] <- x.i
+             plot.data[i, 'Prior'] <- gamma(r + x.i) / factorial(x.i) / gamma(r) * (1 - p) ^ r * p ^ x.i
+             plot.data[i, 'Posterior'] <- sum( k == x.i) / N
          }
 
-         ans <- h$density
-         names(ans) <- h$mids
+         plot.data[,'Posterior'] <-   plot.data[,'Posterior'] / sum(plot.data[,'Posterior'])
+
+         bar <- function(x, y, offset=c('L', 'R'), col=c('grey', 'black'))
+         {
+             epsilon <- 0.4
+
+             offset <- match.arg(offset)
+             col <- match.arg(col)
+
+             if(offset == 'L')
+                 epsilon <- epsilon * -1
+
+                 rect(xleft = x + epsilon,
+                      ybottom = 0,
+                      xright = x,
+                      ytop = y,
+                      density = -1,
+                      col=col,
+                      border=NA)
+
+         }
+
+
+         f.plot <- function()
+         {
+
+             plot(x=range(plot.data[,'NumberOfKnots']) + c(-0.75, 0.75),
+                  y=range(plot.data[,c('Prior', 'Posterior')]),
+                  type='n',
+                  cex.axis=1.25,
+                  cex.lab=1.25,
+                  xlab='Number of Knots',
+                  ylab='Relative Frequency')
+
+             for(i in 1:dim(plot.data)[1])
+             {
+                 bar(x=plot.data[i,'NumberOfKnots'],
+                     y=plot.data[i,'Prior'],
+                     col='grey',
+                     offset='L')
+
+                 bar(x=plot.data[i,'NumberOfKnots'],
+                     y=plot.data[i,'Posterior'],
+                     col='black',
+                     offset='R')
+             }
+
+         }
+
+        f.legend <- function()
+          {
+
+              legend('center',
+                     c("Prior","Posterior"),
+                     col=c('grey','black'),
+                     pch=15,
+                     pt.cex=3,
+                     horiz=TRUE,
+                     bty='n',
+                     xpd=NA)
+          }
+
+          if(plot)
+              plot.top.bottom(f.plot, f.legend)
+
+
+         ans <- plot.data[, 'Posterior']
+         names(ans) <- plot.data[, 'NumberOfKnots']
 
          return(invisible(ans))
 

@@ -12,9 +12,10 @@ class Graph;
 class SliceFactoryOV : public SingletonFactory
 {
 public:
-    bool canSample(StochasticNode *snode, Graph const &graph) const;
-    Sampler *makeSingletonSampler(StochasticNode *snode, Graph const &graph)
+    virtual bool canSample(StochasticNode *snode, Graph const &graph) const;
+    virtual Sampler *makeSampler(StochasticNode *snode, Graph const &graph)
 	const;
+    virtual std::string name() const;
 };
 
 

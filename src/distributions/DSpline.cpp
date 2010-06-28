@@ -32,21 +32,22 @@
 #include <stdexcept>
 #include <vector>
 
-#include <JAGS/util/nainf.h>
-#include <JAGS/JRmath.h>
+#include <util/nainf.h>
+#include <JRmath.h>
 
 #include <cmath>
 
 using std::vector;
 
 #include <iostream>
-DSpline::DSpline():Distribution("dspline", 11, false, false)
+DSpline::DSpline():ArrayDist("dspline", 11)
 {
 	
 }
 
 DSpline::~DSpline()
 {
+
 }
 
 double 
@@ -213,7 +214,7 @@ DSpline::checkParameterValue(vector<double const *> const &parameters,
 {
 	
 
-  unsigned int numberOfSplines = parameters[1][0] == 1 ? 4 : 6;
+    //unsigned int numberOfSplines = parameters[1][0] == 1 ? 4 : 6;
 
   //std::cout << "starting test1" << std::endl;
   //x vector

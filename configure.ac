@@ -1,10 +1,8 @@
-AC_INIT([lossDev], [0.8.0])
-#AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
-
-
-#AC_PROG_CXX
+AC_INIT([lossDev], [0.9.3])
 
 AC_PREFIX_PROGRAM(jags)
+
+JAGS_VERSION=2.1.0
 
 #Set optional include path with option --with-jags-include or
 #environment variable JAGS_INCLUDE
@@ -17,13 +15,22 @@ if test [ -n "$jags_include_path" ] ; then
    JAGS_INCLUDE=${jags_include_path}
 else
    if test [ -z "${JAGS_INCLUDE}" ] ; then
-      if test [ "$prefix" == "NONE" ]; then
-         AC_MSG_ERROR("JAGS headers not found. Use --with-jags-include configure option")
+      if test [ "$prefix" = "NONE" ]; then
+         AC_MSG_ERROR("Location of JAGS headers not defined. Use configure arg '--with-jags-include' or environment variable 'JAGS_INCLUDE'")
       else
          JAGS_INCLUDE=${prefix}/include/JAGS
       fi
    fi
 fi
+
+AC_LANG_PUSH(C++)
+OCPPFLAGS=${CPPFLAGS}
+CPPFLAGS=-I${JAGS_INCLUDE}
+AC_CHECK_HEADER(Console.h, [],
+             [AC_MSG_FAILURE("Problem with header file ${JAGS_INCLUDE}/Console.h ")])
+CPPFLAGS=${OCPPFLAGS}
+AC_LANG_POP()
+
 
 # There is no consensus on where 64- versus 32-bit libraries should be
 # installed.  We take a hint from R, assuming that if R is installed
@@ -37,8 +44,7 @@ fi
 
 if test -z "${LIBnn}"; then 
    if test -z "${R_HOME}"; then
-      echo "R_HOME is not defined"
-      exit 1
+      AC_MSG_ERROR("R_HOME is not defined")
    fi
    LIBnn=`${R_HOME}/bin/R CMD config LIBnn`
 fi
@@ -54,29 +60,43 @@ if test [ -n "$jags_lib_path" ] ; then
    JAGS_LIB=$jags_lib_path
 else
    if test [ -z "${JAGS_LIB}" ] ; then
-      if test [ "${prefix}" == "NONE" ] ; then 
-         AC_MSG_ERROR("Location of JAGS library not defined. Use --with-jags-lib configure option")
+      if test [ "${prefix}" = "NONE" ] ; then 
+         AC_MSG_ERROR("Location of JAGS library not defined. Use configure arg '--with-jags-lib' or environment variable 'JAGS_LIB'")
       else
          JAGS_LIB=${prefix}/${LIBnn}
       fi
    fi
 fi
 
+OLDFLAGS=${LDFLAGS}
+AC_LANG_PUSH(C)
+LDFLAGS=-L${JAGS_LIB}
+AC_CHECK_LIB(jags, jags_version, [],
+             [AC_MSG_ERROR("Cannot load JAGS library in ${JAGS_LIB}")])
 
+AC_LANG_POP()
+LDFLAGS=${OLDFLAGS}
 
-dnl fortran stuff
-ACX_F77_WRAPPERS
-ACX_F77_LIBRARY_LDFLAGS
-ACX_LAPACK([],[
-	AC_MSG_ERROR("You need to install the LAPACK library")
-])
+#Finally, set optional module directory using --with-jags-modules or
+#environment variable JAGS_MODULES
+
+AC_ARG_WITH([jags-modules],
+            AC_HELP_STRING([--with-jags-modules=MOD_PATH],
+                           [the location of the JAGS modules]),
+            [jags_mod_path=$withval])
+if test [ -n "$jags_mod_path" ] ; then
+   JAGS_MODULES=$jags_mod_path
+else
+   if test [ -z "${JAGS_MODULES}" ] ; then
+      JAGS_MODULES=${JAGS_LIB}/JAGS/modules-${JAGS_VERSION}
+      if test [! -d ${JAGS_MODULES} ]; then
+         AC_MSG_ERROR("JAGS module directory ${JAGS_MODULES} does not exist.")
+      fi
+   fi
+fi
 
 AC_SUBST(JAGS_INCLUDE)
 AC_SUBST(JAGS_LIB)
-AC_SUBST(LAPACK_LIBS)
-AC_SUBST(BLAS_LIBS)
-AC_SUBST(LIBS)
-AC_SUBST(FLIBS)
-#AC_SUBST(CXXFLAGS)
+AC_SUBST(JAGS_MODULES)
 
 AC_OUTPUT(src/Makevars)

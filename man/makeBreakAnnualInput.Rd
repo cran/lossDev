@@ -20,7 +20,9 @@ total.exp.years=extra.exp.years+dim(incremental.payments)[1],
 cumulative.payments=cumulate(incremental.payments),
 exp.year.type=c('ambiguous', 'py', 'ay'),
 prior.for.knot.locations.pre.break=NA,
+prior.for.number.of.knots.pre.break=c(3, 1/7),
 prior.for.knot.locations.post.break=NA,
+prior.for.number.of.knots.post.break=c(3, 1/7),
 use.skew.t=FALSE,
 bound.for.skewness.parameter=10,
 last.column.with.scale.innovation=dim(incremental.payments)[2],
@@ -75,7 +77,9 @@ These values must either both be \code{NA} or both be set to numbers.
 \item{cumulative.payments}{A numeric matrix with the same dim and dimnames as \code{incremental.payments}.  Must be a possible cumulative payment triangle of \code{incremental.payments}.  (See \emph{Cumulative Payments} Section).}
 \item{exp.year.type}{A single character value indicating the type of exposure years:  \sQuote{ambiguous}, \sQuote{py}, and \sQuote{ay} mean \sQuote{Exposure Year}, \sQuote{Policy Year}, and \sQuote{Accident Year}; respectively.}
 \item{prior.for.knot.locations.pre.break}{A single numeric value of at least 1.  The prior for the location of knots is a scaled beta with parameters \code{c(1,prior.for.knot.locations.pre.break)}.}
+\item{prior.for.number.of.knots.pre.break}{A two element vector giving the paramters for the prior number of knots.}
 \item{prior.for.knot.locations.post.break}{See \code{prior.for.knot.locations.pre.break}. Large values produce stable consumption paths at high development years.}
+\item{prior.for.number.of.knots.post.break}{A two element vector giving the paramters for the prior number of knots.}
 \item{use.skew.t}{A logical value.  If \code{TRUE} the model assumes the observed and estimated log incremental payments are realizations from a skewed \eqn{t} distribution; if \code{FALSE} it will assume zero skewness. (See Reference.)}
 \item{bound.for.skewness.parameter}{A positive numerical value representing the symetric boundaries for the skewness parameter.  In most cases, the default should be sufficient. Ignored if \code{use.skew.t=FALSE}.}
 \item{last.column.with.scale.innovation}{A single integer must be at least 1 and at most the number of columns in \code{incremental.payments}.  See \emph{Measurment Error-Second Order Random Walk} in Details.}

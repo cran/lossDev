@@ -1,9 +1,9 @@
 #include <graph/StochasticNode.h>
 #include <graph/NodeError.h>
 #include <distribution/Distribution.h>
-#include <sampler/DensitySampler.h>
-#include <JAGS/distribution/RNG.h>
-#include <JAGS/util/nainf.h>
+#include <sampler/SampleMethod.h>
+#include <RNG.h>
+#include <util/nainf.h>
 
 #include "RealSlicerOV.h"
 
@@ -12,14 +12,16 @@
 
 using std::vector;
 using std::string;
+using std::fabs;
 
 #define MIN_ADAPT_OV 100
 #define MIN_OV MIN_ADAPT_OV / 2
 
 
 
-RealSlicerOV::RealSlicerOV()
-    : RealSlicer(),
+RealSlicerOV::RealSlicerOV(GraphView const * gv, unsigned int chain)
+    : _gv(gv),
+      _chain(chain),
       _probOfOverrelaxed(.9),
       _endpointAccuracy(5),
       _maxOV(100),
@@ -31,14 +33,33 @@ RealSlicerOV::RealSlicerOV()
 
 }
 
+double RealSlicerOV::value() const
+{
+    return *(_gv->nodes()[0]->value(_chain));
+}
+
+void RealSlicerOV::setValue(double value) const
+{
+    _gv->setValue(&value, 1, _chain);
+}
+
+double RealSlicerOV::logFullConditional() const
+{
+    return _gv->logFullConditional(_chain);
+}
+
 bool 
 RealSlicerOV::canSample(StochasticNode const *node)
 {
-    if (node->distribution()->isDiscreteValued() || node->length() != 1)
-	return false;
+    /*
+      if (node->distribution()->isDiscreteValued() || node->length() != 1)
+      return falses;
     
-    if (df(node) == 0)
+    
+    if (node->distribution()->df(node) == 0)
 	return false; 
+
+    */
 
     if(node->distribution()->name() != "dchisqrOV" && 
        node->distribution()->name() != "dtOV" &&
@@ -54,29 +75,33 @@ void RealSlicerOV::update(RNG *rng)
 {
     if(_iterOV < MIN_OV)
     {
-	localUpdateStep(rng);
+	updateStep(rng);
     }
     else
     {
 	if(rng->uniform() < _probOfOverrelaxed)
 	    updateOverrelaxed(rng);
 	else
-	    localUpdateStep(rng);
+	    updateStep(rng);
     }
 }
 
+void RealSlicerOV::getLimits(double *lower, double *upper) const
+{
+    _gv->nodes().front()->support(lower, upper, 1, _chain);
+}
 
 
 void RealSlicerOV::updateOverrelaxed(RNG *rng)
 {
     // Test current value
-    double g0 = _sampler->logFullConditional(_chain);
+    double g0 = logFullConditional();
     if (!jags_finite(g0)) {
 	if (g0 > 0) {
 	    return;
 	}
 	else {
-	    throw NodeError(_sampler->nodes()[0],
+	    throw NodeError(_gv->nodes()[0],
                             "Current value is inconsistent with data");
 	}
     }
@@ -105,7 +130,7 @@ void RealSlicerOV::updateOverrelaxed(RNG *rng)
     }
     else {
 	setValue(L);
-	while (j-- > 0 && _sampler->logFullConditional(_chain) > z) {
+	while (j-- > 0 &&logFullConditional() > z) {
 	    L -= _widthOV;
 	    if (L < lower) {
 		L = lower;
@@ -120,7 +145,7 @@ void RealSlicerOV::updateOverrelaxed(RNG *rng)
     }
     else {
 	setValue(R);
-	while (k-- > 0 && _sampler->logFullConditional(_chain) > z) {
+	while (k-- > 0 &&logFullConditional() > z) {
 	    R += _widthOV;
 	    if (R > upper) {
 		R = upper;
@@ -144,7 +169,7 @@ void RealSlicerOV::updateOverrelaxed(RNG *rng)
 	{
 	    double midPoint = (LBar + RBar) / 2;
 	    setValue(midPoint);
-	    if(aBar == 0 || _sampler->logFullConditional(_chain) > z)
+	    if(aBar == 0 ||logFullConditional() > z)
 		break;
 
 	    if(xold > midPoint)
@@ -165,18 +190,18 @@ void RealSlicerOV::updateOverrelaxed(RNG *rng)
 	wBar /= 2.0;
 	
 	setValue(LHat + wBar);
-	if(_sampler->logFullConditional(_chain) <= z)
+	if(logFullConditional() <= z)
 	    LHat += wBar;
 	
 	setValue(RHat - wBar);
-	if(_sampler->logFullConditional(_chain) <= z)
+	if(logFullConditional() <= z)
 	    RHat -= wBar;	
     }
 
     double xnew = LHat + RHat - xold;
 
     setValue(xnew);
-    if(xnew < LBar || xnew > RBar || _sampler->logFullConditional(_chain) <= z)
+    if(xnew < LBar || xnew > RBar ||logFullConditional() <= z)
 	setValue(xold);
 
 
@@ -192,16 +217,16 @@ void RealSlicerOV::updateOverrelaxed(RNG *rng)
 
 
 
-void RealSlicerOV::localUpdateStep(RNG *rng)
+void RealSlicerOV::updateStep(RNG *rng)
 {
     // Test current value
-    double g0 = _sampler->logFullConditional(_chain);
+    double g0 =logFullConditional();
     if (!jags_finite(g0)) {
 	if (g0 > 0) {
 	    return;
 	}
 	else {
-	    throw NodeError(_sampler->nodes()[0],
+	    throw NodeError(_gv->nodes()[0],
                             "Current value is inconsistent with data");
 	}
     }
@@ -230,7 +255,7 @@ void RealSlicerOV::localUpdateStep(RNG *rng)
     }
     else {
 	setValue(L);
-	while (j-- > 0 && _sampler->logFullConditional(_chain) > z) {
+	while (j-- > 0 &&logFullConditional() > z) {
 	    L -= _widthOV;
 	    if (L < lower) {
 		L = lower;
@@ -245,7 +270,7 @@ void RealSlicerOV::localUpdateStep(RNG *rng)
     }
     else {
 	setValue(R);
-	while (k-- > 0 && _sampler->logFullConditional(_chain) > z) {
+	while (k-- > 0 &&logFullConditional() > z) {
 	    R += _widthOV;
 	    if (R > upper) {
 		R = upper;
@@ -261,7 +286,7 @@ void RealSlicerOV::localUpdateStep(RNG *rng)
     for(;;) {
 	xnew =  L + rng->uniform() * (R - L);
 	setValue(xnew);
-	double g = _sampler->logFullConditional(_chain);
+	double g =logFullConditional();
 	if (g >= z - DBL_EPSILON) {
 	    // Accept point
 	    break;
@@ -298,6 +323,11 @@ bool RealSlicerOV::adaptOff()
   _adaptOV = false;
   //FIXME We could try a bit harder than this
   return (_iterOV > MIN_ADAPT_OV );
+}
+
+bool RealSlicerOV::isAdaptive() const
+{
+    return true;
 }
 
 

@@ -44,7 +44,9 @@ setClass(
                         rangeForFirstYearInNewRegime='integer',            #The range of exposure years describing the break.
                         priorsForFirstYearInNewRegime='numeric',           #The prior for the break.
                         priorForKnotPositionsPreBreak='numeric',
-                        priorForKnotPositionsPostBreak='numeric'),
+                        priorForKnotPositionsPostBreak='numeric',
+                        priorForNumberOfKnotsPreBreak='numeric',
+                        priorForNumberOfKnotsPostBreak='numeric'),
          contains='AnnualAggLossDevModelInput')
 
 
@@ -103,7 +105,9 @@ setClass(
 ##'
 ##' @param exp.year.type A single character value indicating the type of exposure years:  \sQuote{ambiguous}, \sQuote{py}, and \sQuote{ay} mean \sQuote{Exposure Year}, \sQuote{Policy Year}, and \sQuote{Accident Year}; respectively.
 ##' @param prior.for.knot.locations.pre.break A single numeric value of at least 1.  The prior for the location of knots is a scaled beta with parameters \code{c(1,prior.for.knot.locations.pre.break)}.
+##' @param prior.for.number.of.knots.pre.break A two element vector giving the paramters for the prior number of knots.
 ##' @param prior.for.knot.locations.post.break See \code{prior.for.knot.locations.pre.break}. Large values produce stable consumption paths at high development years.
+##' @param prior.for.number.of.knots.post.break A two element vector giving the paramters for the prior number of knots.
 ##'
 ##' @param use.skew.t A logical value.  If \code{TRUE} the model assumes the observed and estimated log incremental payments are realizations from a skewed \eqn{t} distribution; if \code{FALSE} it will assume zero skewness. (See Reference.)
 ##' @param bound.for.skewness.parameter A positive numerical value representing the symetric boundaries for the skewness parameter.  In most cases, the default should be sufficient. Ignored if \code{use.skew.t=FALSE}.
@@ -142,7 +146,9 @@ setClass(
 ##'   cumulative.payments=cumulate(incremental.payments),
 ##'   exp.year.type=c('ambiguous', 'py', 'ay'),
 ##'   prior.for.knot.locations.pre.break=NA,
+##'   prior.for.number.of.knots.pre.break=c(3, 1/7),
 ##'   prior.for.knot.locations.post.break=NA,
+##'   prior.for.number.of.knots.post.break=c(3, 1/7),
 ##'   use.skew.t=FALSE,
 ##'   bound.for.skewness.parameter=10,
 ##'   last.column.with.scale.innovation=dim(incremental.payments)[2],
@@ -167,7 +173,9 @@ makeBreakAnnualInput <- function(incremental.payments=decumulate(cumulative.paym
                                  cumulative.payments=cumulate(incremental.payments),
                                  exp.year.type=c('ambiguous', 'py', 'ay'),
                                  prior.for.knot.locations.pre.break=NA,
+                                 prior.for.number.of.knots.pre.break=c(3,1/7),
                                  prior.for.knot.locations.post.break=NA,
+                                 prior.for.number.of.knots.post.break=c(3,1/7),
                                  use.skew.t=FALSE,
                                  bound.for.skewness.parameter=10,
                                  last.column.with.scale.innovation=dim(incremental.payments)[2],
@@ -265,6 +273,22 @@ makeBreakAnnualInput <- function(incremental.payments=decumulate(cumulative.paym
     }
 
 
+   if(!is.numeric(prior.for.number.of.knots.pre.break) || length(prior.for.number.of.knots.pre.break) != 2)
+          stop('"prior.for.number.of.knots.pre.break" must be a numeric of length 2')
+    if(prior.for.number.of.knots.pre.break[1] <= 0)
+        stop('"prior.for.number.of.knots.pre.break[1]" must be greater than zero')
+    if(prior.for.number.of.knots.pre.break[2] <= 0 ||prior.for.number.of.knots.pre.break[2] >= 1 )
+        stop('"prior.for.number.of.knots.pre.break[2]" must be greater than zero but less than one')
+    ans@priorForNumberOfKnotsPreBreak <- prior.for.number.of.knots.pre.break
+
+    if(!is.numeric(prior.for.number.of.knots.post.break) || length(prior.for.number.of.knots.post.break) != 2)
+          stop('"prior.for.number.of.knots.post.break" must be a numeric of length 2')
+    if(prior.for.number.of.knots.post.break[1] <= 0)
+        stop('"prior.for.number.of.knots.post.break[1]" must be greater than zero')
+    if(prior.for.number.of.knots.post.break[2] <= 0 ||prior.for.number.of.knots.post.break[2] >= 1 )
+        stop('"prior.for.number.of.knots.post.break[2]" must be greater than zero but less than one')
+    ans@priorForNumberOfKnotsPostBreak <- prior.for.number.of.knots.post.break
+
     if(sum(ans@exposureYears < ans@rangeForFirstYearInNewRegime[1]) < 4)
         stop('The minimum value for "first.year.in.new.regime" is too small.  There must be at least 4 years in the pre-break period.')
 
@@ -300,7 +324,8 @@ makeBreakAnnualInput <- function(incremental.payments=decumulate(cumulative.paym
 ##'   \item{\code{break.row.priors}}{The parameters for the beta distribution which serves as the prior for the location of the structural break.}
 ##'   \item{\code{K.trim}}{The maximum number of columns in the post-break triangle.}
 ##'   \item{\code{beta.prior}}{A matrix giving the prior for the location of knots.  First column is for the pre-break spline.  Second is for the post-break spline.}
-##'
+##'   \item{\code{mu.number.of.knots.prior}}{A matrix giving the prior for the mean of the number of knots.  First column is for the pre-break spline.  Second is for the post-break spline}
+##'   \item{\code{number.of.knots.ubound}}{A vector giving the upper bound for the number of knots.  First is for the pre-break spline.  Second is for the post-break spline}
 ##' }
 ##' @name getJagsData,BreakAnnualLossDevModelInput-method
 ##' @param object An object of type \code{BreakAnnualAggLossDevModelInput} from which to collect the needed model input.
@@ -355,6 +380,15 @@ setMethod(
           ans$beta.prior <- array(NA, c(2,2))
           ans$beta.prior[,1] <- c(1,object@priorForKnotPositionsPreBreak)
           ans$beta.prior[,2] <- c(1,object@priorForKnotPositionsPostBreak)
+
+          ans$mu.number.of.knots.prior <- array(NA, c(2, 2))
+          ans$mu.number.of.knots.prior[,1] <- object@priorForNumberOfKnotsPreBreak
+          ans$mu.number.of.knots.prior[2,1] <- (1 - ans$mu.number.of.knots.prior[2,1]) / ans$mu.number.of.knots.prior[2,1]
+          ans$mu.number.of.knots.prior[,2] <- object@priorForNumberOfKnotsPostBreak
+          ans$mu.number.of.knots.prior[2,2] <- (1 - ans$mu.number.of.knots.prior[2,2]) / ans$mu.number.of.knots.prior[2,2]
+          ans$number.of.knots.ubound <- numeric(2)
+          ans$number.of.knots.ubound[1] <- trunc(ans$K/2) + 1
+          ans$number.of.knots.ubound[2] <- trunc(ans$K.trim/2) + 1
 
           return(ans)
       })

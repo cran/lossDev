@@ -1,7 +1,7 @@
-#ifndef DT_OV_H_
-#define DT_OV_H_
+#ifndef DTOV_H_
+#define DTOV_H_
 
-#include <distribution/DistScalarRmath.h>
+#include "RScalarDist.h"
 
 /**
  * t-distribution on k degrees of freedom, with median mu and
@@ -12,7 +12,7 @@
  * </pre>
  * @short t distribution
  */
-class DTOV : public DistScalarRmath {
+class DTOV : public RScalarDist {
  public:
   DTOV();
 
@@ -26,9 +26,8 @@ class DTOV : public DistScalarRmath {
   /**
    * Check that tau > 0 and k > 0
    */
-  bool checkParameterValue (std::vector<double const *> const &parameters,
-			    std::vector<std::vector<unsigned int> > const &dims)
-    const;
+  bool checkParameterValue(std::vector<double const *> const &parameters) const;
+
 };
 
-#endif /* DT_OV_H_ */
+#endif /* DTOV_H_ */

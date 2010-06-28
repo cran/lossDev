@@ -30,32 +30,36 @@
 #ifndef RJUMPSPLINEFACTORY_H_
 #define RJUMPSPLINEFACTORY_H_
 
-#include <JAGS/graph/Node.h>
-#include <JAGS/distribution/Distribution.h>
-#include <JAGS/graph/StochasticNode.h>
-#include <JAGS/sampler/SamplerFactory.h>
-#include <JAGS/sampler/SingletonFactory.h>
+#include <vector>
+#include <set>
+
+#include <graph/Node.h>
+#include <distribution/Distribution.h>
+#include <graph/StochasticNode.h>
+#include <sampler/SamplerFactory.h>
 
 
-class RJumpSplineFactory : public SingletonFactory
+class RJumpSplineFactory : public SamplerFactory
 {
 public:
-	RJumpSplineFactory();
-	virtual ~RJumpSplineFactory();
+    RJumpSplineFactory();
+    virtual ~RJumpSplineFactory();
     /**
      * Determines whether the factory can produce a Sampler for the
      * given node, within the given graph. This function is called
      * by SingletonFactory#makeSampler
      */
-	//needs work
+    //needs work
     virtual bool canSample(StochasticNode *node, Graph const &graph) 
 	const;
     /**
      * Returns a dynamically allocated Sampler for a given node. This
      * function is called by SingletonFactory#makeSampler.
      */
-    virtual Sampler *makeSingletonSampler(StochasticNode *node,
-					  Graph const &graph) const;
+    virtual std::vector<Sampler*> makeSamplers(std::set<StochasticNode*> const &nodes, 
+					       Graph const &graph) const;
+
+    virtual std::string name() const;
 };
 
 #endif /*RJUMPSPLINEFACTORY_H_*/

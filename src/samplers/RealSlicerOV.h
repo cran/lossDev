@@ -1,7 +1,8 @@
 #ifndef REAL_SLICER_OV_H_
 #define REAL_SLICER_OV_H_
 
-#include <BASE/samplers/RealSlicer.h>
+#include <sampler/SampleMethod.h>
+#include <sampler/GraphView.h>
 
 class StochasticNode;
 
@@ -9,8 +10,11 @@ class StochasticNode;
 /**
  * Slice sampler for real-valued distributions
  */
-class RealSlicerOV : public base::RealSlicer
+class RealSlicerOV : public SampleMethod
 {
+    GraphView const *_gv;
+    unsigned int _chain;
+
     double _probOfOverrelaxed;
     unsigned int _endpointAccuracy;
 
@@ -20,6 +24,7 @@ class RealSlicerOV : public base::RealSlicer
     double _sumdiffOV;
 
     bool _adaptOV;
+ 
 
 
 public:
@@ -31,17 +36,18 @@ public:
      * parameter
      * @param nburn Length of burnin
      */
-    RealSlicerOV();
-    //virtual double value() const;
-    //virtual void setValue(double value);
-    //virtual void getLimits(double *lower, double *upper) const;
+    RealSlicerOV(GraphView const * gv, unsigned int chain);
+    double value() const;
+    void setValue(double value) const;
+    void getLimits(double *lower, double *upper) const;
     virtual void update(RNG *rng);
-    virtual void updateOverrelaxed(RNG *rng);
-    virtual void localUpdateStep(RNG *rng);
+    void updateOverrelaxed(RNG *rng);
+    void updateStep(RNG *rng);
     virtual std::string name() const;
     static bool canSample(StochasticNode const *node);
-    //virtual bool isAdaptive();
+    virtual bool isAdaptive() const;
     virtual bool adaptOff();
+    double logFullConditional() const;
 };
 
 

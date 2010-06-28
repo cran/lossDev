@@ -29,13 +29,13 @@
 
 #ifndef RJUMP_H_
 #define RJUMP_H_
-#include <JAGS/Module.h>
+#include <Module.h>
 
 class RJump : public Module
 {
 public:
 	RJump();
-	virtual ~RJump();
+	~RJump();
 };
 
 #endif /*RJUMP_H_*/

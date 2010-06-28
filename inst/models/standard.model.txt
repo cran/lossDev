@@ -234,7 +234,7 @@ model
     #fourth column is AR1 process with AR1 coeff of 10th parameter and inovation precision of 9th
     S.[1:K,1:4] ~ dspline(
                 z[1:K], #values a which to evaluate the spline
-                L.spline,#max number of knots
+                k,#number of knots
                 beta.prec,#precision for spline coeff (THIS IS A CONSTANT NON-STOCHASTIC)
                 x.0, #lowest value for a knot
                 x.r, #highest value for a knot
@@ -256,10 +256,11 @@ model
 
 
     S[1:K] <- S.[1:K,1]
-    k <- S.[1,2] + 0
+    #k <- S.[1,2] + 0
     
     beta.prec <- 0.0001
-    L.spline <- trunc(K/2)+1
+    k ~ dpois(mu.number.of.knots)T(,number.of.knots.ubound)
+    mu.number.of.knots ~ dgamma(mu.number.of.knots.prior[1], mu.number.of.knots.prior[2])
 
 
     ## Relative changes in incremental payments
