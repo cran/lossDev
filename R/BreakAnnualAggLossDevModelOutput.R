@@ -286,7 +286,7 @@ setMethod('tailFactor',
               if(ey.type == 'py')
                   firstIsHalfReport <- TRUE
               else if(ey.type == 'ay')
-                  firstIsHalfReport <- TRUE
+                  firstIsHalfReport <- FALSE
               else
                   stop('"firstIsHalfReport" is missing and the exposure year type is not one of "policy year" or "accident year." Please set a value for "firstIsHalfReport".')
           }
