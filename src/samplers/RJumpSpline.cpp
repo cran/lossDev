@@ -7,7 +7,7 @@
 ##    an expert prior for the calendar year effect,                                             ##
 ##    and accommodation for structural breaks in the consumption path of services.              ##
 ##                                                                                              ##
-##    Copyright © 2009, National Council On Compensation Insurance Inc.,                        ##
+##    Copyright © 2009, 2010, 2011 National Council On Compensation Insurance Inc.,             ##
 ##                                                                                              ##
 ##    This file is part of lossDev.                                                             ##
 ##                                                                                              ##
@@ -37,6 +37,7 @@
 #include <graph/NodeError.h>
 #include <RNG.h>
 #include <sampler/GraphView.h>
+#include <module/ModuleError.h>
 
 #include "MNorm.h"
 
@@ -282,7 +283,7 @@ void RJumpSpline::calPost(bool const &current, unsigned int chain)
   F77_NAME(dposv) ("L", &nrow, &one, Acopy, &nrow, b, &nrow, &info);
   if (info != 0) 
     {
-      throw NodeError(snode,
+      throwNodeError(snode,
                       "unable to solve linear equations in Conjugate mnorm sampler");
     }
   
@@ -499,7 +500,7 @@ double RJumpSpline::llZ(bool const &current, unsigned int chain) const
   for(unsigned int i = 0; i < children.size(); ++i)
     {
       StochasticNode const &sn = *children[i];
-      ans += sn.logDensity(chain);
+      ans += sn.logDensity(chain, PDF_FULL);
     }
   
   
@@ -596,11 +597,16 @@ void RJumpSpline::update(std::vector<RNG *> const &rng)
 	
 }
 
-
-
-bool RJumpSpline::adaptOff()
+bool RJumpSpline::checkAdaptation() const
 {
   return true;
+}
+
+
+
+void RJumpSpline::adaptOff()
+{
+
 }
 
 bool RJumpSpline::isAdaptive() const

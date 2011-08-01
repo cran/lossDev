@@ -19,8 +19,9 @@ bool  DUnifOV::checkParameterValue (vector<double const *> const &par) const
     return (LOWER(par) < UPPER(par));
 }
 
-double DUnifOV::logLikelihood(double x, vector<double const *> const &par,
-			    double const *lower, double const *upper) const
+double DUnifOV::logDensity(double x, PDFType type,
+                           vector<double const *> const &par,
+                           double const *lower, double const *upper) const
 {
     return log(UPPER(par) - LOWER(par));
 }

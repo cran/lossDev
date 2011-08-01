@@ -7,7 +7,7 @@
 ##    an expert prior for the calendar year effect,                                             ##
 ##    and accommodation for structural breaks in the consumption path of services.              ##
 ##                                                                                              ##
-##    Copyright © 2009, National Council On Compensation Insurance Inc.,                        ##
+##    Copyright © 2009, 2010, 2011 National Council On Compensation Insurance Inc.,             ##
 ##                                                                                              ##
 ##    This file is part of lossDev.                                                             ##
 ##                                                                                              ##
@@ -60,11 +60,11 @@ public:
              * NOTE: This is currently only valid for the 7th and 8th parameters
 	     */
 	    virtual double 
-		logLikelihood(double const *x, unsigned int length,
-			      std::vector<double const *> const &parameters,
-			      std::vector<std::vector<unsigned int> > const &dims,
-			      double const *lbound, double const *ubound)
-		const;
+              logDensity(double const *x, unsigned int length, PDFType type,
+                         std::vector<double const *> const &parameters,
+                         std::vector<std::vector<unsigned int> > const &dims,
+                         double const *lbound, double const *ubound)
+              const;
 	    /**
 	     * Draws a random sample from the distribution. 
 	     *

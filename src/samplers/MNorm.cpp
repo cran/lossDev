@@ -1,15 +1,16 @@
 #include <R_ext/Lapack.h>
 
 #include <JRmath.h>
+#include <module/ModuleError.h>
 
 #include <vector>
 #include <string>
-#include <stdexcept>
+
 
 class RNG;
 
 using std::vector;
-using std::runtime_error;
+
 
 static double logdet(double const *a, int n)
 {
@@ -29,7 +30,7 @@ static double logdet(double const *a, int n)
     if (info != 0) {
 	delete [] acopy;
 	delete [] w;
-	throw runtime_error("unable to calculate workspace size for dsyev");
+	throwRuntimeError("unable to calculate workspace size for dsyev");
     }
     lwork = static_cast<int>(worktest);
     double *work = new double[lwork];
@@ -38,11 +39,11 @@ static double logdet(double const *a, int n)
     delete [] work;
     if (info != 0) {
 	delete [] w;
-	throw runtime_error("unable to calculate eigenvalues in dsyev");
+	throwRuntimeError("unable to calculate eigenvalues in dsyev");
     }
 
     if (w[0] <= 0) {
-	throw runtime_error("Non positive definite matrix in call to logdet");
+	throwRuntimeError("Non positive definite matrix in call to logdet");
     }
 
     double logdet = 0;

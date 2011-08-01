@@ -2,6 +2,7 @@
 #include <graph/NodeError.h>
 #include <distribution/Distribution.h>
 #include <sampler/SampleMethod.h>
+#include <module/ModuleError.h>
 #include <RNG.h>
 #include <util/nainf.h>
 
@@ -101,7 +102,7 @@ void RealSlicerOV::updateOverrelaxed(RNG *rng)
 	    return;
 	}
 	else {
-	    throw NodeError(_gv->nodes()[0],
+	    throwNodeError(_gv->nodes()[0],
                             "Current value is inconsistent with data");
 	}
     }
@@ -318,11 +319,16 @@ string RealSlicerOV::name() const
 }
 
 
-bool RealSlicerOV::adaptOff()
+bool RealSlicerOV::checkAdaptation() const
 {
-  _adaptOV = false;
   //FIXME We could try a bit harder than this
   return (_iterOV > MIN_ADAPT_OV );
+}
+
+
+void RealSlicerOV::adaptOff()
+{
+  _adaptOV = false;
 }
 
 bool RealSlicerOV::isAdaptive() const

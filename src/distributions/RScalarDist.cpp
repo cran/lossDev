@@ -3,14 +3,11 @@
 #include <util/nainf.h>
 #include <util/dim.h>
 
-#include <stdexcept>
 #include <cmath>
 #include <algorithm>
 
 using std::string;
 using std::vector;
-using std::length_error;
-using std::logic_error;
 using std::log;
 using std::min;
 using std::max;
@@ -82,8 +79,9 @@ RScalarDist::typicalValue(vector<double const *> const &parameters,
 }
 
 double 
-RScalarDist::logLikelihood(double x, vector<double const *> const &parameters,
-			   double const *lower, double const *upper) const
+RScalarDist::logDensity(double x, PDFType type,
+                        vector<double const *> const &parameters,
+                        double const *lower, double const *upper) const
 {
     double loglik =  d(x, parameters, true);
 

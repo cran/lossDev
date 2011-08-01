@@ -1,8 +1,8 @@
-AC_INIT([lossDev], [0.9.3])
+AC_INIT([lossDev], [3.0.0-1])
 
 AC_PREFIX_PROGRAM(jags)
 
-JAGS_VERSION=2.1.0
+JAGS_MAJOR=3
 
 #Set optional include path with option --with-jags-include or
 #environment variable JAGS_INCLUDE
@@ -88,7 +88,7 @@ if test [ -n "$jags_mod_path" ] ; then
    JAGS_MODULES=$jags_mod_path
 else
    if test [ -z "${JAGS_MODULES}" ] ; then
-      JAGS_MODULES=${JAGS_LIB}/JAGS/modules-${JAGS_VERSION}
+      JAGS_MODULES=${JAGS_LIB}/JAGS/modules-${JAGS_MAJOR}
       if test [! -d ${JAGS_MODULES} ]; then
          AC_MSG_ERROR("JAGS module directory ${JAGS_MODULES} does not exist.")
       fi

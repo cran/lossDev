@@ -7,7 +7,7 @@
 ##    an expert prior for the calendar year effect,                                             ##
 ##    and accommodation for structural breaks in the consumption path of services.              ##
 ##                                                                                              ##
-##    Copyright © 2009, National Council On Compensation Insurance Inc.,                        ##
+##    Copyright © 2009, 2010, 2011 National Council On Compensation Insurance Inc.,             ##
 ##                                                                                              ##
 ##    This file is part of lossDev.                                                             ##
 ##                                                                                              ##
@@ -29,11 +29,11 @@
 
 #include "DSpline.h"
 
-#include <stdexcept>
 #include <vector>
 
 #include <util/nainf.h>
 #include <JRmath.h>
+#include <module/ModuleError.h>
 
 #include <cmath>
 
@@ -51,12 +51,12 @@ DSpline::~DSpline()
 }
 
 double 
-DSpline::logLikelihood(double const *x, unsigned int length,
-                       vector<double const *> const &parameters,
-                       vector<vector<unsigned int> > const &dims,
-                       double const *lbound, double const *ubound) const
+DSpline::logDensity(double const *x, unsigned int length, PDFType type,
+                    vector<double const *> const &parameters,
+                    vector<vector<unsigned int> > const &dims,
+                    double const *lbound, double const *ubound) const
 {
-  //throw std::logic_error("ll doesn't make sense for dspline.  Neither dspline nor any node around dspline can use a default sampler.");
+  //throwLogicError("ll doesn't make sense for dspline.  Neither dspline nor any node around dspline can use a default sampler.");
   //only cacl ll for 3rd and 4th error terms so we can slice sample their precisions (7th and 8th parameters) all other uses of ll will be "INVALID"
 
   const unsigned int &n = length;
@@ -101,7 +101,7 @@ DSpline::logLikelihood(double const *x, unsigned int length,
     }
   else
     {
-      throw std::logic_error("Error in logLikeLihood for DSpline: numberOfSplines (:= dims[1][0]) must be equal to 1 or 2");
+      throwLogicError("Error in logLikeLihood for DSpline: numberOfSplines (:= dims[1][0]) must be equal to 1 or 2");
     }
 
   
@@ -291,7 +291,7 @@ DSpline::randomSample(double *x, unsigned int length,
                       double const *lbound, double const *ubound, RNG *rng) const
 {
   //typicalValue(x, length, parameters, dims, lbound, ubound);
-  throw std::logic_error("Doesn't make sense to random sample from a spline\nDid you remember to set initial values for dspline?");
+  throwLogicError("Doesn't make sense to random sample from a spline\nDid you remember to set initial values for dspline?");
 }
 
 void 

@@ -7,7 +7,7 @@
 ##    an expert prior for the calendar year effect,                                             ##
 ##    and accommodation for structural breaks in the consumption path of services.              ##
 ##                                                                                              ##
-##    Copyright © 2009, National Council On Compensation Insurance Inc.,                        ##
+##    Copyright © 2009, 2010, 2011 National Council On Compensation Insurance Inc.,             ##
 ##                                                                                              ##
 ##    This file is part of lossDev.                                                             ##
 ##                                                                                              ##
@@ -27,7 +27,7 @@
 ##################################################################################################
 */
 
-#include <stdexcept>
+
 #include <cmath>
 
 #include <iostream>
@@ -35,6 +35,7 @@
 #include <JRmath.h>
 #include <distribution/Distribution.h>
 #include <distribution/ScalarDist.h>
+#include <module/ModuleError.h>
 #include <vector>
 #include <set>
 
@@ -74,7 +75,7 @@ unsigned int Knots::calcMaxDelta(unsigned int const &K, TypeOfUpdate type) const
   if(type == Move)
     return K;
 	
-  throw std::logic_error("Tried to call calcMaxDelta With UnKnown TypeOfUpdate");
+  throwLogicError("Tried to call calcMaxDelta With UnKnown TypeOfUpdate");
 }
 
 
@@ -102,7 +103,7 @@ unsigned int Knots::rPoisT(double const &lambda, unsigned int const &T, RNG * co
         return i + 1;
     }
 	
-  throw std::runtime_error("not returning a valule in rPoisT");
+  throwRuntimeError("not returning a valule in rPoisT");
 		
 }
 
@@ -114,7 +115,7 @@ double Knots::dPoisT(unsigned int const &x, double const &lambda, unsigned int c
       if(x == 1)
         return 0.0;
       else
-        throw std::runtime_error("bad value in dPoisT");
+        throwRuntimeError("bad value in dPoisT");
     }
 	
 
@@ -271,7 +272,7 @@ void Knots::birth(unsigned int chain, RNG* const rng)
 {
 
   if(_currentK[chain] == _maxK)
-    throw std::logic_error("cannot add knots if the number of knots is already at the max");
+    throwLogicError("cannot add knots if the number of knots is already at the max");
   
   //initialize the proposed values
   _proposedK = _currentK[chain];
@@ -314,7 +315,7 @@ void Knots::birth(unsigned int chain, RNG* const rng)
 void Knots::death(unsigned int chain, RNG* const rng)
 {
   if(_currentK[chain] == 0)
-    throw std::logic_error("cannot remove knot if there are no knots");
+    throwLogicError("cannot remove knot if there are no knots");
   
   //initialize the proposed values
   _proposedK = _currentK[chain];
@@ -337,7 +338,7 @@ void Knots::death(unsigned int chain, RNG* const rng)
 void Knots::move(unsigned int chain, RNG* const rng)
 {
   if(_currentK[chain] == 0)
-    throw std::logic_error("cannot move knot if there are no knots");
+    throwLogicError("cannot move knot if there are no knots");
   
   //initialize the proposed values
   _proposedK = _currentK[chain];
@@ -379,7 +380,7 @@ double Knots::acceptProbBalance(unsigned int const &chain, TypeOfUpdate type) co
 {
 
   if(type == Nothing)
-    throw std::logic_error("should never calculate \"acceptProbBalance\" for TypeOfUpdate equal to \"Nothing\"");
+    throwLogicError("should never calculate \"acceptProbBalance\" for TypeOfUpdate equal to \"Nothing\"");
 
   double ans = 0;
 	
@@ -387,19 +388,19 @@ double Knots::acceptProbBalance(unsigned int const &chain, TypeOfUpdate type) co
   
   //ans += std::log(1.0 / (_maxK - _minK)) - std::log(1.0 / (_maxK - _minK));
   double tmpKnots = _proposedK;
-  ans += static_cast<ScalarDist const *>(_knotsNode->distribution())->logLikelihood( tmpKnots,
-										     _knotsNode->parameters(chain),
-										     _knotsNode->lowerLimit(chain),
-										     _knotsNode->upperLimit(chain));
+  ans += static_cast<ScalarDist const *>(_knotsNode->distribution())->logDensity( tmpKnots, PDF_FULL,
+                                                                                  _knotsNode->parameters(chain),
+                                                                                  _knotsNode->lowerLimit(chain),
+                                                                                  _knotsNode->upperLimit(chain));
 
   tmpKnots = _currentK[chain];
 
 
-  ans -= static_cast<ScalarDist const *>(_knotsNode->distribution())->logLikelihood( tmpKnots,
-										     _knotsNode->parameters(chain),
-										     _knotsNode->lowerLimit(chain),
-										     _knotsNode->upperLimit(chain));
-	
+  ans -= static_cast<ScalarDist const *>(_knotsNode->distribution())->logDensity( tmpKnots, PDF_FULL,
+                                                                                  _knotsNode->parameters(chain),
+                                                                                  _knotsNode->lowerLimit(chain),
+                                                                                  _knotsNode->upperLimit(chain));
+  
 	
 	
   //T

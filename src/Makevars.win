@@ -6,7 +6,7 @@
 ##    an expert prior for the calendar year effect,                                             ##
 ##    and accommodation for structural breaks in the consumption path of services.              ##
 ##                                                                                              ##
-##    Copyright © 2009, National Council On Compensation Insurance Inc.,                        ##
+##    Copyright © 2009, 2010, 2011 National Council On Compensation Insurance Inc.,             ##
 ##                                                                                              ##
 ##    This file is part of lossDev.                                                             ##
 ##                                                                                              ##
@@ -24,13 +24,12 @@
 ##    along with this program.  If not, see <http://www.gnu.org/licenses/>.                     ##
 ##                                                                                              ##
 ##################################################################################################
-
 ifeq ($(strip $(JAGS_ROOT)),)
 $(error JAGS_ROOT must be set.)
 endif
 
 PKG_CPPFLAGS=-I"$(JAGS_ROOT)/include" -I"$(JAGS_ROOT)/include/rng" -I"$(JAGS_ROOT)/include/distribution" -DMATHLIB_STANDALONE
-PKG_LIBS=-L"$(JAGS_ROOT)/bin" $(BLAS_LIBS) $(LAPACK_LIBS) -ljrmath-0 -ljags-2
+PKG_LIBS=-L"$(JAGS_ROOT)/${R_ARCH}/bin" $(BLAS_LIBS) $(LAPACK_LIBS) -ljrmath-0 -ljags-3
 
 OBJECTS.samplers=samplers/ExpandableArray.o samplers/Knots.o samplers/RJumpSpline.o  samplers/RJumpSplineFactory.o samplers/RealSlicerOV.o  samplers/SliceFactoryOV.o samplers/MNorm.o
 OBJECTS.distributions=distributions/DSpline.o distributions/DChisqrOV.o distributions/DTOV.o distributions/DNormOV.o distributions/DUnifOV.o distributions/RScalarDist.o

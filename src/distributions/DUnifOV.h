@@ -13,9 +13,9 @@
 class DUnifOV : public ScalarDist {
   public:
     DUnifOV();
-    double logLikelihood(double x,
-			 std::vector<double const *> const &parameters,
-			 double const *lower, double const *upper) const;
+    double logDensity(double x, PDFType type,
+                      std::vector<double const *> const &parameters,
+                      double const *lower, double const *upper) const;
     double randomSample(std::vector<double const *> const &parameters,
 			double const *lower, double const *upper,
 			RNG *rng) const;

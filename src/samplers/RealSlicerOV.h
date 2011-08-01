@@ -46,7 +46,8 @@ public:
     virtual std::string name() const;
     static bool canSample(StochasticNode const *node);
     virtual bool isAdaptive() const;
-    virtual bool adaptOff();
+    virtual void adaptOff();
+    virtual bool checkAdaptation() const;
     double logFullConditional() const;
 };
 

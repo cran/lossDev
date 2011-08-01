@@ -38,7 +38,7 @@ public:
      */
     RScalarDist(std::string const &name, unsigned int npar, Support support,
 		bool discrete=false);
-    double logLikelihood(double x,
+    double logDensity(double x, PDFType type,
 			 std::vector<double const *> const &parameters,
 			 double const *lower, double const *upper) const;
     double randomSample(std::vector<double const *> const &parameters,
