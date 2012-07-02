@@ -27,9 +27,9 @@
 
 
 
-PKG_CPPFLAGS=-I"/appl10/sce/version/v110111/include/JAGS" -I"/appl10/sce/version/v110111/include/JAGS/rng" -I"/appl10/sce/version/v110111/include/JAGS/distribution" -DMATHLIB_STANDALONE
+PKG_CPPFLAGS=-I"/appl10/sce/version/v110111//include/JAGS/" -I"/appl10/sce/version/v110111//include/JAGS//rng" -I"/appl10/sce/version/v110111//include/JAGS//distribution" -DMATHLIB_STANDALONE
 
-PKG_LIBS=-L/appl10/sce/version/v110111/lib $(BLAS_LIBS) $(LAPACK_LIBS) -ljrmath -ljags $(LIBS) $(FLIBS)
+PKG_LIBS=-L/appl10/sce/version/v110111//lib/ $(BLAS_LIBS) $(LAPACK_LIBS) -ljrmath -ljags $(LIBS) $(FLIBS)
 
 OBJECTS.samplers=samplers/ExpandableArray.o samplers/Knots.o samplers/RJumpSpline.o  samplers/RJumpSplineFactory.o samplers/RealSlicerOV.o  samplers/SliceFactoryOV.o samplers/MNorm.o
 OBJECTS.distributions=distributions/DSpline.o distributions/DChisqrOV.o distributions/DTOV.o distributions/DNormOV.o distributions/DUnifOV.o distributions/RScalarDist.o

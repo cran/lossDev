@@ -1,4 +1,4 @@
-f78fa5b5536320069fa552600f873b89 *DESCRIPTION
+eaa16c282d843d42480893a9b9c4b4c9 *DESCRIPTION
 d32239bcb673463ab874e80d47fae504 *LICENCE
 4342d0ea60dcdb52bfa8ac6cc58ff2a9 *NAMESPACE
 f8c2843d23bd699f972b6e9cab83e2a5 *R/AnnualAggLossDevModelInput.R
@@ -26,7 +26,7 @@ d75b2b30ef3c5ef5d98d0f377d79fc0f *data/CumulativeAutoBodilyInjuryTriangle.txt.gz
 100353e7442f6d326b3a9478a0318ac0 *data/MCPI.txt.gz
 0b484e09cb94878e8972a3ea264923a1 *inst/doc/3TimeDimensions.jpg
 1e95e9f35063ce719677e0599189f9e6 *inst/doc/lossDev.Rnw
-d5ea478bdf9b40a4a6c42e3c2974f22e *inst/doc/lossDev.pdf
+2d6b7067d5bd60c4ed5f099dea4a4574 *inst/doc/lossDev.pdf
 a15f85d2b07c5040ba95218d719bb05b *inst/models/break.model.txt
 524ddddfbad2700b00fb3f5b901033c2 *inst/models/probOfPayment.model.txt
 9a204858ca73b11c873a7666214a8ba2 *inst/models/standard.model.txt
@@ -45,6 +45,7 @@ cd0f1236416c1cba11d353684f8931e5 *man/AnnualAggLossDevModelOutput-dash-class.Rd
 dab26bbc5ff9f62c13dc3a80165713d5 *man/BreakAnnualAggLossDevModelOutput-dash-class.Rd
 7c7313521e784642ecf4347506de88e9 *man/BreakAnnualAggLossDevModelOutputWithZeros-dash-class.Rd
 418303d78040f628f553578589b9c9b0 *man/CPI.Rd
+4265e87e2f514e5ed09a0fa4bda0af6c *man/CY-AutoRegParameter-AnnAggLossDevModelOutput---method.Rd
 88573dbdfbae23e377bf2a322d9084b8 *man/CumulativeAutoBodilyInjuryTriangle.Rd
 3ce995fd79fa600abc51be6a4d14fd9d *man/IncrementalGeneralLiablityTriangle.Rd
 a41efa883effa39967c1652be391b526 *man/LossDevModelInput-dash-class.Rd
@@ -62,7 +63,6 @@ c662fe3bf2d8984775640bc9cb334c29 *man/StandardAnnualAggLossDevModelInput-dash-cl
 aa139759a866a50fa94883d760778441 *man/calculateProbOfPayment.Rd
 ae54a2d51b31cfef21e0e55bd465ee38 *man/calendarYearEffect-comma-AnnualAggLossDevModelOutput-dash-method.Rd
 b49e638083d56867156e945b15a16c58 *man/calendarYearEffect.Rd
-4265e87e2f514e5ed09a0fa4bda0af6c *man/calendarYearEffectAutoregressiveParameter-comma-AnnualAggLossDevModelOutput-dash-method.Rd
 38767914ca835b23f0ac4a8159dab31f *man/calendarYearEffectAutoregressiveParameter.Rd
 65f96f3c2deb73c73e3dcd7c323e8530 *man/calendarYearEffectErrorTracePlot-comma-AnnualAggLossDevModelOutput-dash-method.Rd
 c250a9ac1931445b32d26980cdcdfd1b *man/calendarYearEffectErrorTracePlot.Rd
@@ -174,7 +174,7 @@ f33a1ddcc9e452b2ca8bf451c3faa1f7 *man/tailFactor-comma-BreakAnnualAggLossDevMode
 a9fa48de4e4d22fc037d43de798100ad *man/tailFactor.Rd
 ae035120d071bb670f468b1dbc5afa7a *man/triResi-comma-AnnualAggLossDevModelOutput-dash-method.Rd
 ca335176be5d84d021cc377226c228bd *man/triResi.Rd
-7491829b2c0e210bd96320381afc1d6c *src/Makevars
+755a4ff53c7f56c13fc6239d163ab7fb *src/Makevars
 9d30abb48f6781759a63f56966bbf1cb *src/Makevars.in
 ea229fcd09033f2862e41f82ff9ddebc *src/Makevars.win
 c54d7a73d7853b4668de32d95c0af140 *src/RJump.cpp
