@@ -179,6 +179,7 @@ is not a concern.
 
 <<setValueSoUsersCanLookAtAllPlots,echo=FALSE>>=
 options(device.ask.default=FALSE)
+dir.create('charts')
 @
 
 

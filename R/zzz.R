@@ -6,7 +6,7 @@
 ##    an expert prior for the calendar year effect,                                             ##
 ##    and accommodation for structural breaks in the consumption path of services.              ##
 ##                                                                                              ##
-##    Copyright © 2009, 2010, 2011 National Council On Compensation Insurance Inc.,             ##
+##    Copyright © 2009, 2010, 2011, 2012 National Council On Compensation Insurance Inc.,       ##
 ##                                                                                              ##
 ##    This file is part of lossDev.                                                             ##
 ##                                                                                              ##
@@ -44,7 +44,7 @@ mutableState <- new.env(parent=emptyenv())
 ##'
 ##'
 ##' @return The current name of the package including version number if the package was installed as such. (i.e. \samp{lossDev})
-myPkgName <- function() return(get('myPkgName', env=mutableState, inherits=FALSE))
+myPkgName <- function() return(get('myPkgName', envir=mutableState, inherits=FALSE))
 
 ##' Installation Library of the Package.   Intended for internal use only.
 ##'
@@ -52,7 +52,7 @@ myPkgName <- function() return(get('myPkgName', env=mutableState, inherits=FALSE
 ##' Set by \code{.onLoad}.
 ##'
 ##'
-myLibPath <- function() return(get('myLibPath', env=mutableState, inherits=FALSE))
+myLibPath <- function() return(get('myLibPath', envir=mutableState, inherits=FALSE))
 
 
 ##' Intialize the Namespace.  Intended for internal use only.
@@ -66,8 +66,6 @@ myLibPath <- function() return(get('myLibPath', env=mutableState, inherits=FALSE
 ##' @aliases .onLoad
 ##' @seealso \code{\link{.onLoad}}
 ##' @import rjags
-##' @import filehash
-##' @importFrom utils normalizePath
 .onLoad <- function(libname, pkgname)
 {
     ##Create functions to return the required values. Lexical scoping ensures the correct values are returned.
@@ -75,9 +73,9 @@ myLibPath <- function() return(get('myLibPath', env=mutableState, inherits=FALSE
     myLibPath <- libname
 
     ##Assign the values to the package namespace and lock the bindings for safty.
-    assign('myPkgName', myPkgName, env=mutableState)
+    assign('myPkgName', myPkgName, envir=mutableState)
     lockBinding('myPkgName', env=mutableState)
-    assign('myLibPath', myLibPath, env=mutableState)
+    assign('myLibPath', myLibPath, envir=mutableState)
     lockBinding('myLibPath', env=mutableState)
 
     ##Load the JAGS module.
@@ -95,12 +93,10 @@ myLibPath <- function() return(get('myLibPath', env=mutableState, inherits=FALSE
     dir.create(db.folder)
     setwd(db.folder)
 
-    dbCreate('lossDev.filehash', type='RDS')
-    mutableState$fileHashDBForCodas <- dbInit('lossDev.filehash', type='RDS')
+
     mutableState$CounterForCreatedCodas <- 0
 
     mutableState$lossDevOptions <- list()
-    mutableState$lossDevOptions[['keepCodaOnDisk']] <- FALSE
     mutableState$lossDevOptions[['logsplinePenaltyFunction']] <- function(x) log(length(x))
 
 }
@@ -136,13 +132,6 @@ setGenericVerif <- function(name, ...)
 ##' Currently the only options are \code{keepCodaOnDisk} and \code{logsplinePenaltyFunction}.
 ##'
 ##' \describe{
-##'   \item{\code{keepCodaOnDisk}}{
-##'     If \code{TRUE} (the default is FALSE), then \pkg{filehash} will be used to store the coda for every node in a temporary file.
-##'     This reduces the required memory and can improve copying performance.
-##'     Since copied objects refer to the same file, copy time can be greatly reduced.
-##'     If \code{FALSE}, then coda's will be kept in memory.
-##'     Changing the value will only be taking into account on a "going forward" basis.
-##'   }
 ##'   \item{\code{logsplinePenaltyFunction}}{
 ##'     When drawing kernal density plots using the \pkg{logspline}, it maybe desirable to specify a penalty to smooth the density (See \code{?logspline}).
 ##'     This value must be a function which takes one paramter (a vector of the sampled data points) and returns one value -- the penalty.
@@ -165,17 +154,12 @@ lossDevOptions <- function(...)
     if(length(n) != 1)
         stop('You must specify only one option at a time')
 
-    if(n != 'keepCodaOnDisk'  && n != 'logsplinePenaltyFunction')
-        stop('The only current options are "keepCodaOnDisk" and "logsplinePenaltyFunction"')
+    if(n != 'logsplinePenaltyFunction')
+        stop('The only current options are "logsplinePenaltyFunction"')
 
 
 
-    if(n == 'keepCodaOnDisk')
-    {
-        if(!is.logical(args[[n]]))
-            stop('"keepCodaOnDisk" must be a logical value.  Reverting to previous setting.')
-
-    } else if(n == 'logsplinePenaltyFunction') {
+    if(n == 'logsplinePenaltyFunction') {
         f <- args[[n]]
         if(!is.function(f) && is.numeric(f(c(1, 2, 3))) && length(f(c(1, 2, 3))) != 1 )
             stop('"logsplinePenaltyFunction" must be a function.  Reverting to previous setting.')

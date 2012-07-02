@@ -6,7 +6,7 @@
 ##    an expert prior for the calendar year effect,                                             ##
 ##    and accommodation for structural breaks in the consumption path of services.              ##
 ##                                                                                              ##
-##    Copyright © 2009, 2010, 2011 National Council On Compensation Insurance Inc.,             ##
+##    Copyright © 2009, 2010, 2011, 2012 National Council On Compensation Insurance Inc.,       ##
 ##                                                                                              ##
 ##    This file is part of lossDev.                                                             ##
 ##                                                                                              ##
@@ -27,9 +27,9 @@
 
 
 
-PKG_CPPFLAGS=-I"/home/cocwl/JAGS-3.0.0/include/JAGS/" -I"/home/cocwl/JAGS-3.0.0/include/JAGS//rng" -I"/home/cocwl/JAGS-3.0.0/include/JAGS//distribution" -DMATHLIB_STANDALONE
+PKG_CPPFLAGS=-I"/appl10/sce/version/v110111/include/JAGS" -I"/appl10/sce/version/v110111/include/JAGS/rng" -I"/appl10/sce/version/v110111/include/JAGS/distribution" -DMATHLIB_STANDALONE
 
-PKG_LIBS=-L/home/cocwl/JAGS-3.0.0/lib/ $(BLAS_LIBS) $(LAPACK_LIBS) -ljrmath -ljags $(LIBS) $(FLIBS)
+PKG_LIBS=-L/appl10/sce/version/v110111/lib $(BLAS_LIBS) $(LAPACK_LIBS) -ljrmath -ljags $(LIBS) $(FLIBS)
 
 OBJECTS.samplers=samplers/ExpandableArray.o samplers/Knots.o samplers/RJumpSpline.o  samplers/RJumpSplineFactory.o samplers/RealSlicerOV.o  samplers/SliceFactoryOV.o samplers/MNorm.o
 OBJECTS.distributions=distributions/DSpline.o distributions/DChisqrOV.o distributions/DTOV.o distributions/DNormOV.o distributions/DUnifOV.o distributions/RScalarDist.o

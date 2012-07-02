@@ -6,7 +6,7 @@
 ##    an expert prior for the calendar year effect,                                             ##
 ##    and accommodation for structural breaks in the consumption path of services.              ##
 ##                                                                                              ##
-##    Copyright © 2009, 2010, 2011 National Council On Compensation Insurance Inc.,             ##
+##    Copyright © 2009, 2010, 2011, 2012 National Council On Compensation Insurance Inc.,       ##
 ##                                                                                              ##
 ##    This file is part of lossDev.                                                             ##
 ##                                                                                              ##
@@ -73,7 +73,6 @@ setClass(
 ##' @param mcarray An S3 object of type \code{mcarray}.
 ##' @return An object of class \code{NodeOutput}.
 ##' @seealso \code{\linkS4class{NodeOutput}}
-##  #import filehash only do this in zzz.R
 newNodeOutput <- function(mcarray)
 {
     ans <- new('NodeOutput')
@@ -91,42 +90,15 @@ newNodeOutput <- function(mcarray)
     value.name <- paste('object', mutableState$CounterForCreatedCodas, sep='')
 
 
-    save.to.disk <- lossDevOptions()[['keepCodaOnDisk']]
-    if(save.to.disk)
-    {
-        ans@get.value.env <-  new.env()
-        ans@get.value.env$value.name <- value.name
-        ans@get.value.env$get.value   <- function()
-        {
-            return(dbFetch(mutableState$fileHashDBForCodas, value.name))
-        }
-
-        reg.finalizer(ans@get.value.env,
-                      function(env){
-
-                          ##message('running reg.finalizer')
-                          ##message(paste('value.name is', value.name))
-                          ##message(paste('env$value.name is', env$value.name))
-                          ##dbDelete(mutableState$fileHashDBForCodas, env$value.name)
-                          dbDelete(mutableState$fileHashDBForCodas, value.name)
-                      },
-                      onexit=TRUE)
-
-        dbInsert(mutableState$fileHashDBForCodas, value.name, mcarray)
-
-        ##we have to remove this object from this closure, otherwise, since R must keep the closure around so it can still access "value.name"
-        ##(or any other variable it doesn't know about for that matter)
-        ##it will also keep "mcarray" around as well
-        rm(mcarray)
-    } else {
-
-        ans@get.value.env <-  new.env()
-        ans@get.value.env$get.value   <- function()
-        {
-            return(mcarray)
-        }
-
-    }
+    
+    
+    ans@get.value.env <-  new.env()
+    ans@get.value.env$get.value   <- function()
+      {
+        return(mcarray)
+      }
+    
+  
 
 
 
